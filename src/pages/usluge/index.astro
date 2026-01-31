@@ -1,0 +1,60 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Usluge - Prvi Balkan" description="Sve usluge - Prvi Balkan - Tehnički pregled vozila">
+  
+  <div class="pt-32 pb-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-4xl font-bold text-primary mb-8">Naše Usluge</h1>
+      <p class="text-lg text-gray-600 mb-12">Pružamo kompletan spektar usluga tehničkog pregleda vozila sa visoko osposobljenim tehničarima i modernom opremom.</p>
+
+      <div class="space-y-12">
+        <div class="bg-white rounded-lg shadow-lg p-8 border-l-4 border-primary">
+          <h2 class="text-2xl font-bold text-primary mb-4 flex items-center gap-3">
+            <span class="material-icons">miscellaneous_services</span>
+            Tehnički Pregled
+          </h2>
+          <p class="text-gray-700 mb-4">Kompletan tehnički pregled vozila prema zvaničnim standardima. Naši tehničari će detaljno pregledati sve delove vašeg vozila i dati vam detaljni izveštaj.</p>
+          <ul class="list-disc list-inside text-gray-600 space-y-2">
+            <li>Pregled motora i delova</li>
+            <li>Proverava kočnih sistema</li>
+            <li>Kontrola osvetljenja</li>
+            <li>Merenje emisije</li>
+            <li>Digitalni izveštaj</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-8 border-l-4 border-accent">
+          <h2 class="text-2xl font-bold text-accent mb-4 flex items-center gap-3">
+            <span class="material-icons">description</span>
+            Registracija Vozila
+          </h2>
+          <p class="text-gray-700 mb-4">Pomoć pri registraciji vozila i pripremi svih potrebnih dokumenata za nadležne organe.</p>
+          <ul class="list-disc list-inside text-gray-600 space-y-2">
+            <li>Priprema dokumenata</li>
+            <li>Koordinacija sa MUP-om</li>
+            <li>Pomoć pri registraciji</li>
+            <li>Konsultacije</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-8 border-l-4 border-green-600">
+          <h2 class="text-2xl font-bold text-green-600 mb-4 flex items-center gap-3">
+            <span class="material-icons">security</span>
+            Osiguranje
+          </h2>
+          <p class="text-gray-700 mb-4">Konsultacije i pomoć pri sklapanju osiguranja vozila sa našim partnerima.</p>
+          <ul class="list-disc list-inside text-gray-600 space-y-2">
+            <li>Konsultacije o osiguranju</li>
+            <li>Veza sa osiguravačima</li>
+            <li>Pomoć pri ugovaranju</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>

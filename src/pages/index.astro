@@ -1,0 +1,75 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import Locations from '../components/Locations.astro';
+import Testimonials from '../components/Testimonials.astro';
+import FAQ from '../components/FAQ.astro';
+import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+
+const title = 'Prvi Balkan - Tehnički Pregled Vozila | Beograd';
+const description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
+---
+
+<Layout {title} {description}>
+  <SEO />
+  <Hero 
+    title="Prvi Balkan - Tehnički Pregled Vozila"
+    description="Profesionalni tehnički pregled sa 10+ godina iskustva. 3 lokacije u Beogradu za vašu pogodnost."
+    buttonText="Zakaži Pregled"
+    buttonLink="/kontakt"
+    backgroundImage="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=600&fit=crop"
+  />
+
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-center mb-8">Zašto Izabrati Prvi Balkan?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <span class="material-icons text-6xl text-primary">flash_on</span>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Brz Servis</h3>
+          <p class="text-gray-600">Završavamo pregled u svega 30-60 minuta. Nema čekanja bez zakazivanja.</p>
+        </div>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <span class="material-icons text-6xl text-primary">verified</span>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Pouzdanost</h3>
+          <p class="text-gray-600">Certifikovani tehničari sa godinama iskustva. Sve prema zvaničnim standardima.</p>
+        </div>
+        <div class="text-center">
+          <div class="flex justify-center mb-4">
+            <span class="material-icons text-6xl text-primary">price_check</span>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Najbolje Cene</h3>
+          <p class="text-gray-600">Konkurentne cene bez skrivenih troškova. Transparentan cenovnik.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Services />
+  <Locations />
+  <Testimonials />
+  <FAQ />
+
+  <section class="py-16 bg-primary text-white">
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Spreman za Tehnički Pregled?</h2>
+      <p class="text-lg mb-8 text-blue-100">Zakaži pregled danas i prođi tehnički sa sigurnošću. Slobodno nas kontaktiraj na bilo kojoj lokaciji.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/kontakt" class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
+          Zakaži Pregled
+        </a>
+        <a href="tel:+381112101111" class="border-2 border-white hover:bg-white hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition">
+          Pozovi nas: +381 11 2101 111
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

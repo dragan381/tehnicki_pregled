@@ -1,0 +1,137 @@
+---
+---
+
+<header class="sticky top-0 z-50 transition-all duration-300" id="header">
+  <div class="absolute inset-0 bg-white backdrop-blur-lg transition-all duration-300" id="header-bg"></div>
+  <nav class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0">
+        <a href="/" class="text-2xl font-bold tracking-tight text-primary hover:text-accent transition duration-300 animate-fadeIn" id="logo">
+          <span class="text-accent">Prvi</span>
+          <span class="text-primary ml-1">Balkan</span>
+        </a>
+      </div>
+
+      <div class="hidden md:flex space-x-1">
+        <a href="/" class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
+          <span class="material-icons text-sm transition duration-300 group-hover:scale-110 group-hover:text-accent">home</span>
+          <span>Početna</span>
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+
+        <a href="/usluge" class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
+          <span class="material-icons text-sm transition duration-300 group-hover:scale-110 group-hover:text-accent">check_circle</span>
+          <span>Usluge</span>
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+
+        <a href="/lokacije" class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
+          <span class="material-icons text-sm transition duration-300 group-hover:scale-110 group-hover:text-accent">location_on</span>
+          <span>Lokacije</span>
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+
+        <a href="/blog" class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
+          <span class="material-icons text-sm transition duration-300 group-hover:scale-110 group-hover:text-accent">article</span>
+          <span>Blog</span>
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+
+        <a href="/cesto-pitana-pitanja" class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
+          <span class="material-icons text-sm transition duration-300 group-hover:scale-110 group-hover:text-accent">help</span>
+          <span>FAQ</span>
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+
+        <a href="/kontakt" class="ml-4 bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 group">
+          <span class="material-icons text-sm transition duration-300 group-hover:rotate-12">mail</span>
+          Kontaktiraj nas
+        </a>
+      </div>
+
+      <div class="md:hidden">
+        <button class="text-gray-700 hover:text-primary transition duration-300" id="mobile-menu-btn">
+          <span class="material-icons">menu</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  {/* Mobile menu */}
+  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 animate-slideDown">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      <a href="/" class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
+        <span class="material-icons text-sm">home</span>
+        Početna
+      </a>
+      <a href="/usluge" class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
+        <span class="material-icons text-sm">check_circle</span>
+        Usluge
+      </a>
+      <a href="/lokacije" class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
+        <span class="material-icons text-sm">location_on</span>
+        Lokacije
+      </a>
+      <a href="/blog" class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
+        <span class="material-icons text-sm">article</span>
+        Blog
+      </a>
+      <a href="/cesto-pitana-pitanja" class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
+        <span class="material-icons text-sm">help</span>
+        FAQ
+      </a>
+      <a href="/kontakt" class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300">
+        <span class="material-icons text-sm">mail</span>
+        Kontaktiraj nas
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('header');
+  const headerBg = document.getElementById('header-bg');
+  const logo = document.getElementById('logo');
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navLinks = document.querySelectorAll('#nav-link');
+
+  // Scroll effect - change header color when hero section is passed
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) {
+      // After hero section: change to dark slate gradient background
+      headerBg.classList.remove('bg-white');
+      headerBg.classList.add('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
+      logo.querySelector('.text-accent').classList.add('text-white');
+      logo.querySelector('.text-accent').classList.remove('text-accent');
+      logo.querySelector('.text-primary').classList.add('text-white');
+      navLinks.forEach(link => {
+        link.classList.remove('text-gray-700');
+        link.classList.add('text-slate-300');
+      });
+      mobileMenuBtn?.classList.remove('text-gray-700');
+      mobileMenuBtn?.classList.add('text-white');
+    } else {
+      // At top: white background
+      headerBg.classList.remove('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
+      headerBg.classList.add('bg-white');
+      logo.querySelector('.text-white:not(.ml-1)')?.classList.add('text-accent');
+      logo.querySelector('.text-white:not(.ml-1)')?.classList.remove('text-white');
+      const balkanText = Array.from(logo.querySelectorAll('.text-white')).find(el => el.classList.contains('ml-1'));
+      balkanText?.classList.add('text-primary');
+      balkanText?.classList.remove('text-white');
+      navLinks.forEach(link => {
+        link.classList.remove('text-slate-300');
+        link.classList.add('text-gray-700');
+      });
+      mobileMenuBtn?.classList.remove('text-white');
+      mobileMenuBtn?.classList.add('text-gray-700');
+    }
+  });
+
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+</script>

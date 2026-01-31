@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cantarell:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans;
+}
+
+p,
+span,
+a,
+li,
+td,
+th,
+button {
+  font-family:
+    "Ubuntu",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+h1 {
+  font-family:
+    "BlinkMacSystemFont",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  @apply font-bold;
+}
+
+h2 {
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  @apply font-bold;
+}
+
+nav {
+  font-family:
+    "Cantarell",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  @apply font-bold;
+}

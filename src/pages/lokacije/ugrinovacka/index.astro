@@ -1,0 +1,62 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Footer from '../../../components/Footer.astro';
+---
+
+<Layout title="Ugrinova Čuka - Prvi Balkan" description="Lokacija Ugrinova Čuka - Prvi Balkan">
+  
+  <div class="pt-32 pb-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-4xl font-bold text-primary mb-8">Lokacija Ugrinova Čuka</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div>
+          <h2 class="text-2xl font-bold text-primary mb-6">Informacije</h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-bold text-primary mb-2">Adresa</h3>
+              <p class="text-gray-600">Ugrinova Čuka 456, 11070 Beograd</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-primary mb-2">Telefon</h3>
+              <p class="text-gray-600"><a href="tel:+381112101111" class="hover:text-accent">+381 11 2101 111</a></p>
+            </div>
+            <div>
+              <h3 class="font-bold text-primary mb-2">Email</h3>
+              <p class="text-gray-600"><a href="mailto:ugrinova@prvi-balkan.rs" class="hover:text-accent">ugrinova@prvi-balkan.rs</a></p>
+            </div>
+            <div>
+              <h3 class="font-bold text-primary mb-2">Radno vrijeme</h3>
+              <ul class="text-gray-600 space-y-1">
+                <li>Ponedjeljak-Petak: 08:00 - 18:00</li>
+                <li>Subota: 09:00 - 15:00</li>
+                <li>Nedelja: Zatvoreno</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-8">
+            <a href="/kontakt" class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
+              Zakaži pregled
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <div class="rounded-lg overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1487754180143-c282803d6773?w=800&h=500&fit=crop" alt="Lokacija Ugrinova Čuka - Pregled vozila" class="w-full h-auto">
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12">
+        <h2 class="text-2xl font-bold text-primary mb-6">O Ovoj Lokaciji</h2>
+        <p class="text-gray-700">
+          Naša lokacija na Ugrinovoj Čuki je centralno pozicionirana i lako dostupna. Sa parking mjestima i modernom opremom, osiguravamo ugodno iskustvo dok čekate pregled vašeg vozila.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Prvi Balkan - Tehnički Pregled Vozila', description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu.' } = Astro.props;
+
+// Get current URL path for breadcrumbs
+const currentPath = new URL(Astro.request.url).pathname;
+---
+
+<!doctype html>
+<html lang="sr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  </head>
+  <body class="bg-white text-gray-900">
+    <Header />
+    <Breadcrumbs currentPath={currentPath} />
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+</style>

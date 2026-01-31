@@ -1,0 +1,110 @@
+---
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+// Map URL paths to breadcrumb labels
+const breadcrumbMap: Record<string, string> = {
+  '/': 'Početna',
+  'usluge': 'Usluge',
+  'lokacije': 'Lokacije',
+  'zemun': 'Zemun',
+  'ugrinovacka': 'Ugrinova Čuka',
+  'vozdovac': 'Voždovac',
+  'blog': 'Blog',
+  'cesto-pitana-pitanja': 'FAQ',
+  'kontakt': 'Kontakt',
+  'o-nama': 'O Nama',
+  'privatnost': 'Privatnost',
+  'uslovi': 'Uslovi',
+};
+
+// Generate breadcrumb items from URL
+function generateBreadcrumbs(path: string) {
+  const items = [{ label: 'Početna', url: '/' }];
+  
+  if (path === '/' || path === '') return items;
+  
+  const segments = path.split('/').filter(Boolean);
+  let url = '';
+  
+  for (let i = 0; i < segments.length; i++) {
+    url += '/' + segments[i];
+    const label = breadcrumbMap[segments[i]] || segments[i];
+    items.push({ label, url });
+  }
+  
+  return items;
+}
+
+const breadcrumbs = generateBreadcrumbs(currentPath);
+const isHomepage = currentPath === '/' || currentPath === '';
+
+// Hide breadcrumbs on homepage
+if (isHomepage) {
+  return null;
+}
+
+// Generate Schema.org BreadcrumbList JSON-LD
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbs.map((crumb, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": crumb.label,
+    "item": `https://dragan381.github.io/tehnicki_pregled${crumb.url}`
+  }))
+};
+---
+
+<nav 
+  class="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm backdrop-blur-sm bg-white/95 animate-slideDown"
+  role="navigation"
+  aria-label="Breadcrumb"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <ol class="flex items-center space-x-1 py-2.5 text-sm">
+      {breadcrumbs.map((crumb, index) => (
+        <li key={index} class="flex items-center group">
+          {index > 0 && (
+            <span class="material-icons text-gray-300 text-base mx-1.5 group-hover:text-accent transition duration-300">
+              chevron_right
+            </span>
+          )}
+          
+          {index === breadcrumbs.length - 1 ? (
+            // Current page (not a link)
+            <span class="text-gray-700 font-semibold px-2 py-1 rounded cursor-default">
+              {index === 0 && <span class="material-icons text-base align-middle mr-1 inline">home</span>}
+              {crumb.label}
+            </span>
+          ) : (
+            // Parent pages (links)
+            <a 
+              href={crumb.url}
+              class="text-primary hover:text-accent hover:bg-blue-50 px-2 py-1 rounded transition duration-300 flex items-center gap-1 font-medium"
+              title={`Go to ${crumb.label}`}
+            >
+              {index === 0 && <span class="material-icons text-base">home</span>}
+              <span>{crumb.label}</span>
+            </a>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</nav>
+
+<!-- Schema.org BreadcrumbList for SEO -->
+<script type="application/ld+json">
+{schemaData}
+</script>
+
+<style>
+  nav {
+    top: 64px; /* Height of header */
+  }
+</style>
