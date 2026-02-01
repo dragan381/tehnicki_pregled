@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { currentPath } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
 
 // Ensure path doesn't have trailing slash (except for root)
 let normalizedPath = currentPath.replace(/\/$/, '') || '/';
@@ -22,6 +23,12 @@ const breadcrumbMap: Record<string, string> = {
   'o-nama': 'O Nama',
   'privatnost': 'Privatnost',
   'uslovi': 'Uslovi',
+};
+
+// Funkcija za prepravljen url-a
+const getPath = (path: string) => {
+  if (path === '/') return baseUrl;
+  return baseUrl + path.replace(/^\//, '');
 };
 
 // Generate breadcrumb items from URL
@@ -61,7 +68,7 @@ const schemaData = {
     "@type": "ListItem",
     "position": index + 1,
     "name": crumb.label,
-    "item": `${siteUrl}${crumb.url}`
+    "item": `${siteUrl}${getPath(crumb.url)}`
   }))
 };
 ---
@@ -90,7 +97,7 @@ const schemaData = {
           ) : (
             // Parent pages (links)
             <a 
-              href={crumb.url}
+              href={getPath(crumb.url)}
               class="text-primary hover:text-accent hover:bg-blue-50 px-2 py-1 rounded transition duration-300 flex items-center gap-1 font-medium"
               title={`Go to ${crumb.label}`}
             >
