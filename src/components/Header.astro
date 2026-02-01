@@ -100,11 +100,11 @@
   window.addEventListener('scroll', () => {
     if (window.scrollY > 400) {
       // After hero section: change to dark slate gradient background
-      headerBg.classList.remove('bg-white');
-      headerBg.classList.add('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
-      logo.querySelector('.text-accent').classList.add('text-white');
-      logo.querySelector('.text-accent').classList.remove('text-accent');
-      logo.querySelector('.text-primary').classList.add('text-white');
+      headerBg?.classList.remove('bg-white');
+      headerBg?.classList.add('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
+      logo?.querySelector('.text-accent')?.classList.add('text-white');
+      logo?.querySelector('.text-accent')?.classList.remove('text-accent');
+      logo?.querySelector('.text-primary')?.classList.add('text-white');
       navLinks.forEach(link => {
         link.classList.remove('text-gray-700');
         link.classList.add('text-slate-300');
@@ -113,11 +113,11 @@
       mobileMenuBtn?.classList.add('text-white');
     } else {
       // At top: white background
-      headerBg.classList.remove('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
-      headerBg.classList.add('bg-white');
-      logo.querySelector('.text-white:not(.ml-1)')?.classList.add('text-accent');
-      logo.querySelector('.text-white:not(.ml-1)')?.classList.remove('text-white');
-      const balkanText = Array.from(logo.querySelectorAll('.text-white')).find(el => el.classList.contains('ml-1'));
+      headerBg?.classList.remove('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
+      headerBg?.classList.add('bg-white');
+      logo?.querySelector('.text-white:not(.ml-1)')?.classList.add('text-accent');
+      logo?.querySelector('.text-white:not(.ml-1)')?.classList.remove('text-white');
+      const balkanText = Array.from(logo?.querySelectorAll('.text-white') ?? []).find(el => el.classList.contains('ml-1'));
       balkanText?.classList.add('text-primary');
       balkanText?.classList.remove('text-white');
       navLinks.forEach(link => {
