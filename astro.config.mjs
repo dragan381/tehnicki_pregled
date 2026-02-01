@@ -3,8 +3,11 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
-// base and site are automatically configured by GitHub Actions
+// In GitHub Actions: site and base are set via environment
+// In local development: site is used as-is, base defaults to "/"
 export default defineConfig({
   integrations: [tailwind()],
   site: "https://dragan381.github.io",
+  base: process.env.GITHUB_ACTIONS ? "/tehnicki_pregled" : "/",
+  trailingSlash: "ignore",
 });
