@@ -3,6 +3,8 @@ interface Props {
   currentPath: string;
 }
 
+import { getPath } from '../utils/navigation';
+
 const { currentPath } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -26,10 +28,6 @@ const breadcrumbMap: Record<string, string> = {
 };
 
 // Funkcija za prepravljen url-a
-const getPath = (path: string) => {
-  if (path === '/') return baseUrl;
-  return baseUrl + path.replace(/^\//, '');
-};
 
 // Generate breadcrumb items from URL
 function generateBreadcrumbs(path: string) {
@@ -68,7 +66,7 @@ const schemaData = {
     "@type": "ListItem",
     "position": index + 1,
     "name": crumb.label,
-    "item": `${siteUrl}${getPath(crumb.url)}`
+    "item": `${siteUrl}${getPath(crumb.url, baseUrl)}`
   }))
 };
 ---
@@ -97,7 +95,7 @@ const schemaData = {
           ) : (
             // Parent pages (links)
             <a 
-              href={getPath(crumb.url)}
+              href={getPath(crumb.url, baseUrl)}
               class="text-primary hover:text-accent hover:bg-blue-50 px-2 py-1 rounded transition duration-300 flex items-center gap-1 font-medium"
               title={`Go to ${crumb.label}`}
             >
