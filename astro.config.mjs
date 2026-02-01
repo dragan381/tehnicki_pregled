@@ -6,5 +6,5 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   integrations: [tailwind()],
   site: "https://dragan381.github.io",
-  // base will be automatically set by GitHub Actions from steps.pages.outputs.base_path
+  base: "/tehnicki_pregled",
 });
