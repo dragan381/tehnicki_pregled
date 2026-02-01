@@ -1,6 +1,4 @@
 ---
-import { getPath } from '../utils/navigation';
-
 interface Props {
   currentPath: string;
 }
@@ -28,7 +26,7 @@ const breadcrumbMap: Record<string, string> = {
 
 // Generate breadcrumb items from URL
 function generateBreadcrumbs(path: string) {
-  const items = [{ label: 'Početna', url: getPath('/') }];
+  const items = [{ label: 'Početna', url: '/' }];
   
   if (path === '/' || path === '') return items;
   
@@ -38,7 +36,7 @@ function generateBreadcrumbs(path: string) {
   for (let i = 0; i < segments.length; i++) {
     url += '/' + segments[i];
     const label = breadcrumbMap[segments[i]] || segments[i];
-    items.push({ label, url: getPath(url) });
+    items.push({ label, url });
   }
   
   return items;
