@@ -9,5 +9,4 @@ export default defineConfig({
   integrations: [tailwind()],
   site: "https://dragan381.github.io",
   base: process.env.GITHUB_ACTIONS ? "/tehnicki_pregled" : "/",
-  trailingSlash: "ignore",
 });
