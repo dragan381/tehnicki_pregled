@@ -5,6 +5,9 @@ interface Props {
 
 const { currentPath } = Astro.props;
 
+// Ensure path doesn't have trailing slash (except for root)
+let normalizedPath = currentPath.replace(/\/$/, '') || '/';
+
 // Map URL paths to breadcrumb labels
 const breadcrumbMap: Record<string, string> = {
   '/': 'Početna',
@@ -39,13 +42,16 @@ function generateBreadcrumbs(path: string) {
   return items;
 }
 
-const breadcrumbs = generateBreadcrumbs(currentPath);
-const isHomepage = currentPath === '/' || currentPath === '';
+const breadcrumbs = generateBreadcrumbs(normalizedPath);
+const isHomepage = normalizedPath === '/';
 
 // Hide breadcrumbs on homepage
 if (isHomepage) {
   return null;
 }
+
+// Get the base URL from Astro config
+const siteUrl = new URL(Astro.url).origin;
 
 // Generate Schema.org BreadcrumbList JSON-LD
 const schemaData = {
@@ -55,7 +61,7 @@ const schemaData = {
     "@type": "ListItem",
     "position": index + 1,
     "name": crumb.label,
-    "item": `https://dragan381.github.io${crumb.url}`
+    "item": `${siteUrl}${crumb.url}`
   }))
 };
 ---
