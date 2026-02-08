@@ -7,6 +7,9 @@ import Testimonials from '../components/Testimonials.astro';
 import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
+import flashOnIcon from '../assets/icons/flash_on.svg?raw';
+import verifiedIcon from '../assets/icons/verified.svg?raw';
+import priceCheckIcon from '../assets/icons/price_check.svg?raw';
 
 const title = 'Prvi Balkan - Tehnički Pregled Vozila | Beograd';
 const description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
@@ -28,21 +31,21 @@ const description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beog
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <span class="material-icons text-6xl text-primary">flash_on</span>
+            <div class="w-20 h-20 md:w-28 md:h-28 text-primary" set:html={flashOnIcon}></div>
           </div>
           <h3 class="text-xl font-semibold mb-2">Brz Servis</h3>
           <p class="text-gray-600">Završavamo pregled u svega 30-60 minuta. Nema čekanja bez zakazivanja.</p>
         </div>
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <span class="material-icons text-6xl text-primary">verified</span>
+            <div class="w-20 h-20 md:w-28 md:h-28 text-primary" set:html={verifiedIcon}></div>
           </div>
           <h3 class="text-xl font-semibold mb-2">Pouzdanost</h3>
           <p class="text-gray-600">Certifikovani tehničari sa godinama iskustva. Sve prema zvaničnim standardima.</p>
         </div>
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <span class="material-icons text-6xl text-primary">price_check</span>
+            <div class="w-20 h-20 md:w-28 md:h-28 text-primary" set:html={priceCheckIcon}></div>
           </div>
           <h3 class="text-xl font-semibold mb-2">Najbolje Cene</h3>
           <p class="text-gray-600">Konkurentne cene bez skrivenih troškova. Transparentan cenovnik.</p>

@@ -1,7 +1,5 @@
 ---
-// Koristi BASE_URL da dinamički prepraviš linkove za GitHub Pages
 import { getPath } from '../utils/navigation';
-
 const baseUrl = import.meta.env.BASE_URL;
 
 const links = [
@@ -27,14 +25,12 @@ const links = [
       <div class="hidden md:flex space-x-1">
         {links.map(link => (
           <a href={getPath(link.href, baseUrl)} class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
-            <span class="material-icons text-sm transition duration-300 group-hover:scale-110 group-hover:text-accent">{link.icon}</span>
             <span>{link.label}</span>
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
           </a>
         ))}
 
         <a href={getPath('/kontakt', baseUrl)} class="ml-4 bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 group">
-          <span class="material-icons text-sm transition duration-300 group-hover:rotate-12">mail</span>
           Kontaktiraj nas
         </a>
       </div>
@@ -52,12 +48,10 @@ const links = [
     <div class="px-2 pt-2 pb-3 space-y-1">
       {links.map(link => (
         <a href={getPath(link.href, baseUrl)} class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
-          <span class="material-icons text-sm">{link.icon}</span>
           {link.label}
         </a>
       ))}
       <a href={getPath('/kontakt', baseUrl)} class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300">
-        <span class="material-icons text-sm">mail</span>
         Kontaktiraj nas
       </a>
     </div>
