@@ -9,10 +9,13 @@ const links = [
   { href: '/blog', label: 'Blog', icon: 'article' },
   { href: '/cesto-pitana-pitanja', label: 'FAQ', icon: 'help' },
 ];
+
+const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === baseUrl || Astro.url.pathname === baseUrl + '/';
+const shouldHaveDarkBg = !isHomePage;
 ---
 
 <header class="sticky top-0 z-50 transition-all duration-300" id="header">
-  <div class="absolute inset-0 bg-white backdrop-blur-lg transition-all duration-300" id="header-bg"></div>
+  <div class={`absolute inset-0 backdrop-blur-lg transition-all duration-300 ${shouldHaveDarkBg ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-md' : 'bg-white'}`} id="header-bg"></div>
   <nav class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <div class="flex-shrink-0">
@@ -24,7 +27,7 @@ const links = [
 
       <div class="hidden md:flex space-x-1">
         {links.map(link => (
-          <a href={getPath(link.href, baseUrl)} class="group relative px-4 py-2 text-gray-700 hover:text-primary transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide" id="nav-link">
+          <a href={getPath(link.href, baseUrl)} class={`group relative px-4 py-2 transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide ${shouldHaveDarkBg ? 'text-slate-300 hover:text-white' : 'text-gray-700 hover:text-primary'}`} id="nav-link">
             <span>{link.label}</span>
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
           </a>
@@ -36,7 +39,7 @@ const links = [
       </div>
 
       <div class="md:hidden">
-        <button class="text-gray-700 hover:text-primary transition duration-300" id="mobile-menu-btn">
+        <button class={`hover:text-primary transition duration-300 ${shouldHaveDarkBg ? 'text-white' : 'text-gray-700'}`} id="mobile-menu-btn">
           <span class="material-icons">menu</span>
         </button>
       </div>
@@ -58,46 +61,49 @@ const links = [
   </div>
 </header>
 
-<script>
-  const header = document.getElementById('header');
+<script>  
   const headerBg = document.getElementById('header-bg');
   const logo = document.getElementById('logo');
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
   const navLinks = document.querySelectorAll('#nav-link');
+  
+  const isHomePage = window.location.pathname === '/' || window.location.pathname.endsWith('/');
 
-  // Scroll effect - change header color when hero section is passed
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) {
-      // After hero section: change to dark slate gradient background
-      headerBg?.classList.remove('bg-white');
-      headerBg?.classList.add('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
-      logo?.querySelector('.text-accent')?.classList.add('text-white');
-      logo?.querySelector('.text-accent')?.classList.remove('text-accent');
-      logo?.querySelector('.text-primary')?.classList.add('text-white');
-      navLinks.forEach(link => {
-        link.classList.remove('text-gray-700');
-        link.classList.add('text-slate-300');
-      });
-      mobileMenuBtn?.classList.remove('text-gray-700');
-      mobileMenuBtn?.classList.add('text-white');
-    } else {
-      // At top: white background
-      headerBg?.classList.remove('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
-      headerBg?.classList.add('bg-white');
-      logo?.querySelector('.text-white:not(.ml-1)')?.classList.add('text-accent');
-      logo?.querySelector('.text-white:not(.ml-1)')?.classList.remove('text-white');
-      const balkanText = Array.from(logo?.querySelectorAll('.text-white') ?? []).find(el => el.classList.contains('ml-1'));
-      balkanText?.classList.add('text-primary');
-      balkanText?.classList.remove('text-white');
-      navLinks.forEach(link => {
-        link.classList.remove('text-slate-300');
-        link.classList.add('text-gray-700');
-      });
-      mobileMenuBtn?.classList.remove('text-white');
-      mobileMenuBtn?.classList.add('text-gray-700');
-    }
-  });
+  // Only apply scroll effect on home page
+  if (isHomePage) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        // After hero section: change to dark slate gradient background
+        headerBg?.classList.remove('bg-white');
+        headerBg?.classList.add('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
+        logo?.querySelector('.text-accent')?.classList.add('text-white');
+        logo?.querySelector('.text-accent')?.classList.remove('text-accent');
+        logo?.querySelector('.text-primary')?.classList.add('text-white');
+        navLinks.forEach(link => {
+          link.classList.remove('text-gray-700', 'hover:text-primary');
+          link.classList.add('text-slate-300', 'hover:text-white');        
+        });
+        mobileMenuBtn?.classList.remove('text-gray-700');
+        mobileMenuBtn?.classList.add('text-white');
+      } else {
+        // At top: white background
+        headerBg?.classList.remove('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
+        headerBg?.classList.add('bg-white');
+        logo?.querySelector('.text-white:not(.ml-1)')?.classList.add('text-accent');
+        logo?.querySelector('.text-white:not(.ml-1)')?.classList.remove('text-white');
+        const balkanText = Array.from(logo?.querySelectorAll('.text-white') ?? []).find(el => el.classList.contains('ml-1'));
+        balkanText?.classList.add('text-primary');
+        balkanText?.classList.remove('text-white');
+        navLinks.forEach(link => {
+          link.classList.remove('text-slate-300', 'hover:text-white');
+          link.classList.add('text-gray-700', 'hover:text-primary');
+        });
+        mobileMenuBtn?.classList.remove('text-white');
+        mobileMenuBtn?.classList.add('text-gray-700');
+      }
+    });
+  }
 
   if (mobileMenuBtn && mobileMenu) {
     mobileMenuBtn.addEventListener('click', () => {
