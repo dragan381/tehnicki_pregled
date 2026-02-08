@@ -1,7 +1,9 @@
 ---
+import { getPath } from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
 import Locations from '../../components/Locations.astro';
 import Footer from '../../components/Footer.astro';
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <Layout title="Naše Lokacije - Tehnički Pregled Vozila u Beogradu" description="3 lokacije prvog Balkana za tehnički pregled vozila u Zemunu, Ugrinovoj Čuki i Voždovcu. Brz i pouzdan servis.">
@@ -96,21 +98,21 @@ import Footer from '../../components/Footer.astro';
               <td class="px-6 py-4 text-center">08:00-18:00</td>
               <td class="px-6 py-4 text-center"><span class="material-icons text-sm text-accent inline">check_circle</span></td>
               <td class="px-6 py-4 text-center"><span class="material-icons text-sm text-accent inline">check_circle</span></td>
-              <td class="px-6 py-4 text-center"><a href="/lokacije/zemun" class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
+              <td class="px-6 py-4 text-center"><a href={getPath('/lokacije/zemun', baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
             </tr>
             <tr class="border-b hover:bg-blue-50 transition">
               <td class="px-6 py-4 font-bold text-primary">Ugrinovačka</td>
               <td class="px-6 py-4 text-center">08:00-18:00</td>
               <td class="px-6 py-4 text-center"><span class="material-icons text-sm text-accent inline">check_circle</span></td>
               <td class="px-6 py-4 text-center"><span class="material-icons text-sm text-accent inline">check_circle</span></td>
-              <td class="px-6 py-4 text-center"><a href="/lokacije/ugrinovacka" class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
+              <td class="px-6 py-4 text-center"><a href={getPath('/lokacije/ugrinovacka', baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
             </tr>
             <tr class="hover:bg-blue-50 transition">
               <td class="px-6 py-4 font-bold text-primary">Voždovac</td>
               <td class="px-6 py-4 text-center">08:00-18:00</td>
               <td class="px-6 py-4 text-center"><span class="material-icons text-sm text-accent inline">check_circle</span></td>
               <td class="px-6 py-4 text-center"><span class="material-icons text-sm text-accent inline">check_circle</span></td>
-              <td class="px-6 py-4 text-center"><a href="/lokacije/vozdovac" class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
+              <td class="px-6 py-4 text-center"><a href={getPath('/lokacije/vozdovac', baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
             </tr>
           </tbody>
         </table>
@@ -123,7 +125,7 @@ import Footer from '../../components/Footer.astro';
     <div class="max-w-4xl mx-auto px-4 text-center animate-slideUp" style="animation-delay: 0.1s">
       <h2 class="text-3xl font-bold mb-4">Spreman/Spremna da Zakazišš Pregled?</h2>
       <p class="text-lg mb-8 text-blue-100">Izaberite lokaciju koja vam odgovara i zakazite pregled vozila odmah</p>
-      <a href="/kontakt" class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105">
+      <a href={getPath('/kontakt', baseUrl)} class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105">
         Zakaži Pregled Sada
       </a>
     </div>

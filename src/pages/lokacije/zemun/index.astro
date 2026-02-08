@@ -1,6 +1,8 @@
 ---
+import { getPath } from '../../../utils/navigation';
 import Layout from '../../../layouts/Layout.astro';
 import Footer from '../../../components/Footer.astro';
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <Layout title="Zemun - Prvi Balkan" description="Lokacija Zemun - Prvi Balkan">
@@ -36,7 +38,7 @@ import Footer from '../../../components/Footer.astro';
           </div>
 
           <div class="mt-8">
-            <a href="/kontakt" class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
+            <a href={getPath('/kontakt', baseUrl)} class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
               Zakaži pregled
             </a>
           </div>

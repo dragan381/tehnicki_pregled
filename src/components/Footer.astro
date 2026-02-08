@@ -1,4 +1,6 @@
 ---
+import { getPath } from '../utils/navigation';
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <footer class="bg-primary text-white py-12 mt-16">
@@ -17,19 +19,19 @@
           Brzine Veze
         </h4>
         <ul class="space-y-2 text-blue-100">
-          <li><a href="/" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             Početna
           </a></li>
-          <li><a href="/usluge" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/usluge', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             Usluge
           </a></li>
-          <li><a href="/lokacije" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/lokacije', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             Lokacije
           </a></li>
-          <li><a href="/blog" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/blog', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             Blog
           </a></li>
@@ -41,19 +43,19 @@
           Informacije
         </h4>
         <ul class="space-y-2 text-blue-100">
-          <li><a href="/cesto-pitana-pitanja" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/cesto-pitana-pitanja', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             FAQ
           </a></li>
-          <li><a href="/o-nama" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/o-nama', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             O Nama
           </a></li>
-          <li><a href="/privatnost" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/privatnost', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             Privatnost
           </a></li>
-          <li><a href="/uslovi" class="hover:text-white transition inline-flex items-center gap-2 group">
+          <li><a href={getPath('/uslovi', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
             <span class="material-icons text-sm opacity-0 group-hover:opacity-100 transition">arrow_forward</span>
             Uslovi
           </a></li>
