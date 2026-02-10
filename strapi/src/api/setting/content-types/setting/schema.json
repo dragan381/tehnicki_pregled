@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "settings",
+  "info": {
+    "singularName": "setting",
+    "pluralName": "settings",
+    "displayName": "Settings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "siteName": {
+      "type": "string"
+    },
+    "siteDescription": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "address": {
+      "type": "string"
+    },
+    "socialLinks": {
+      "type": "json"
+    },
+    "hero": {
+      "type": "json"
+    },
+    "aboutText": {
+      "type": "blocks"
+    }
+  }
+}

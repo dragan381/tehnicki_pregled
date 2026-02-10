@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:dev": "astro build --mode development",
+    "build:prod": "astro build --mode production",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -16,6 +18,7 @@
     "@astrojs/tailwind": "^6.0.2",
     "@material-design-icons/font": "^0.14.15",
     "@types/node": "^25.2.0",
+    "cross-env": "^10.1.0",
     "tailwindcss": "^3.4.19"
   }
 }
