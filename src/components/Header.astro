@@ -47,14 +47,14 @@ const shouldHaveDarkBg = !isHomePage;
   </nav>
 
   {/* Mobile menu */}
-  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 animate-slideDown">
+  <div id="mobile-menu" class="md:hidden bg-white border-t border-gray-200 overflow-hidden transition-all duration-300 ease-out max-h-0 opacity-0">
     <div class="px-2 pt-2 pb-3 space-y-1">
       {links.map(link => (
-        <a href={getPath(link.href, baseUrl)} class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
+        <a href={getPath(link.href, baseUrl)} class="mobile-menu-link flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
           {link.label}
         </a>
       ))}
-      <a href={getPath('/kontakt', baseUrl)} class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300">
+      <a href={getPath('/kontakt', baseUrl)} class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300">
         Kontaktiraj nas
       </a>
     </div>
@@ -62,52 +62,5 @@ const shouldHaveDarkBg = !isHomePage;
 </header>
 
 <script>  
-  const headerBg = document.getElementById('header-bg');
-  const logo = document.getElementById('logo');
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const navLinks = document.querySelectorAll('#nav-link');
-  
-  const isHomePage = window.location.pathname === '/' || window.location.pathname.endsWith('/');
-
-  // Only apply scroll effect on home page
-  if (isHomePage) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 400) {
-        // After hero section: change to dark slate gradient background
-        headerBg?.classList.remove('bg-white');
-        headerBg?.classList.add('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
-        logo?.querySelector('.text-accent')?.classList.add('text-white');
-        logo?.querySelector('.text-accent')?.classList.remove('text-accent');
-        logo?.querySelector('.text-primary')?.classList.add('text-white');
-        navLinks.forEach(link => {
-          link.classList.remove('text-gray-700', 'hover:text-primary');
-          link.classList.add('text-slate-300', 'hover:text-white');        
-        });
-        mobileMenuBtn?.classList.remove('text-gray-700');
-        mobileMenuBtn?.classList.add('text-white');
-      } else {
-        // At top: white background
-        headerBg?.classList.remove('bg-gradient-to-r', 'from-slate-900', 'via-slate-800', 'to-slate-900', 'shadow-md');
-        headerBg?.classList.add('bg-white');
-        logo?.querySelector('.text-white:not(.ml-1)')?.classList.add('text-accent');
-        logo?.querySelector('.text-white:not(.ml-1)')?.classList.remove('text-white');
-        const balkanText = Array.from(logo?.querySelectorAll('.text-white') ?? []).find(el => el.classList.contains('ml-1'));
-        balkanText?.classList.add('text-primary');
-        balkanText?.classList.remove('text-white');
-        navLinks.forEach(link => {
-          link.classList.remove('text-slate-300', 'hover:text-white');
-          link.classList.add('text-gray-700', 'hover:text-primary');
-        });
-        mobileMenuBtn?.classList.remove('text-white');
-        mobileMenuBtn?.classList.add('text-gray-700');
-      }
-    });
-  }
-
-  if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-  }
+  import '../scripts/header';
 </script>
