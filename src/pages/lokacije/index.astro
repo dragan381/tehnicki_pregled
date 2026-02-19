@@ -4,7 +4,10 @@ import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Locations from '../../components/Locations.astro';
 import Footer from '../../components/Footer.astro';
+import { getLocations } from '../../utils/strapi';
+
 const baseUrl = import.meta.env.BASE_URL;
+const locations = await getLocations();
 ---
 
 <Layout title="Naše Lokacije - Tehnički Pregled Vozila u Beogradu" description="3 lokacije prvog Balkana za tehnički pregled vozila u Zemunu, Ugrinovoj Čuki i Voždovcu. Brz i pouzdan servis.">
@@ -94,27 +97,18 @@ const baseUrl = import.meta.env.BASE_URL;
             </tr>
           </thead>
           <tbody>
-            <tr class="border-b hover:bg-blue-50 transition">
-              <td class="px-6 py-4 font-bold text-primary">Zemun</td>
-              <td class="px-6 py-4 text-center">08:00-18:00</td>
-              <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
-              <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
-              <td class="px-6 py-4 text-center"><a href={getPath('/lokacije/zemun', baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
-            </tr>
-            <tr class="border-b hover:bg-blue-50 transition">
-              <td class="px-6 py-4 font-bold text-primary">Ugrinovačka</td>
-              <td class="px-6 py-4 text-center">08:00-18:00</td>
-              <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
-              <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
-              <td class="px-6 py-4 text-center"><a href={getPath('/lokacije/ugrinovacka', baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
-            </tr>
-            <tr class="hover:bg-blue-50 transition">
-              <td class="px-6 py-4 font-bold text-primary">Voždovac</td>
-              <td class="px-6 py-4 text-center">08:00-18:00</td>
-              <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
-              <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
-              <td class="px-6 py-4 text-center"><a href={getPath('/lokacije/vozdovac', baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
-            </tr>
+            {locations.map((location) => {
+              const hours = location.openingHours?.weekdays || '08:00-18:00';
+              return (
+                <tr class="border-b hover:bg-blue-50 transition">
+                  <td class="px-6 py-4 font-bold text-primary">{location.name}</td>
+                  <td class="px-6 py-4 text-center">{hours}</td>
+                  <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
+                  <td class="px-6 py-4 text-center"><Icon name="check_circle" class="text-accent" size="sm" /></td>
+                  <td class="px-6 py-4 text-center"><a href={getPath(`/lokacije/${location.slug}`, baseUrl)} class="text-accent font-bold hover:text-orange-600">Detaljnije →</a></td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

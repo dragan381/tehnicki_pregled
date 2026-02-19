@@ -1,7 +1,18 @@
 ---
 import Icon from './Icon.astro';
 import { getPath } from '../utils/navigation';
+import { getServices, blocksToText } from '../utils/strapi';
+
 const baseUrl = import.meta.env.BASE_URL;
+const services = await getServices();
+
+// Icon color classes based on index
+const iconClasses = [
+  { bg: 'from-blue-100 to-blue-50', text: 'text-primary', shadow: 'shadow-glow' },
+  { bg: 'from-orange-100 to-orange-50', text: 'text-accent', shadow: 'shadow-glow-accent' },
+  { bg: 'from-green-100 to-green-50', text: 'text-green-600', shadow: 'shadow-green-500/30' },
+  { bg: 'from-purple-100 to-purple-50', text: 'text-purple-600', shadow: 'shadow-purple-500/30' },
+];
 ---
 
 <section class="py-16 bg-gray-50">
@@ -10,53 +21,22 @@ const baseUrl = import.meta.env.BASE_URL;
     <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Pružamo kompletan spektar usluga tehničkog pregleda vozila sa visoko osposobljenim tehničarima i modernom opremom.</p>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br from-blue-100 to-blue-50 mb-4 group-hover:bg-gradient-to-tr group-hover:shadow-glow transition duration-300">
-          <Icon name="miscellaneous_services" class="text-primary group-hover:animate-iconFloat" size="xl" />
-        </div>
-        <h3 class="text-xl font-bold mb-2 text-primary">Tehnički Pregled</h3>
-        <p class="text-gray-600 mb-4">Kompletan tehnički pregled vozila prema zvaničnim standardima sa detaljnim izveštajem.</p>
-        <a href={getPath('/usluge', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
-          Saznaj više
-          <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
-        </a>
-      </div>
-
-      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group" style="animation-delay: 0.1s">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br from-orange-100 to-orange-50 mb-4 group-hover:bg-gradient-to-tr group-hover:shadow-glow-accent transition duration-300">
-          <Icon name="description" class="text-accent group-hover:animate-spin" size="xl" />
-        </div>
-        <h3 class="text-xl font-bold mb-2 text-primary">Registracija Vozila</h3>
-        <p class="text-gray-600 mb-4">Pomoć pri registraciji vozila i pripremi svih potrebnih dokumenata za nadležne organe.</p>
-        <a href={getPath('/usluge', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
-          Saznaj više
-          <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
-        </a>
-      </div>
-
-      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group" style="animation-delay: 0.2s">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br from-green-100 to-green-50 mb-4 group-hover:bg-gradient-to-tr group-hover:shadow-lg transition duration-300 group-hover:shadow-green-500/30">
-          <Icon name="security" class="text-green-600 group-hover:animate-bounce" size="xl" />
-        </div>
-        <h3 class="text-xl font-bold mb-2 text-primary">Osiguranje</h3>
-        <p class="text-gray-600 mb-4">Konsultacije i pomoć pri sklapanju osiguranja vozila sa našim partnerima.</p>
-        <a href="/usluge" class="inline-flex items-center text-accent hover:text-orange-600 transition group">
-          Saznaj više
-          <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
-        </a>
-      </div>
-
-      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group" style="animation-delay: 0.3s">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br from-purple-100 to-purple-50 mb-4 group-hover:bg-gradient-to-tr group-hover:shadow-lg transition duration-300 group-hover:shadow-purple-500/30">
-          <Icon name="smartphone" class="text-purple-600 group-hover:animate-pulse" size="xl" />
-        </div>
-        <h3 class="text-xl font-bold mb-2 text-primary">Online Poruke</h3>
-        <p class="text-gray-600 mb-4">Brz odgovor na sve tvoje pitanje preko različitih kanala komunikacije.</p>
-        <a href={getPath('/kontakt', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
-          Kontaktiraj nas
-          <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
-        </a>
-      </div>
+      {services.slice(0, 4).map((service, index) => {
+        const iconClass = iconClasses[index % iconClasses.length];
+        return (
+          <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group" style={`animation-delay: ${index * 0.1}s`}>
+            <div class={`inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br ${iconClass.bg} mb-4 group-hover:bg-gradient-to-tr group-hover:${iconClass.shadow} transition duration-300`}>
+              <Icon name={service.icon || 'miscellaneous_services'} class={`${iconClass.text} group-hover:animate-iconFloat`} size="xl" />
+            </div>
+            <h3 class="text-xl font-bold mb-2 text-primary">{service.title}</h3>
+            <p class="text-gray-600 mb-4">{blocksToText(service.description).substring(0, 100)}...</p>
+            <a href={getPath('/usluge', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
+              Saznaj više
+              <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
+            </a>
+          </div>
+        );
+      })}
     </div>
 
     <div class="text-center mt-12">

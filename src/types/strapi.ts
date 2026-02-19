@@ -48,6 +48,18 @@ export interface StrapiMedia {
   updatedAt: string;
 }
 
+// ===== Blocks Type (Rich Text) =====
+
+export interface StrapiBlock {
+  type: string;
+  children?: Array<{
+    type: string;
+    text?: string;
+    [key: string]: any;
+  }>;
+  [key: string]: any;
+}
+
 // ===== Location Type =====
 
 export interface Location {
@@ -60,7 +72,7 @@ export interface Location {
   email: string;
   latitude?: number;
   longitude?: number;
-  description?: string;
+  description?: StrapiBlock[];
   openingHours?: Record<string, any>;
   image?: StrapiMedia;
   createdAt: string;
@@ -75,10 +87,12 @@ export interface Service {
   documentId: string;
   title: string;
   slug: string;
-  description?: string;
+  description?: StrapiBlock[];
   icon?: string;
   price?: number;
-  features?: string[];
+  features?: {
+    features?: string[];
+  };
   image?: StrapiMedia;
   createdAt: string;
   updatedAt: string;
@@ -90,7 +104,8 @@ export interface Service {
 export interface Testimonial {
   id: number;
   documentId: string;
-  author: string;
+  name: string;
+  author?: string;
   role?: string;
   content: string;
   rating?: number;
@@ -106,8 +121,9 @@ export interface FAQ {
   id: number;
   documentId: string;
   question: string;
-  answer: string;
+  answer: StrapiBlock[];
   category?: string;
+  icon?: string;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
@@ -157,7 +173,16 @@ export interface Settings {
   email?: string;
   address?: string;
   hero?: HeroSettings;
-  aboutText?: string;
+  aboutText?: StrapiBlock[];
+  about?: {
+    title?: string;
+    description?: StrapiBlock[];
+  };
+  contact?: {
+    phone?: string;
+    email?: string;
+    whatsapp?: string;
+  };
   logo?: StrapiMedia;
   socialLinks?: SocialLinks;
   createdAt: string;

@@ -1,7 +1,23 @@
 ---
 import Icon from './Icon.astro';
 import { getPath } from '../utils/navigation';
+import { getTestimonials } from '../utils/strapi';
+
 const baseUrl = import.meta.env.BASE_URL;
+const testimonials = await getTestimonials();
+
+// Gradient colors for avatars
+const avatarColors = [
+  'from-blue-400 to-blue-600',
+  'from-orange-400 to-orange-600',
+  'from-green-400 to-green-600',
+  'from-purple-400 to-purple-600',
+];
+
+// Function to get initials from name
+function getInitials(name: string): string {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+}
 ---
 
 <section class="py-16 bg-white">

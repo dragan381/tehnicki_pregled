@@ -19,27 +19,54 @@ const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337";
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || "";
 
 /**
+ * Helper function to build Strapi query string from nested objects
+ */
+function buildQueryString(params: Record<string, any>): string {
+  const parts: string[] = [];
+
+  function addParam(key: string, value: any) {
+    if (value === null || value === undefined) return;
+
+    if (typeof value === "object" && !Array.isArray(value)) {
+      // Handle nested objects (like filters)
+      Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+        addParam(`${key}[${nestedKey}]`, nestedValue);
+      });
+    } else if (Array.isArray(value)) {
+      // Handle arrays
+      value.forEach((item, index) => {
+        addParam(`${key}[${index}]`, item);
+      });
+    } else {
+      // Handle primitive values
+      parts.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
+      );
+    }
+  }
+
+  Object.entries(params).forEach(([key, value]) => {
+    addParam(key, value);
+  });
+
+  return parts.join("&");
+}
+
+/**
  * Fetch data from Strapi API
  */
 async function fetchFromStrapi<T>(
   endpoint: string,
   params: Record<string, any> = {},
 ): Promise<T[]> {
-  const queryParams = new URLSearchParams();
-
   // Always populate relations and media
-  queryParams.append("populate", "*");
+  const queryParams = {
+    populate: "*",
+    ...params,
+  };
 
-  // Add custom parameters
-  Object.entries(params).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((v) => queryParams.append(key, v));
-    } else {
-      queryParams.append(key, String(value));
-    }
-  });
-
-  const url = `${STRAPI_URL}/api/${endpoint}?${queryParams.toString()}`;
+  const queryString = buildQueryString(queryParams);
+  const url = `${STRAPI_URL}/api/${endpoint}?${queryString}`;
 
   try {
     const response = await fetch(url, {
@@ -65,10 +92,8 @@ async function fetchFromStrapi<T>(
  * Fetch single item from Strapi
  */
 async function fetchSingleFromStrapi<T>(endpoint: string): Promise<T | null> {
-  const queryParams = new URLSearchParams();
-  queryParams.append("populate", "*");
-
-  const url = `${STRAPI_URL}/api/${endpoint}?${queryParams.toString()}`;
+  const queryString = buildQueryString({ populate: "*" });
+  const url = `${STRAPI_URL}/api/${endpoint}?${queryString}`;
 
   try {
     const response = await fetch(url, {
@@ -107,6 +132,24 @@ export function getStrapiImageUrl(imageData: StrapiMedia | undefined): string {
   }
 
   return "";
+}
+
+/**
+ * Convert Strapi blocks (rich text) to plain text
+ */
+export function blocksToText(blocks: any): string {
+  if (!blocks) return "";
+  if (typeof blocks === "string") return blocks;
+  if (!Array.isArray(blocks)) return "";
+
+  return blocks
+    .map((block: any) => {
+      if (!block.children || !Array.isArray(block.children)) return "";
+
+      return block.children.map((child: any) => child.text || "").join("");
+    })
+    .filter(Boolean)
+    .join("\n\n");
 }
 
 // ===== Specific Fetchers =====

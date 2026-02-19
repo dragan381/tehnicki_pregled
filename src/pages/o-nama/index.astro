@@ -3,17 +3,24 @@ import { getPath } from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Footer from '../../components/Footer.astro';
+import { getSettings, blocksToText } from '../../utils/strapi';
+
 const baseUrl = import.meta.env.BASE_URL;
+const settings = await getSettings();
+
+// Use about section from settings with fallback
+const aboutTitle = settings?.about?.title || 'O Nama';
+const aboutDescription = blocksToText(settings?.about?.description) || 'Prvi Balkan je vodeća firma za tehnički pregled vozila sa više od 10 godina iskustva na tržištu. Naš tim se bavi pružanjem najkvalitetnije usluge tehničkog pregleda vozila sa 3 lokacije u Beogradu.';
 ---
 
 <Layout title="O Nama - Prvi Balkan" description="Saznaj više o Prvi Balkan - Tehnički pregled vozila">
   
   <div class="pt-32 pb-16">
     <div class="max-w-4xl mx-auto px-4">
-      <h1 class="text-4xl font-bold text-primary mb-8">O Nama</h1>
+      <h1 class="text-4xl font-bold text-primary mb-8">{aboutTitle}</h1>
       
       <p class="text-lg text-gray-700 mb-6">
-        Prvi Balkan je vodeća firma za tehnički pregled vozila sa više od 10 godina iskustva na tržištu. Naš tim se bavi pružanjem najkvalitetnije usluge tehnijkog pregleda vozila sa 3 lokacije u Beogradu.
+        {aboutDescription}
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">

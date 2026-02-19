@@ -2,39 +2,58 @@
 import { getPath } from '../../../utils/navigation';
 import Layout from '../../../layouts/Layout.astro';
 import Footer from '../../../components/Footer.astro';
+import { getLocationBySlug, getStrapiImageUrl, blocksToText } from '../../../utils/strapi';
+import { Image } from 'astro:assets';
+
 const baseUrl = import.meta.env.BASE_URL;
+const location = await getLocationBySlug('vozdovac');
+
+if (!location) {
+  return Astro.redirect('/404');
+}
+
+const imageUrl = getStrapiImageUrl(location.image);
+const descriptionText = blocksToText(location.description);
 ---
 
-<Layout title="Voždovac - Prvi Balkan" description="Lokacija Voždovac - Prvi Balkan">
+<Layout title={`${location.name} - Prvi Balkan`} description={`Lokacija ${location.name} - Prvi Balkan`}>
   
   <div class="pt-32 pb-16">
     <div class="max-w-4xl mx-auto px-4">
-      <h1 class="text-4xl font-bold text-primary mb-8">Lokacija Voždovac</h1>
+      <h1 class="text-4xl font-bold text-primary mb-8">Lokacija {location.name}</h1>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
           <h2 class="text-2xl font-bold text-primary mb-6">Informacije</h2>
           <div class="space-y-4">
-            <div>
-              <h3 class="font-bold text-primary mb-2">Adresa</h3>
-              <p class="text-gray-600">Voždovska 789, 11050 Beograd</p>
-            </div>
-            <div>
-              <h3 class="font-bold text-primary mb-2">Telefon</h3>
-              <p class="text-gray-600"><a href="tel:+381112101111" class="hover:text-accent">+381 11 2101 111</a></p>
-            </div>
-            <div>
-              <h3 class="font-bold text-primary mb-2">Email</h3>
-              <p class="text-gray-600"><a href="mailto:vozdovac@prvi-balkan.rs" class="hover:text-accent">vozdovac@prvi-balkan.rs</a></p>
-            </div>
-            <div>
-              <h3 class="font-bold text-primary mb-2">Radno vreme</h3>
-              <ul class="text-gray-600 space-y-1">
-                <li>Ponedjeljak-Petak: 08:00 - 18:00</li>
-                <li>Subota: 09:00 - 15:00</li>
-                <li>Nedelja: Zatvoreno</li>
-              </ul>
-            </div>
+            {location.address && (
+              <div>
+                <h3 class="font-bold text-primary mb-2">Adresa</h3>
+                <p class="text-gray-600">{location.address}</p>
+              </div>
+            )}
+            {location.phone && (
+              <div>
+                <h3 class="font-bold text-primary mb-2">Telefon</h3>
+                <p class="text-gray-600"><a href={`tel:${location.phone}`} class="hover:text-accent">{location.phone}</a></p>
+              </div>
+            )}
+            {location.email && (
+              <div>
+                <h3 class="font-bold text-primary mb-2">Email</h3>
+                <p class="text-gray-600"><a href={`mailto:${location.email}`} class="hover:text-accent">{location.email}</a></p>
+              </div>
+            )}
+            {location.openingHours && (
+              <div>
+                <h3 class="font-bold text-primary mb-2">Radno vreme</h3>
+                <ul class="text-gray-600 space-y-1">
+                  {Object.entries(location.openingHours).map(([day, hours]) => (
+                    <li>{day}: {hours}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <div class="mt-8">
@@ -45,18 +64,26 @@ const baseUrl = import.meta.env.BASE_URL;
         </div>
 
         <div>
-          <div class="rounded-lg overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1687845542172-977c123c65f6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Lokacija Voždovac - Profesionalni servis vozila" class="w-full h-auto">
-          </div>
+          {imageUrl && (
+            <div class="rounded-lg overflow-hidden">
+              <Image 
+                src={imageUrl} 
+                alt={`Lokacija ${location.name}`}
+                width={800}
+                height={500}
+                class="w-full h-auto"
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      <div class="mt-12">
-        <h2 class="text-2xl font-bold text-primary mb-6">O Ovoj Lokaciji</h2>
-        <p class="text-gray-700">
-          Naša lokacija u Voždovcu je novija lokacija sa najnovijom opremom za tehnički pregled. Nalaze se blizu glavnih putanja što je čini veoma pristupačnom za sve stanovnike ovog dela Beograda.
-        </p>
-      </div>
+      {descriptionText && (
+        <div class="mt-12">
+          <h2 class="text-2xl font-bold text-primary mb-6">O Ovoj Lokaciji</h2>
+          <p class="text-gray-700">{descriptionText}</p>
+        </div>
+      )}
     </div>
   </div>
 
