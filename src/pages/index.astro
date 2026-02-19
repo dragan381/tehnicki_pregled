@@ -7,22 +7,34 @@ import Testimonials from '../components/Testimonials.astro';
 import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
-import flashOnIcon from '../assets/icons/flash_on.svg?raw';
-import verifiedIcon from '../assets/icons/verified.svg?raw';
-import priceCheckIcon from '../assets/icons/price_check.svg?raw';
+import Icon from '../components/Icon.astro';
+import { getSettings, getStrapiImageUrl } from '../utils/strapi';
 
-const title = 'Prvi Balkan - Tehnički Pregled Vozila | Beograd';
-const description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
+// Fetch settings from Strapi
+const settings = await getSettings();
+
+// Use settings for page title and description
+const title = settings?.siteName;
+const description = settings?.siteDescription || 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
+
+// Extract hero settings with fallbacks
+const heroTitle = settings?.hero?.title || 'Prvi Balkan - Tehnički Pregled Vozila';
+const heroDescription = settings?.hero?.description || 'Profesionalni tehnički pregled sa 10+ godina iskustva. 3 lokacije u Beogradu za vašu pogodnost.';
+const heroButtonText = settings?.hero?.buttonText || 'Zakaži Pregled';
+const heroButtonLink = settings?.hero?.buttonLink || '/kontakt';
+const heroBackgroundImage = settings?.hero?.image 
+  ? getStrapiImageUrl(settings.hero.image)
+  : 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=600&fit=crop';
 ---
 
 <Layout {title} {description}>
   <SEO />
   <Hero 
-    title="Prvi Balkan - Tehnički Pregled Vozila"
-    description="Profesionalni tehnički pregled sa 10+ godina iskustva. 3 lokacije u Beogradu za vašu pogodnost."
-    buttonText="Zakaži Pregled"
-    buttonLink="/kontakt"
-    backgroundImage="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=600&fit=crop"
+    title={heroTitle}
+    description={heroDescription}
+    buttonText={heroButtonText}
+    buttonLink={heroButtonLink}
+    backgroundImage={heroBackgroundImage}
   />
 
   <section class="py-16">
@@ -31,21 +43,21 @@ const description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beog
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <div class="w-20 h-20 md:w-28 md:h-28 text-primary" set:html={flashOnIcon}></div>
+            <Icon name="flash_on" class="text-primary w-20 h-20 md:w-28 md:h-28" />
           </div>
           <h3 class="text-xl font-semibold mb-2">Brz Servis</h3>
           <p class="text-gray-600">Završavamo pregled u svega 30-60 minuta. Nema čekanja bez zakazivanja.</p>
         </div>
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <div class="w-20 h-20 md:w-28 md:h-28 text-primary" set:html={verifiedIcon}></div>
+            <Icon name="verified" class="text-primary w-20 h-20 md:w-28 md:h-28" />
           </div>
           <h3 class="text-xl font-semibold mb-2">Pouzdanost</h3>
           <p class="text-gray-600">Certifikovani tehničari sa godinama iskustva. Sve prema zvaničnim standardima.</p>
         </div>
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <div class="w-20 h-20 md:w-28 md:h-28 text-primary" set:html={priceCheckIcon}></div>
+            <Icon name="price_check" class="text-primary w-20 h-20 md:w-28 md:h-28" />
           </div>
           <h3 class="text-xl font-semibold mb-2">Najbolje Cene</h3>
           <p class="text-gray-600">Konkurentne cene bez skrivenih troškova. Transparentan cenovnik.</p>

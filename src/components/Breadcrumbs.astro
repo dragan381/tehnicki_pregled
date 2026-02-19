@@ -1,9 +1,10 @@
 ---
+import Icon from './Icon.astro';
+import { getPath } from '../utils/navigation';
+
 interface Props {
   currentPath: string;
 }
-
-import { getPath } from '../utils/navigation';
 
 const { currentPath } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
@@ -81,15 +82,13 @@ const schemaData = {
       {breadcrumbs.map((crumb, index) => (
         <li class="flex items-center group">
           {index > 0 && (
-            <span class="material-icons text-gray-300 text-base mx-1.5 group-hover:text-accent transition duration-300">
-              chevron_right
-            </span>
+            <Icon name="chevron_right" class="text-gray-300 mx-1.5 group-hover:text-accent transition duration-300" size="sm" />
           )}
           
           {index === breadcrumbs.length - 1 ? (
             // Current page (not a link)
             <span class="text-gray-700 font-semibold px-2 py-1 rounded cursor-default">
-              {index === 0 && <span class="material-icons text-base align-middle mr-1 inline">home</span>}
+              {index === 0 && <Icon name="home" class="align-middle mr-1" size="sm" />}
               {crumb.label}
             </span>
           ) : (
@@ -99,7 +98,7 @@ const schemaData = {
               class="text-primary hover:text-accent hover:bg-blue-50 px-2 py-1 rounded transition duration-300 flex items-center gap-1 font-medium"
               title={`Go to ${crumb.label}`}
             >
-              {index === 0 && <span class="material-icons text-base">home</span>}
+              {index === 0 && <Icon name="home" size="sm" />}
               <span>{crumb.label}</span>
             </a>
           )}

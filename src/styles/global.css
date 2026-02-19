@@ -2,50 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Use Inter font for all text with system font fallbacks */
 body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   @apply font-sans;
 }
 
-p,
-span,
-a,
-li,
-td,
-th,
-button {
-  font-family:
-    "Ubuntu",
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-
-h1 {
-  font-family:
-    "BlinkMacSystemFont",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  @apply font-bold;
-}
-
-h2 {
-  font-family:
-    "Segoe UI",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  @apply font-bold;
-}
-
-nav {
-  font-family:
-    "Cantarell",
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-
+h1,
+h2,
 h3,
 h4,
 h5,

@@ -10,4 +10,8 @@ export default defineConfig({
   site: "https://dragan381.github.io",
   base: process.env.GITHUB_ACTIONS ? "/tehnicki_pregled" : "/",
   trailingSlash: "ignore",
+  output: "static",
+  image: {
+    remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
+  },
 });

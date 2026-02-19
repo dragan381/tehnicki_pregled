@@ -1,6 +1,7 @@
 ---
 import { getPath } from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
 import Footer from '../../components/Footer.astro';
 const baseUrl = import.meta.env.BASE_URL;
 ---
@@ -17,13 +18,13 @@ const baseUrl = import.meta.env.BASE_URL;
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
         <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-lg">
-          <h3 class="text-2xl font-bold text-primary mb-4"><span class="material-icons text-2xl align-middle mr-2">flash_on</span>Brzina</h3>
+          <h3 class="text-2xl font-bold text-primary mb-4"><Icon name="flash_on" class="align-middle mr-2" />Brzina</h3>
           <p class="text-gray-700">
             Razumemo da je vaš sat dragocen. Trudimo se da sve procese obavimo brzo bez žrtvovanja kvaliteta.
           </p>
         </div>
         <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-lg">
-          <h3 class="text-2xl font-bold text-accent mb-4"><span class="material-icons text-2xl align-middle mr-2">verified</span>Pouzdanost</h3>
+          <h3 class="text-2xl font-bold text-accent mb-4"><Icon name="verified" class="align-middle mr-2" />Pouzdanost</h3>
           <p class="text-gray-700">
             Svaki dan radimo sa posvećenjem da zadovoljimo naše klijente i da im pružimo najbolje usluge.
           </p>
