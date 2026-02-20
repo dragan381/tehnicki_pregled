@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
+import SpecialOffer from '../components/SpecialOffer.astro';
 import Services from '../components/Services.astro';
 import Locations from '../components/Locations.astro';
 import Testimonials from '../components/Testimonials.astro';
@@ -35,6 +36,12 @@ const heroBackgroundImage = settings?.hero?.image
     buttonText={heroButtonText}
     buttonLink={heroButtonLink}
     backgroundImage={heroBackgroundImage}
+  />
+  <SpecialOffer
+    title="PLATI SAMO JEDNOM"
+    description="Ukoliko vaš automobili nije u potpunosti ispravan, svaki ponovni tehnički pregled je potpuno BESPLATAN dok svi neophodni parametri za uspešan tehnički pregled ne budu na zadovoljavajujećem nivou."
+    buttonText="Saznaj više"
+    buttonLink="/usluge"
   />
 
   <section class="py-16">

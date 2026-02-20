@@ -34,6 +34,8 @@ const hasLocations = orderedLocations.length > 0;
   <div class="absolute inset-0 bg-gradient-to-r from-primary/75 via-primary/40 to-transparent"></div>
   <div class="absolute -right-24 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
   <div class="absolute left-8 bottom-10 h-40 w-40 rounded-full bg-accent/20 blur-3xl"></div>
+  <!-- Bottom fade into SpecialOffer section -->
+  <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-slate-900/90 z-10"></div>
 
   {hasLocations ? (
     <div class="relative" data-hero-carousel>
@@ -62,15 +64,15 @@ const hasLocations = orderedLocations.length > 0;
 
       <!-- Top bar: site title + counter -->
       <div class="px-14 md:px-20 pt-6 pb-0">
-        <div class="flex items-center justify-between text-white/70 text-xs tracking-[0.3em] uppercase mb-1">
+        <div class="flex items-center justify-between text-accent/70 text-xs tracking-[0.3em] uppercase mb-1">
           <span>{title}</span>
-          <span class="font-semibold" data-hero-count>01 / {String(orderedLocations.length).padStart(2, '0')}</span>
+          <span class="font-semibold text-white" data-hero-count>01 / {String(orderedLocations.length).padStart(2, '0')}</span>
         </div>
         <p class="text-white/65 text-sm max-w-lg mb-3">{description}</p>
       </div>
 
       <!-- Slides -->
-      <div class="relative h-[22rem] md:h-[26rem] mx-12 md:mx-16">
+      <div class="relative h-[18rem] md:h-[22rem] mx-12 md:mx-16">
         {orderedLocations.map((location, index) => (
           <div
             class={`hero-slide grid grid-cols-1 lg:grid-cols-2 gap-6 items-center px-2 md:px-6 ${index === 0 ? 'is-active' : ''}`}
