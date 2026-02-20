@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
+import HeroSlideText from './HeroSlideText.astro';
+import HeroSlideImage from './HeroSlideImage.astro';
 import { getPath } from '../utils/navigation';
 import { getLocations, getStrapiImageUrl } from '../utils/strapi';
 const baseUrl = import.meta.env.BASE_URL;
@@ -77,43 +79,17 @@ const hasLocations = orderedLocations.length > 0;
             aria-hidden={index === 0 ? 'false' : 'true'}
           >
             <!-- Left: text content -->
-            <div class="text-left">
-              <div class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1 text-xs uppercase tracking-[0.3em] text-white/80">
-                <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-                Lokacija {location.order ?? index + 1}
-              </div>
-              <h2 class="text-3xl md:text-4xl font-bold text-white mt-4 mb-2 drop-shadow">{location.name}</h2>
-              <p class="text-base text-white/80 max-w-sm mb-6">{location.address}</p>
-              <a
-                href={getPath(`/lokacije/${location.slug}`, baseUrl)}
-                class="inline-flex items-center gap-2 bg-white text-primary font-semibold py-2.5 px-6 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
-              >
-                More details
-                <Icon name="chevron_right" class="text-accent" />
-              </a>
-            </div>
+            <HeroSlideText
+              order={location.order ?? index + 1}
+              name={location.name}
+              address={location.address}
+              slug={location.slug}
+            />
             <!-- Right: image with soft edges -->
-            <div class="relative flex justify-center lg:justify-end overflow-hidden">
-              {location.image?.url ? (
-                <div class="hero-img-wrap relative w-full max-w-md md:max-w-lg">
-                  <Image
-                    src={getStrapiImageUrl(location.image)}
-                    alt={location.name}
-                    width={520}
-                    height={340}
-                    class="w-full h-56 md:h-72 object-cover rounded-2xl shadow-2xl"
-                  />
-                  <!-- soft left-fade so image blends into the hero gradient -->
-                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/60 via-transparent to-transparent pointer-events-none"></div>
-                  <!-- soft top+bottom fade -->
-                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-primary/30 via-transparent to-primary/30 pointer-events-none"></div>
-                </div>
-              ) : (
-                <div class="w-full max-w-md md:max-w-lg h-56 md:h-72 rounded-2xl bg-white/20 flex items-center justify-center text-white/70">
-                  No image
-                </div>
-              )}
-            </div>
+            <HeroSlideImage
+              name={location.name}
+              image={location.image}
+            />
           </div>
         ))}
       </div>
@@ -271,11 +247,5 @@ const hasLocations = orderedLocations.length > 0;
   .hero-dot.is-active {
     width: 42px;
     background: rgba(255, 255, 255, 0.9);
-  }
-
-  .hero-img-wrap {
-    /* optional extra soft vignette via mask */
-    -webkit-mask-image: radial-gradient(ellipse 90% 85% at 60% 50%, black 50%, transparent 100%);
-    mask-image: radial-gradient(ellipse 90% 85% at 60% 50%, black 50%, transparent 100%);
   }
 </style>

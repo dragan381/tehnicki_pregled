@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import { getPath } from '../utils/navigation';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+export interface Props {
+  order: number;
+  name: string;
+  address: string;
+  slug: string;
+}
+
+const { order, name, address, slug } = Astro.props;
+---
+
+<div class="text-left">
+  <div class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1 text-xs uppercase tracking-[0.3em] text-white/80">
+    <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+    Lokacija {order}
+  </div>
+  <h2 class="text-3xl md:text-4xl font-bold text-white mt-4 mb-2 drop-shadow">{name}</h2>
+  <p class="text-base text-white/80 max-w-sm mb-6">{address}</p>
+  <a
+    href={getPath(`/lokacije/${slug}`, baseUrl)}
+    class="inline-flex items-center gap-2 bg-white text-primary font-semibold py-2.5 px-6 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+  >
+    More details
+    <Icon name="chevron_right" class="text-accent" />
+  </a>
+</div>
