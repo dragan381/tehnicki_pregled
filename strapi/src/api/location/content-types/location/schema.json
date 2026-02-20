@@ -29,6 +29,10 @@
     "email": {
       "type": "email"
     },
+    "order": {
+      "type": "integer",
+      "required": true
+    },
     "latitude": {
       "type": "decimal"
     },

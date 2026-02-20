@@ -155,7 +155,7 @@ export function blocksToText(blocks: any): string {
 // ===== Specific Fetchers =====
 
 export async function getLocations(): Promise<Location[]> {
-  return fetchFromStrapi("locations", { sort: "createdAt:asc" });
+  return fetchFromStrapi("locations", { sort: "order:asc" });
 }
 
 export async function getLocationBySlug(

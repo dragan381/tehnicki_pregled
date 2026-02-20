@@ -524,6 +524,7 @@ export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
     longitude: Schema.Attribute.Decimal;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     openingHours: Schema.Attribute.JSON;
+    order: Schema.Attribute.Integer & Schema.Attribute.Required;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.String &

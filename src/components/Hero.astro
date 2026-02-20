@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
 import { getPath } from '../utils/navigation';
+import { getLocations, getStrapiImageUrl } from '../utils/strapi';
 const baseUrl = import.meta.env.BASE_URL;
 
 export interface Props {
@@ -12,26 +14,268 @@ export interface Props {
 }
 
 const { title, description, buttonText, buttonLink, backgroundImage } = Astro.props as Props;
+const orderedLocations = await getLocations(); // Already sorted by order:asc from Strapi
+const hasLocations = orderedLocations.length > 0;
 ---
 
-<section class="relative h-96 overflow-hidden">
+<section class="relative overflow-hidden">
   {backgroundImage && (
-    <Image 
-      src={backgroundImage} 
+    <Image
+      src={backgroundImage}
       alt={title}
       width={1200}
       height={600}
-      class="absolute inset-0 w-full h-full object-cover"
+      class="absolute inset-0 w-full h-full object-cover blur-[2px] scale-105"
     />
   )}
-  <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-  <div class="relative h-full flex items-center justify-center text-center px-4">
-    <div class="max-w-3xl">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-slideUp">{title}</h1>
-      <p class="text-lg md:text-xl text-gray-100 mb-8 animate-slideUp" style="animation-delay: 0.2s">{description}</p>
-      <a href={getPath(buttonLink, baseUrl)} class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 animate-slideUp" style="animation-delay: 0.4s">
-        {buttonText}
-      </a>
+  <div class="absolute inset-0 bg-black/40"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-primary/75 via-primary/40 to-transparent"></div>
+  <div class="absolute -right-24 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+  <div class="absolute left-8 bottom-10 h-40 w-40 rounded-full bg-accent/20 blur-3xl"></div>
+
+  {hasLocations ? (
+    <div class="relative" data-hero-carousel>
+
+      <!-- Left arrow - vertically centred on the slide area -->
+      <button
+        type="button"
+        class="hero-control hero-control-side"
+        style="left: 0.5rem; top: 50%; transform: translateY(-50%);"
+        aria-label="Previous location"
+        data-hero-prev
+      >
+        <Icon name="chevron_right" class="rotate-180" />
+      </button>
+
+      <!-- Right arrow -->
+      <button
+        type="button"
+        class="hero-control hero-control-side"
+        style="right: 0.5rem; top: 50%; transform: translateY(-50%);"
+        aria-label="Next location"
+        data-hero-next
+      >
+        <Icon name="chevron_right" />
+      </button>
+
+      <!-- Top bar: site title + counter -->
+      <div class="px-14 md:px-20 pt-6 pb-0">
+        <div class="flex items-center justify-between text-white/70 text-xs tracking-[0.3em] uppercase mb-1">
+          <span>{title}</span>
+          <span class="font-semibold" data-hero-count>01 / {String(orderedLocations.length).padStart(2, '0')}</span>
+        </div>
+        <p class="text-white/65 text-sm max-w-lg mb-3">{description}</p>
+      </div>
+
+      <!-- Slides -->
+      <div class="relative h-[22rem] md:h-[26rem] mx-12 md:mx-16">
+        {orderedLocations.map((location, index) => (
+          <div
+            class={`hero-slide grid grid-cols-1 lg:grid-cols-2 gap-6 items-center px-2 md:px-6 ${index === 0 ? 'is-active' : ''}`}
+            data-hero-slide
+            data-index={index}
+            aria-hidden={index === 0 ? 'false' : 'true'}
+          >
+            <!-- Left: text content -->
+            <div class="text-left">
+              <div class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1 text-xs uppercase tracking-[0.3em] text-white/80">
+                <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+                Lokacija {location.order ?? index + 1}
+              </div>
+              <h2 class="text-3xl md:text-4xl font-bold text-white mt-4 mb-2 drop-shadow">{location.name}</h2>
+              <p class="text-base text-white/80 max-w-sm mb-6">{location.address}</p>
+              <a
+                href={getPath(`/lokacije/${location.slug}`, baseUrl)}
+                class="inline-flex items-center gap-2 bg-white text-primary font-semibold py-2.5 px-6 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+              >
+                More details
+                <Icon name="chevron_right" class="text-accent" />
+              </a>
+            </div>
+            <!-- Right: image with soft edges -->
+            <div class="relative flex justify-center lg:justify-end overflow-hidden">
+              {location.image?.url ? (
+                <div class="hero-img-wrap relative w-full max-w-md md:max-w-lg">
+                  <Image
+                    src={getStrapiImageUrl(location.image)}
+                    alt={location.name}
+                    width={520}
+                    height={340}
+                    class="w-full h-56 md:h-72 object-cover rounded-2xl shadow-2xl"
+                  />
+                  <!-- soft left-fade so image blends into the hero gradient -->
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/60 via-transparent to-transparent pointer-events-none"></div>
+                  <!-- soft top+bottom fade -->
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-primary/30 via-transparent to-primary/30 pointer-events-none"></div>
+                </div>
+              ) : (
+                <div class="w-full max-w-md md:max-w-lg h-56 md:h-72 rounded-2xl bg-white/20 flex items-center justify-center text-white/70">
+                  No image
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Dots -->
+      <div class="px-14 md:px-20 pt-4 pb-6 flex items-center justify-end gap-2">
+          {orderedLocations.map((_, index) => (
+            <button
+              type="button"
+              class={`hero-dot ${index === 0 ? 'is-active' : ''}`}
+              aria-label={`Go to slide ${index + 1}`}
+              aria-current={index === 0 ? 'true' : 'false'}
+              data-hero-dot
+              data-index={index}
+            ></button>
+          ))}
+      </div>
+
     </div>
-  </div>
+  ) : (
+    <div class="relative flex items-center justify-center text-center px-4 py-16">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-slideUp">{title}</h1>
+        <p class="text-lg md:text-xl text-gray-100 mb-8 animate-slideUp" style="animation-delay: 0.2s">{description}</p>
+        <a href={getPath(buttonLink, baseUrl)} class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 animate-slideUp" style="animation-delay: 0.4s">
+          {buttonText}
+        </a>
+      </div>
+    </div>
+  )}
 </section>
+
+<script>
+  const carousel = document.querySelector('[data-hero-carousel]');
+  if (carousel) {
+    const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
+    const dots = Array.from(carousel.querySelectorAll('[data-hero-dot]'));
+    const prev = carousel.querySelector('[data-hero-prev]');
+    const next = carousel.querySelector('[data-hero-next]');
+    const counter = carousel.querySelector('[data-hero-count]');
+
+    if (slides.length) {
+      let index = 0;
+      let timer = 0;
+
+      const update = (nextIndex: number) => {
+        index = (nextIndex + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle('is-active', slideIndex === index);
+          slide.setAttribute('aria-hidden', slideIndex === index ? 'false' : 'true');
+        });
+        dots.forEach((dot, dotIndex) => {
+          dot.classList.toggle('is-active', dotIndex === index);
+          dot.setAttribute('aria-current', dotIndex === index ? 'true' : 'false');
+        });
+        if (counter) {
+          const current = String(index + 1).padStart(2, '0');
+          const total = String(slides.length).padStart(2, '0');
+          counter.textContent = `${current} / ${total}`;
+        }
+      };
+
+      const stopAuto = () => {
+        if (timer) {
+          window.clearInterval(timer);
+          timer = 0;
+        }
+      };
+
+      const startAuto = () => {
+        stopAuto();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        timer = window.setInterval(() => update(index + 1), 6500);
+      };
+
+      prev?.addEventListener('click', () => {
+        update(index - 1);
+        startAuto();
+      });
+      next?.addEventListener('click', () => {
+        update(index + 1);
+        startAuto();
+      });
+      dots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+          const dotIndex = Number(dot.getAttribute('data-index'));
+          if (!Number.isNaN(dotIndex)) {
+            update(dotIndex);
+            startAuto();
+          }
+        });
+      });
+      carousel.addEventListener('mouseenter', stopAuto);
+      carousel.addEventListener('mouseleave', startAuto);
+
+      update(0);
+      startAuto();
+    }
+  }
+</script>
+
+<style>
+  .hero-slide {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    transition: opacity 600ms ease;
+    will-change: opacity;
+    transform: translateZ(0);
+  }
+
+  .hero-slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hero-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
+    flex-shrink: 0;
+  }
+
+  .hero-control:hover {
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-1px);
+  }
+
+  /* Side arrows: sit on the absolute edges, vertically centred on slide area */
+  .hero-control-side {
+    position: absolute;
+    z-index: 10;
+  }
+
+  .hero-dot {
+    width: 28px;
+    height: 4px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: background 200ms ease, width 200ms ease;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+
+  .hero-dot.is-active {
+    width: 42px;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .hero-img-wrap {
+    /* optional extra soft vignette via mask */
+    -webkit-mask-image: radial-gradient(ellipse 90% 85% at 60% 50%, black 50%, transparent 100%);
+    mask-image: radial-gradient(ellipse 90% 85% at 60% 50%, black 50%, transparent 100%);
+  }
+</style>

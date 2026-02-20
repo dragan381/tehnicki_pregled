@@ -70,6 +70,7 @@ export interface Location {
   address: string;
   phone: string;
   email: string;
+  order?: number;
   latitude?: number;
   longitude?: number;
   description?: StrapiBlock[];
