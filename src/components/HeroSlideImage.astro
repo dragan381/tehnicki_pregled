@@ -13,13 +13,13 @@ const { name, image } = Astro.props;
 
 <div class="relative flex justify-center lg:justify-end overflow-hidden">
   {image?.url ? (
-    <div class="hero-slide-img relative w-full max-w-md md:max-w-lg">
+    <div class="hero-slide-img relative w-full max-w-[280px] md:max-w-lg">
       <Image
         src={getStrapiImageUrl(image)}
         alt={name}
         width={520}
         height={340}
-        class="w-full h-56 md:h-72 object-cover rounded-2xl shadow-2xl"
+        class="w-full h-36 md:h-72 object-cover rounded-2xl shadow-2xl"
       />
       <!-- soft left-fade so image blends into the hero gradient -->
       <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/60 via-transparent to-transparent pointer-events-none"></div>
@@ -27,7 +27,7 @@ const { name, image } = Astro.props;
       <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-primary/30 via-transparent to-primary/30 pointer-events-none"></div>
     </div>
   ) : (
-    <div class="w-full max-w-md md:max-w-lg h-56 md:h-72 rounded-2xl bg-white/20 flex items-center justify-center text-white/70">
+    <div class="w-full max-w-[280px] md:max-w-lg h-36 md:h-72 rounded-2xl bg-white/20 flex items-center justify-center text-white/70">
       No image
     </div>
   )}

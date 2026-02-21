@@ -1,16 +1,53 @@
+/* ===== Mobile: horizontal slide transition ===== */
 .hero-slide {
   opacity: 0;
   pointer-events: none;
   position: absolute;
   inset: 0;
-  transition: opacity 600ms ease;
-  will-change: opacity;
-  transform: translateZ(0);
+  transform: translateX(100%);
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+  will-change: opacity, transform;
 }
 
 .hero-slide.is-active {
   opacity: 1;
   pointer-events: auto;
+  transform: translateX(0);
+}
+
+.hero-slide.slide-out-left {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+/* ===== Desktop: fade transition (no sliding) ===== */
+@media (min-width: 768px) {
+  .hero-slide {
+    transform: none;
+    transition: opacity 600ms ease;
+  }
+
+  .hero-slide.is-active {
+    transform: none;
+  }
+
+  .hero-slide.slide-out-left {
+    transform: none;
+  }
+}
+
+/* ===== Mobile slides container: relative height auto ===== */
+.hero-slides-container {
+  position: relative;
+  min-height: 320px;
+}
+
+@media (min-width: 768px) {
+  .hero-slides-container {
+    min-height: auto;
+  }
 }
 
 .hero-control {
@@ -40,6 +77,13 @@
 .hero-control-side {
   position: absolute;
   z-index: 10;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hero-control-side {
+    display: inline-flex;
+  }
 }
 
 .hero-dot {
