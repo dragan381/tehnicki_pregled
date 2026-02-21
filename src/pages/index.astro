@@ -13,81 +13,129 @@ import { getSettings, getStrapiImageUrl } from '../utils/strapi';
 
 // Fetch settings from Strapi
 const settings = await getSettings();
+console.log('Settings:', JSON.stringify(settings, null, 2));
 
 // Use settings for page title and description
 const title = settings?.siteName;
-const description = settings?.siteDescription || 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
+const description =
+  settings?.siteDescription ||
+  'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
 
 // Extract hero settings with fallbacks
-const heroTitle = settings?.hero?.title || 'Prvi Balkan - Tehnički Pregled Vozila';
-const heroDescription = settings?.hero?.description || 'Profesionalni tehnički pregled sa 10+ godina iskustva. 3 lokacije u Beogradu za vašu pogodnost.';
+const phoneNumber = settings?.phone || '+381 11 2101 111';
+const heroTitle =
+  settings?.hero?.title || 'Prvi Balkan - Tehnički Pregled Vozila';
+const heroDescription =
+  settings?.hero?.description ||
+  'Profesionalni tehnički pregled sa 10+ godina iskustva. 3 lokacije u Beogradu za vašu pogodnost.';
 const heroButtonText = settings?.hero?.buttonText || 'Zakaži Pregled';
 const heroButtonLink = settings?.hero?.buttonLink || '/kontakt';
-const heroBackgroundImage = settings?.hero?.image 
+const heroBackgroundImage = settings?.hero?.image
   ? getStrapiImageUrl(settings.hero.image)
   : 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=600&fit=crop';
+const showSpecialOfferSection = settings?.showSpecialOfferSection ?? false;
+const showLocationSection = settings?.showLocationSection ?? false;
 ---
 
 <Layout {title} {description}>
   <SEO />
-  <Hero 
+  <Hero
     title={heroTitle}
     description={heroDescription}
     buttonText={heroButtonText}
     buttonLink={heroButtonLink}
     backgroundImage={heroBackgroundImage}
   />
-  <SpecialOffer
-    title="PLATI SAMO JEDNOM"
-    description="Ukoliko vaš automobili nije u potpunosti ispravan, svaki ponovni tehnički pregled je potpuno BESPLATAN dok svi neophodni parametri za uspešan tehnički pregled ne budu na zadovoljavajujećem nivou."
-    buttonText="Saznaj više"
-    buttonLink="/usluge"
-  />
+  {
+    showSpecialOfferSection && (
+      <SpecialOffer
+        badgeTitle={settings?.specialOffer?.badgeTitle || 'Specijalna\nponuda'}
+        title={settings?.specialOffer?.title || 'PLATI SAMO JEDNOM'}
+        description={
+          settings?.specialOffer?.description ||
+          'Ukoliko vaš automobili nije u potpunosti ispravan, svaki ponovni tehnički pregled je potpuno BESPLATAN dok svi neophodni parametri za uspešan tehnički pregled ne budu na zadovoljavajučem nivou.'
+        }
+        buttonText={settings?.specialOffer?.buttonText || 'Saznaj više'}
+        buttonLink={settings?.specialOffer?.buttonLink || '/usluge'}
+        showButton={settings?.specialOffer?.showButton ?? false}
+      />
+    )
+  }
 
   <section class="py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold text-center mb-8">Zašto Izabrati Prvi Balkan?</h2>
+      <h2 class="text-3xl font-bold text-center mb-8">
+        Zašto Izabrati Prvi Balkan?
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <Icon name="flash_on" class="text-primary w-20 h-20 md:w-28 md:h-28" />
+            <Icon
+              name="flash_on"
+              class="text-primary w-20 h-20 md:w-28 md:h-28"
+            />
           </div>
           <h3 class="text-xl font-semibold mb-2">Brz Servis</h3>
-          <p class="text-gray-600">Završavamo pregled u svega 30-60 minuta. Nema čekanja bez zakazivanja.</p>
+          <p class="text-gray-600">
+            Završavamo pregled u svega 30-60 minuta. Nema čekanja bez
+            zakazivanja.
+          </p>
         </div>
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <Icon name="verified" class="text-primary w-20 h-20 md:w-28 md:h-28" />
+            <Icon
+              name="verified"
+              class="text-primary w-20 h-20 md:w-28 md:h-28"
+            />
           </div>
           <h3 class="text-xl font-semibold mb-2">Pouzdanost</h3>
-          <p class="text-gray-600">Certifikovani tehničari sa godinama iskustva. Sve prema zvaničnim standardima.</p>
+          <p class="text-gray-600">
+            Certifikovani tehničari sa godinama iskustva. Sve prema zvaničnim
+            standardima.
+          </p>
         </div>
         <div class="text-center">
           <div class="flex justify-center mb-4">
-            <Icon name="price_check" class="text-primary w-20 h-20 md:w-28 md:h-28" />
+            <Icon
+              name="price_check"
+              class="text-primary w-20 h-20 md:w-28 md:h-28"
+            />
           </div>
           <h3 class="text-xl font-semibold mb-2">Najbolje Cene</h3>
-          <p class="text-gray-600">Konkurentne cene bez skrivenih troškova. Transparentan cenovnik.</p>
+          <p class="text-gray-600">
+            Konkurentne cene bez skrivenih troškova. Transparentan cenovnik.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
   <Services />
-  <Locations />
+  {showLocationSection && <Locations />}
   <Testimonials />
   <FAQ />
 
   <section class="py-16 bg-primary text-white">
     <div class="max-w-4xl mx-auto text-center px-4">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">Spreman za Tehnički Pregled?</h2>
-      <p class="text-lg mb-8 text-blue-100">Zakaži pregled danas i prođi tehnički sa sigurnošću. Slobodno nas kontaktiraj na bilo kojoj lokaciji.</p>
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        Spreman za Tehnički Pregled?
+      </h2>
+      <p class="text-lg mb-8 text-blue-100">
+        Zakaži danas i prođi tehnički sa sigurnošću. Slobodno nas kontaktiraj na
+        bilo kojoj lokaciji.
+      </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/kontakt" class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
-          Zakaži Pregled
+        <a
+          href="/kontakt"
+          class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition"
+        >
+          Zakaži
         </a>
-        <a href="tel:+381112101111" class="border-2 border-white hover:bg-white hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition">
-          Pozovi nas: +381 11 2101 111
+        <a
+          href={`tel:${phoneNumber}`}
+          class="border-2 border-white hover:bg-white hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition"
+        >
+          Pozovi nas: {phoneNumber}
         </a>
       </div>
     </div>

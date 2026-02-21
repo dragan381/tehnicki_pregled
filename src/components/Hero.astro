@@ -5,6 +5,7 @@ import HeroSlideText from './HeroSlideText.astro';
 import HeroSlideImage from './HeroSlideImage.astro';
 import { getPath } from '../utils/navigation';
 import { getLocations, getStrapiImageUrl } from '../utils/strapi';
+import '../styles/hero.css';
 const baseUrl = import.meta.env.BASE_URL;
 
 export interface Props {
@@ -125,129 +126,5 @@ const hasLocations = orderedLocations.length > 0;
 </section>
 
 <script>
-  const carousel = document.querySelector('[data-hero-carousel]');
-  if (carousel) {
-    const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
-    const dots = Array.from(carousel.querySelectorAll('[data-hero-dot]'));
-    const prev = carousel.querySelector('[data-hero-prev]');
-    const next = carousel.querySelector('[data-hero-next]');
-    const counter = carousel.querySelector('[data-hero-count]');
-
-    if (slides.length) {
-      let index = 0;
-      let timer = 0;
-
-      const update = (nextIndex: number) => {
-        index = (nextIndex + slides.length) % slides.length;
-        slides.forEach((slide, slideIndex) => {
-          slide.classList.toggle('is-active', slideIndex === index);
-          slide.setAttribute('aria-hidden', slideIndex === index ? 'false' : 'true');
-        });
-        dots.forEach((dot, dotIndex) => {
-          dot.classList.toggle('is-active', dotIndex === index);
-          dot.setAttribute('aria-current', dotIndex === index ? 'true' : 'false');
-        });
-        if (counter) {
-          const current = String(index + 1).padStart(2, '0');
-          const total = String(slides.length).padStart(2, '0');
-          counter.textContent = `${current} / ${total}`;
-        }
-      };
-
-      const stopAuto = () => {
-        if (timer) {
-          window.clearInterval(timer);
-          timer = 0;
-        }
-      };
-
-      const startAuto = () => {
-        stopAuto();
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        timer = window.setInterval(() => update(index + 1), 6500);
-      };
-
-      prev?.addEventListener('click', () => {
-        update(index - 1);
-        startAuto();
-      });
-      next?.addEventListener('click', () => {
-        update(index + 1);
-        startAuto();
-      });
-      dots.forEach((dot) => {
-        dot.addEventListener('click', () => {
-          const dotIndex = Number(dot.getAttribute('data-index'));
-          if (!Number.isNaN(dotIndex)) {
-            update(dotIndex);
-            startAuto();
-          }
-        });
-      });
-      carousel.addEventListener('mouseenter', stopAuto);
-      carousel.addEventListener('mouseleave', startAuto);
-
-      update(0);
-      startAuto();
-    }
-  }
+  import '../scripts/heroCarousel.ts';
 </script>
-
-<style>
-  .hero-slide {
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    inset: 0;
-    transition: opacity 600ms ease;
-    will-change: opacity;
-    transform: translateZ(0);
-  }
-
-  .hero-slide.is-active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .hero-control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
-    flex-shrink: 0;
-  }
-
-  .hero-control:hover {
-    background: rgba(255, 255, 255, 0.28);
-    border-color: rgba(255, 255, 255, 0.6);
-    transform: translateY(-1px);
-  }
-
-  /* Side arrows: sit on the absolute edges, vertically centred on slide area */
-  .hero-control-side {
-    position: absolute;
-    z-index: 10;
-  }
-
-  .hero-dot {
-    width: 28px;
-    height: 4px;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.3);
-    transition: background 200ms ease, width 200ms ease;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-  }
-
-  .hero-dot.is-active {
-    width: 42px;
-    background: rgba(255, 255, 255, 0.9);
-  }
-</style>

@@ -1,0 +1,61 @@
+.hero-slide {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transition: opacity 600ms ease;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition:
+    transform 200ms ease,
+    background 200ms ease,
+    border-color 200ms ease;
+  flex-shrink: 0;
+}
+
+.hero-control:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Side arrows: sit on the absolute edges, vertically centred on slide area */
+.hero-control-side {
+  position: absolute;
+  z-index: 10;
+}
+
+.hero-dot {
+  width: 28px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.3);
+  transition:
+    background 200ms ease,
+    width 200ms ease;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.hero-dot.is-active {
+  width: 42px;
+  background: rgba(255, 255, 255, 0.9);
+}

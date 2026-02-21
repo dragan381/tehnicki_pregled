@@ -1,0 +1,77 @@
+@keyframes badge-pulse {
+  0%,
+  100% {
+    transform: scale(1) rotateZ(-12deg);
+  }
+  50% {
+    transform: scale(1.12) rotateZ(-12deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes circle-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+.offer-badge {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+.offer-circle {
+  animation: circle-pulse 2s ease-in-out infinite;
+}
+
+.shimmer-line {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.special-offer-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* CSS Ribbon for title */
+.offer-ribbon {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 50%,
+    calc(100% - 12px) 100%,
+    0 100%,
+    12px 50%
+  );
+  box-shadow: 0 3px 12px rgba(249, 115, 22, 0.35);
+}
+
+/* Offer Button */
+.offer-button {
+  text-decoration: none;
+  display: inline-block;
+  color: #fff;
+  border: 2px solid #f97316;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.offer-button:hover {
+  background-color: rgba(249, 115, 22, 0.1);
+  border-color: #ff9a3d;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.3);
+}

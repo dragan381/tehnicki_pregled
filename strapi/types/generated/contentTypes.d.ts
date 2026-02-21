@@ -600,9 +600,16 @@ export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
     logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    showLocationSection: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    showSpecialOfferSection: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     siteDescription: Schema.Attribute.String;
     siteName: Schema.Attribute.String;
     socialLinks: Schema.Attribute.JSON;
+    specialOffer: Schema.Attribute.JSON;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

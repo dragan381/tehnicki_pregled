@@ -165,6 +165,15 @@ export interface SocialLinks {
   youtube?: string;
 }
 
+export interface SpecialOfferSettings {
+  badgeTitle?: string;
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  showButton?: boolean;
+}
+
 export interface Settings {
   id: number;
   documentId: string;
@@ -189,6 +198,9 @@ export interface Settings {
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
+  specialOffer?: SpecialOfferSettings;
+  showSpecialOfferSection?: boolean;
+  showLocationSection?: boolean;
 }
 
 // ===== API Response Types =====

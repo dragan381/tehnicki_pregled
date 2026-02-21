@@ -13,10 +13,10 @@ import type {
   StrapiResponse,
   StrapiSingleResponse,
   StrapiMedia,
-} from "../types/strapi";
+} from '../types/strapi';
 
-const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337";
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || "";
+const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:1337';
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || '';
 
 /**
  * Helper function to build Strapi query string from nested objects
@@ -27,7 +27,7 @@ function buildQueryString(params: Record<string, any>): string {
   function addParam(key: string, value: any) {
     if (value === null || value === undefined) return;
 
-    if (typeof value === "object" && !Array.isArray(value)) {
+    if (typeof value === 'object' && !Array.isArray(value)) {
       // Handle nested objects (like filters)
       Object.entries(value).forEach(([nestedKey, nestedValue]) => {
         addParam(`${key}[${nestedKey}]`, nestedValue);
@@ -49,7 +49,7 @@ function buildQueryString(params: Record<string, any>): string {
     addParam(key, value);
   });
 
-  return parts.join("&");
+  return parts.join('&');
 }
 
 /**
@@ -61,7 +61,7 @@ async function fetchFromStrapi<T>(
 ): Promise<T[]> {
   // Always populate relations and media
   const queryParams = {
-    populate: "*",
+    populate: '*',
     ...params,
   };
 
@@ -72,7 +72,7 @@ async function fetchFromStrapi<T>(
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -92,14 +92,14 @@ async function fetchFromStrapi<T>(
  * Fetch single item from Strapi
  */
 async function fetchSingleFromStrapi<T>(endpoint: string): Promise<T | null> {
-  const queryString = buildQueryString({ populate: "*" });
+  const queryString = buildQueryString({ populate: '*' });
   const url = `${STRAPI_URL}/api/${endpoint}?${queryString}`;
 
   try {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -119,97 +119,98 @@ async function fetchSingleFromStrapi<T>(endpoint: string): Promise<T | null> {
  * Get image URL from Strapi
  */
 export function getStrapiImageUrl(imageData: StrapiMedia | undefined): string {
-  if (!imageData) return "";
+  if (!imageData) return '';
 
   // If it's already a URL string
-  if (typeof imageData === "string") return imageData;
+  if (typeof imageData === 'string') return imageData;
 
   // If it's a Strapi media object
   if (imageData.url) {
-    return imageData.url.startsWith("http")
+    return imageData.url.startsWith('http')
       ? imageData.url
       : `${STRAPI_URL}${imageData.url}`;
   }
 
-  return "";
+  return '';
 }
 
 /**
  * Convert Strapi blocks (rich text) to plain text
  */
 export function blocksToText(blocks: any): string {
-  if (!blocks) return "";
-  if (typeof blocks === "string") return blocks;
-  if (!Array.isArray(blocks)) return "";
+  if (!blocks) return '';
+  if (typeof blocks === 'string') return blocks;
+  if (!Array.isArray(blocks)) return '';
 
   return blocks
     .map((block: any) => {
-      if (!block.children || !Array.isArray(block.children)) return "";
+      if (!block.children || !Array.isArray(block.children)) return '';
 
-      return block.children.map((child: any) => child.text || "").join("");
+      return block.children.map((child: any) => child.text || '').join('');
     })
     .filter(Boolean)
-    .join("\n\n");
+    .join('\n\n');
 }
 
 // ===== Specific Fetchers =====
 
 export async function getLocations(): Promise<Location[]> {
-  return fetchFromStrapi("locations", { sort: "order:asc" });
+  return fetchFromStrapi('locations', { sort: 'order:asc' });
 }
 
 export async function getLocationBySlug(
   slug: string,
 ): Promise<Location | null> {
-  const locations = await fetchFromStrapi<Location>("locations", {
+  const locations = await fetchFromStrapi<Location>('locations', {
     filters: { slug: { $eq: slug } },
   });
   return locations[0] || null;
 }
 
 export async function getServices(): Promise<Service[]> {
-  return fetchFromStrapi("services", { sort: "createdAt:asc" });
+  return fetchFromStrapi('services', { sort: 'createdAt:asc' });
 }
 
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
-  const services = await fetchFromStrapi<Service>("services", {
+  const services = await fetchFromStrapi<Service>('services', {
     filters: { slug: { $eq: slug } },
   });
   return services[0] || null;
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  return fetchFromStrapi("testimonials", { sort: "createdAt:asc" });
+  return fetchFromStrapi('testimonials', { sort: 'createdAt:asc' });
 }
 
 export async function getFAQs(): Promise<FAQ[]> {
-  return fetchFromStrapi("faqs", { sort: "category:asc" });
+  return fetchFromStrapi('faqs', { sort: 'category:asc' });
 }
 
 export async function getFAQsByCategory(category: string): Promise<FAQ[]> {
-  return fetchFromStrapi("faqs", {
+  return fetchFromStrapi('faqs', {
     filters: { category: { $eq: category } },
-    sort: "createdAt:asc",
+    sort: 'createdAt:asc',
   });
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  return fetchFromStrapi("blog-posts", {
-    sort: "publishedAt:desc",
+  return fetchFromStrapi('blog-posts', {
+    sort: 'publishedAt:desc',
   });
 }
 
 export async function getBlogPostBySlug(
   slug: string,
 ): Promise<BlogPost | null> {
-  const posts = await fetchFromStrapi<BlogPost>("blog-posts", {
+  const posts = await fetchFromStrapi<BlogPost>('blog-posts', {
     filters: { slug: { $eq: slug } },
   });
   return posts[0] || null;
 }
 
 export async function getSettings(): Promise<Settings | null> {
-  return fetchSingleFromStrapi<Settings>("settings");
+  const results = await fetchFromStrapi<Settings>('settings');
+  return results.length > 0 ? results[0] : null;
 }
 
 /**
