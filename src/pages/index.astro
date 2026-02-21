@@ -13,7 +13,6 @@ import { getSettings, getStrapiImageUrl } from '../utils/strapi';
 
 // Fetch settings from Strapi
 const settings = await getSettings();
-console.log('Settings:', JSON.stringify(settings, null, 2));
 
 // Use settings for page title and description
 const title = settings?.siteName;

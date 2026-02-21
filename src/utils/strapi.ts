@@ -15,8 +15,8 @@ import type {
   StrapiMedia,
 } from '../types/strapi';
 
-const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:1337';
-const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || '';
+const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
+const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN || '';
 
 /**
  * Helper function to build Strapi query string from nested objects
