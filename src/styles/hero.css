@@ -23,7 +23,7 @@
 }
 
 /* ===== Desktop: fade transition (no sliding) ===== */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .hero-slide {
     transform: none;
     transition: opacity 600ms ease;
@@ -80,7 +80,7 @@
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .hero-control-side {
     display: inline-flex;
   }

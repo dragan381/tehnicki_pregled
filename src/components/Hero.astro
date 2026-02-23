@@ -41,10 +41,10 @@ const hasLocations = orderedLocations.length > 0;
   {hasLocations ? (
     <div class="relative" data-hero-carousel>
 
-      <!-- Left arrow - hidden on mobile, visible on md+ -->
+      <!-- Left arrow - hidden on mobile/tablet, visible on lg+ -->
       <button
         type="button"
-        class="hero-control hero-control-side hidden md:inline-flex"
+        class="hero-control hero-control-side hidden lg:inline-flex"
         style="left: 0.5rem; top: 50%; transform: translateY(-50%);"
         aria-label="Previous location"
         data-hero-prev
@@ -52,10 +52,10 @@ const hasLocations = orderedLocations.length > 0;
         <Icon name="chevron_right" class="rotate-180" />
       </button>
 
-      <!-- Right arrow - hidden on mobile, visible on md+ -->
+      <!-- Right arrow - hidden on mobile/tablet, visible on lg+ -->
       <button
         type="button"
-        class="hero-control hero-control-side hidden md:inline-flex"
+        class="hero-control hero-control-side hidden lg:inline-flex"
         style="right: 0.5rem; top: 50%; transform: translateY(-50%);"
         aria-label="Next location"
         data-hero-next
@@ -64,7 +64,7 @@ const hasLocations = orderedLocations.length > 0;
       </button>
 
       <!-- Top bar: site title + counter -->
-      <div class="px-4 md:px-20 pt-6 pb-0">
+      <div class="px-4 lg:px-20 pt-6 pb-0">
         <div class="flex items-center justify-between text-accent/70 text-xs tracking-[0.3em] uppercase mb-1">
           <span>{title}</span>
           <span class="font-semibold text-white" data-hero-count>01 / {String(orderedLocations.length).padStart(2, '0')}</span>
@@ -73,23 +73,23 @@ const hasLocations = orderedLocations.length > 0;
       </div>
 
       <!-- Slides -->
-      <div class="hero-slides-container relative h-auto md:h-[22rem] mx-2 md:mx-16 overflow-hidden" data-hero-slides-container>
+      <div class="hero-slides-container relative h-auto md:h-[18rem] lg:h-[22rem] mx-2 md:mx-4 lg:mx-16 overflow-hidden" data-hero-slides-container>
         {orderedLocations.map((location, index) => (
           <div
-            class={`hero-slide grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-6 items-center px-2 md:px-6 ${index === 0 ? 'is-active' : ''}`}
+            class={`hero-slide grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 lg:gap-6 items-center px-2 md:px-3 lg:px-6 ${index === 0 ? 'is-active' : ''}`}
             data-hero-slide
             data-index={index}
             aria-hidden={index === 0 ? 'false' : 'true'}
           >
-            <!-- Image: shown first on mobile (order-1), second on desktop (lg:order-2) -->
-            <div class="order-1 lg:order-2">
+            <!-- Image: shown first on mobile (order-1), second on tablet/desktop (md:order-2) -->
+            <div class="order-1 md:order-2">
               <HeroSlideImage
                 name={location.name}
                 image={location.image}
               />
             </div>
-            <!-- Text content: shown second on mobile (order-2), first on desktop (lg:order-1) -->
-            <div class="order-2 lg:order-1 relative z-10">
+            <!-- Text content: shown second on mobile (order-2), first on tablet/desktop (md:order-1) -->
+            <div class="order-2 md:order-1 relative z-10">
               <HeroSlideText
                 order={location.order ?? index + 1}
                 name={location.name}
@@ -102,7 +102,7 @@ const hasLocations = orderedLocations.length > 0;
       </div>
 
       <!-- Dots -->
-      <div class="px-4 md:px-20 pt-4 pb-6 flex items-center justify-center md:justify-end gap-2">
+      <div class="px-4 lg:px-20 pt-4 pb-6 flex items-center justify-center lg:justify-end gap-2">
           {orderedLocations.map((_, index) => (
             <button
               type="button"
