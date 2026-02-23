@@ -11,36 +11,60 @@ const links = [
   { href: '/cesto-pitana-pitanja', label: 'FAQ', icon: 'help' },
 ];
 
-const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === baseUrl || Astro.url.pathname === baseUrl + '/';
+const isHomePage =
+  Astro.url.pathname === '/' ||
+  Astro.url.pathname === baseUrl ||
+  Astro.url.pathname === baseUrl + '/';
 const shouldHaveDarkBg = !isHomePage;
 ---
 
-<header class="sticky top-0 z-50 transition-all duration-300" id="header">
-  <div class={`absolute inset-0 backdrop-blur-lg transition-all duration-300 ${shouldHaveDarkBg ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-md' : 'bg-white'}`} id="header-bg"></div>
+<header class="sticky top-0 z-50" id="header">
+  <div
+    class={`absolute inset-0 backdrop-blur-lg transition-all duration-300 ${shouldHaveDarkBg ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-md' : 'bg-white'}`}
+    id="header-bg"
+  >
+  </div>
   <nav class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <div class="flex-shrink-0">
-        <a href={getPath('/', baseUrl)} class="text-2xl font-bold tracking-tight text-primary hover:text-accent transition duration-300 animate-fadeIn" id="logo">
+        <a
+          href={getPath('/', baseUrl)}
+          class="text-2xl font-bold tracking-tight text-primary hover:text-accent transition duration-300 animate-fadeIn"
+          id="logo"
+        >
           <span class="text-accent">Prvi</span>
           <span class="text-primary ml-1">Balkan</span>
         </a>
       </div>
 
       <div class="hidden md:flex space-x-1">
-        {links.map(link => (
-          <a href={getPath(link.href, baseUrl)} class={`group relative px-4 py-2 transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide ${shouldHaveDarkBg ? 'text-slate-300 hover:text-white' : 'text-gray-700 hover:text-primary'}`} id="nav-link">
-            <span>{link.label}</span>
-            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full"></span>
-          </a>
-        ))}
+        {
+          links.map((link) => (
+            <a
+              href={getPath(link.href, baseUrl)}
+              class={`group relative px-4 py-2 transition duration-300 flex items-center gap-2 font-medium text-sm tracking-wide ${shouldHaveDarkBg ? 'text-slate-300 hover:text-white' : 'text-gray-700 hover:text-primary'}`}
+              id="nav-link"
+            >
+              <span>{link.label}</span>
+              <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-orange-400 transition-all duration-300 group-hover:w-full" />
+            </a>
+          ))
+        }
 
-        <a href={getPath('/kontakt', baseUrl)} class="ml-4 bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 group">
+        <a
+          href={getPath('/kontakt', baseUrl)}
+          class="ml-4 bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 group"
+        >
           Kontaktiraj nas
         </a>
       </div>
 
       <div class="md:hidden">
-        <button class={`hover:text-primary transition duration-300 ${shouldHaveDarkBg ? 'text-white' : 'text-gray-700'}`} id="mobile-menu-btn" aria-label="Open menu">
+        <button
+          class={`hover:text-primary transition duration-300 ${shouldHaveDarkBg ? 'text-white' : 'text-gray-700'}`}
+          id="mobile-menu-btn"
+          aria-label="Open menu"
+        >
           <Icon name="menu" />
         </button>
       </div>
@@ -48,20 +72,31 @@ const shouldHaveDarkBg = !isHomePage;
   </nav>
 
   {/* Mobile menu */}
-  <div id="mobile-menu" class="md:hidden bg-white border-t border-gray-200 overflow-hidden transition-all duration-300 ease-out max-h-0 opacity-0">
+  <div
+    id="mobile-menu"
+    class="relative z-10 md:hidden bg-white border-t border-gray-200 overflow-hidden transition-all duration-300 ease-out max-h-0 opacity-0"
+  >
     <div class="px-2 pt-2 pb-3 space-y-1">
-      {links.map(link => (
-        <a href={getPath(link.href, baseUrl)} class="mobile-menu-link flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300">
-          {link.label}
-        </a>
-      ))}
-      <a href={getPath('/kontakt', baseUrl)} class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300">
+      {
+        links.map((link) => (
+          <a
+            href={getPath(link.href, baseUrl)}
+            class="mobile-menu-link flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary rounded-lg transition duration-300"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href={getPath('/kontakt', baseUrl)}
+        class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300"
+      >
         Kontaktiraj nas
       </a>
     </div>
   </div>
 </header>
 
-<script>  
+<script>
   import '../scripts/header';
 </script>
