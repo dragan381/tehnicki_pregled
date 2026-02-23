@@ -1,5 +1,6 @@
 ---
 import { getPath } from '../utils/navigation';
+import OfferBadge from './OfferBadge.astro';
 import '../styles/special-offer.css';
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -44,32 +45,10 @@ const { badgeTitle, title, description, buttonText, buttonLink, showButton } =
     class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center"
   >
     <div
-      class="inline-flex flex-col lg:flex-row items-center gap-4 lg:gap-8 lg:translate-x-14"
+      class="inline-flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-8 lg:translate-x-14"
     >
       <!-- Badge -->
-      <div class="flex-shrink-0">
-        <div
-          class="relative w-20 h-20 flex items-center justify-center"
-          style="perspective: 1000px;"
-        >
-          <div
-            class="offer-badge absolute inset-0 bg-gradient-to-br from-accent to-orange-600 rounded-lg shadow-[0_0_20px_rgba(249,115,22,0.4)] transform -rotate-12 flex items-center justify-center"
-          >
-            <div class="text-center">
-              <div
-                class="text-xs md:text-sm font-black text-white leading-tight whitespace-pre-line drop-shadow-lg"
-              >
-                {badgeTitle}
-              </div>
-            </div>
-          </div>
-          <div
-            class="offer-circle absolute -top-2 -left-2 bg-white rounded-full w-5 h-5 shadow-lg flex items-center justify-center"
-          >
-            <div class="w-3 h-3 rounded-full border-2 border-accent"></div>
-          </div>
-        </div>
-      </div>
+      <OfferBadge title={badgeTitle} />
 
       <!-- Offer Content (left-aligned text) -->
       <div class="text-left max-w-xl">

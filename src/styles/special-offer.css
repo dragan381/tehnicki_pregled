@@ -34,6 +34,10 @@
   animation: badge-pulse 2s ease-in-out infinite;
 }
 
+.offer-badge-mobile {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
 .offer-circle {
   animation: circle-pulse 2s ease-in-out infinite;
 }
