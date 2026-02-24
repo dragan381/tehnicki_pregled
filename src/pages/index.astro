@@ -34,9 +34,10 @@ const heroBackgroundImage = settings?.hero?.image
   : 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=600&fit=crop';
 const showSpecialOfferSection = settings?.showSpecialOfferSection ?? false;
 const showLocationSection = settings?.showLocationSection ?? false;
+const logo = settings?.logo;
 ---
 
-<Layout {title} {description}>
+<Layout {title} {description} {logo}>
   <SEO />
   <Hero
     title={heroTitle}

@@ -2,13 +2,19 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import type { StrapiMedia } from '../types/strapi';
 
 interface Props {
   title?: string;
   description?: string;
+  logo?: StrapiMedia;
 }
 
-const { title = 'Prvi Balkan - Tehnički Pregled Vozila', description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu.' } = Astro.props;
+const {
+  title = 'Prvi Balkan - Tehnički Pregled Vozila',
+  description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu.',
+  logo,
+} = Astro.props;
 
 // Get current URL path for breadcrumbs
 let currentPath = new URL(Astro.request.url).pathname;
@@ -27,18 +33,30 @@ if (baseUrl && baseUrl !== '/' && currentPath.startsWith(baseUrl)) {
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    
+
     <!-- Optimized font loading with preload for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
     </noscript>
   </head>
   <body class="bg-white text-gray-900">
-    <Header />
+    <Header logo={logo} />
     <Breadcrumbs currentPath={currentPath} />
     <slot />
   </body>
@@ -48,7 +66,7 @@ if (baseUrl && baseUrl !== '/' && currentPath.startsWith(baseUrl)) {
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
     font-family: 'Inter', sans-serif;
   }
