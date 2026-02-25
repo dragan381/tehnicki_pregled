@@ -9,9 +9,10 @@ export interface Props {
   name: string;
   address: string;
   slug: string;
+  phone: string;
 }
 
-const { order, name, address, slug } = Astro.props;
+const { order, name, address, slug, phone } = Astro.props;
 ---
 
 <div class="text-left">
@@ -26,14 +27,27 @@ const { order, name, address, slug } = Astro.props;
   >
     {name}
   </h2>
-  <p class="text-sm lg:text-base text-white/80 max-w-sm mb-3 lg:mb-6">
-    {address}
-  </p>
+  <div class="flex items-center mb-1">
+    <a
+      href={getPath(`/lokacije/${slug}`, baseUrl)}
+      class="inline-flex items-center text-accent hover:text-orange-600"
+    >
+      <Icon name="location_on" size="md" class="mb-1" />
+      <p class="text-sm lg:text-base text-white/80 max-w-sm">
+        {address}
+      </p>
+    </a>
+  </div>
   <a
-    href={getPath(`/lokacije/${slug}`, baseUrl)}
-    class="relative z-20 inline-flex items-center gap-2 bg-white text-primary font-semibold py-2.5 px-6 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+    href={`tel:${phone}`}
+    class="inline-block text-sm lg:text-base text-white/80 max-w-sm hover:text-accent mb-2 lg:mb-6"
+    >{phone}</a
   >
-    Zakaži
-    <Icon name="chevron_right" class="text-accent" />
-  </a>
 </div>
+<a
+  href={getPath(`/lokacije/${slug}`, baseUrl)}
+  class="iline-block mb-1 relative z-20 inline-flex items-center gap-2 bg-white text-primary font-semibold py-2.5 px-6 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+>
+  Zakaži
+  <Icon name="chevron_right" class="text-accent" />
+</a>
