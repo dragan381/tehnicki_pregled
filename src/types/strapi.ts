@@ -71,8 +71,7 @@ export interface Location {
   phone: string;
   email: string;
   order?: number;
-  latitude?: number;
-  longitude?: number;
+  googleMapsLink?: string;
   description?: StrapiBlock[];
   openingHours?: Record<string, any>;
   image?: StrapiMedia;
@@ -195,6 +194,7 @@ export interface Settings {
   };
   logo?: StrapiMedia;
   socialLinks?: SocialLinks;
+  googleMapsApiKey?: string;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;

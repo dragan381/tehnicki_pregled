@@ -2,11 +2,17 @@
 import { getPath } from '../../../utils/navigation';
 import Layout from '../../../layouts/Layout.astro';
 import Footer from '../../../components/Footer.astro';
-import { getLocationBySlug, getStrapiImageUrl, blocksToText } from '../../../utils/strapi';
+import {
+  getLocationBySlug,
+  getStrapiImageUrl,
+  getSettings,
+  blocksToText,
+} from '../../../utils/strapi';
 import { Image } from 'astro:assets';
 
 const baseUrl = import.meta.env.BASE_URL;
 const location = await getLocationBySlug('vozdovac');
+const settings = await getSettings();
 
 if (!location) {
   return Astro.redirect('/404');
@@ -14,76 +20,159 @@ if (!location) {
 
 const imageUrl = getStrapiImageUrl(location.image);
 const descriptionText = blocksToText(location.description);
+const googleMapsApiKey = settings?.googleMapsApiKey || '';
+const googleMapsLink = location.googleMapsLink || '';
 ---
 
-<Layout title={`${location.name} - Prvi Balkan`} description={`Lokacija ${location.name} - Prvi Balkan`}>
-  
+<Layout
+  title={`${location.name} - Prvi Balkan`}
+  description={`Lokacija ${location.name} - Prvi Balkan`}
+>
   <div class="pt-32 pb-16">
-    <div class="max-w-4xl mx-auto px-4">
-      <h1 class="text-4xl font-bold text-primary mb-8">Lokacija {location.name}</h1>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <h1 class="text-4xl font-bold text-primary mb-8">
+        Lokacija {location.name}
+      </h1>
+
+      <!-- Three column layout -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <!-- Column 1: Address info & Zakaži button -->
         <div>
           <h2 class="text-2xl font-bold text-primary mb-6">Informacije</h2>
           <div class="space-y-4">
-            {location.address && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Adresa</h3>
-                <p class="text-gray-600">{location.address}</p>
-              </div>
-            )}
-            {location.phone && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Telefon</h3>
-                <p class="text-gray-600"><a href={`tel:${location.phone}`} class="hover:text-accent">{location.phone}</a></p>
-              </div>
-            )}
-            {location.email && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Email</h3>
-                <p class="text-gray-600"><a href={`mailto:${location.email}`} class="hover:text-accent">{location.email}</a></p>
-              </div>
-            )}
-            {location.openingHours && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Radno vreme</h3>
-                <ul class="text-gray-600 space-y-1">
-                  {Object.entries(location.openingHours).map(([day, hours]) => (
-                    <li>{day}: {hours}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {
+              location.address && (
+                <div>
+                  <h3 class="font-bold text-primary mb-2">Adresa</h3>
+                  <p class="text-gray-600">{location.address}</p>
+                </div>
+              )
+            }
+            {
+              location.phone && (
+                <div>
+                  <h3 class="font-bold text-primary mb-2">Telefon</h3>
+                  <p class="text-gray-600">
+                    <a href={`tel:${location.phone}`} class="hover:text-accent">
+                      {location.phone}
+                    </a>
+                  </p>
+                </div>
+              )
+            }
+            {
+              location.email && (
+                <div>
+                  <h3 class="font-bold text-primary mb-2">Email</h3>
+                  <p class="text-gray-600">
+                    <a
+                      href={`mailto:${location.email}`}
+                      class="hover:text-accent"
+                    >
+                      {location.email}
+                    </a>
+                  </p>
+                </div>
+              )
+            }
           </div>
 
           <div class="mt-8">
-            <a href={getPath('/kontakt', baseUrl)} class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
-              Zakaži pregled
+            <a
+              href={getPath('/kontakt', baseUrl)}
+              class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition"
+            >
+              Zakaži
             </a>
           </div>
         </div>
 
+        <!-- Column 2: Opening Hours -->
         <div>
-          {imageUrl && (
-            <div class="rounded-lg overflow-hidden">
-              <Image 
-                src={imageUrl} 
-                alt={`Lokacija ${location.name}`}
-                width={800}
-                height={500}
-                class="w-full h-auto"
-              />
-            </div>
-          )}
+          {
+            location.openingHours && (
+              <div>
+                <h2 class="text-2xl font-bold text-primary mb-6">
+                  Radno vreme
+                </h2>
+                <ul class="text-gray-600 space-y-2">
+                  {Object.entries(location.openingHours).map(([day, hours]) => (
+                    <li class="flex">
+                      <span class="font-medium text-gray-700">{day}</span>
+                      <span class="pl-4">{hours}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Column 3: Image -->
+        <div>
+          {
+            imageUrl && (
+              <div class="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src={imageUrl}
+                  alt={`Lokacija ${location.name}`}
+                  width={800}
+                  height={500}
+                  class="w-full h-auto"
+                />
+              </div>
+            )
+          }
         </div>
       </div>
 
-      {descriptionText && (
-        <div class="mt-12">
-          <h2 class="text-2xl font-bold text-primary mb-6">O Ovoj Lokaciji</h2>
-          <p class="text-gray-700">{descriptionText}</p>
-        </div>
-      )}
+      <!-- Description Section -->
+      {
+        descriptionText && (
+          <div class="mt-12">
+            <h2 class="text-2xl font-bold text-primary mb-6">
+              O Ovoj Lokaciji
+            </h2>
+            <p class="text-gray-700 leading-relaxed">{descriptionText}</p>
+          </div>
+        )
+      }
+
+      <!-- Google Maps Section -->
+      {
+        googleMapsLink && (
+          <div class="mt-12">
+            <h2 class="text-2xl font-bold text-primary mb-6">
+              Lokacija na mapi
+            </h2>
+            <div class="rounded-lg overflow-hidden shadow-md">
+              {googleMapsApiKey ? (
+                <iframe
+                  title={`Mapa - ${location.name}`}
+                  width="100%"
+                  height="450"
+                  style="border:0;"
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2831.511852910137!2d20.489511!3d44.790756300000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x475a713f46d30629%3A0x804412246f94fae9!2sPRVI%20BALKAN%20DVA%20DOO%20-%20Tehni%C4%8Dki%20pregled!5e0!3m2!1sen!2srs!4v1772036611027!5m2!1sen!2srs`}
+                />
+              ) : (
+                <iframe
+                  title={`Mapa - ${location.name}`}
+                  width="100%"
+                  height="450"
+                  style="border:0;"
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2831.511852910137!2d20.489511!3d44.790756300000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x475a713f46d30629%3A0x804412246f94fae9!2sPRVI%20BALKAN%20DVA%20DOO%20-%20Tehni%C4%8Dki%20pregled!5e0!3m2!1sen!2srs!4v1772036611027!5m2!1sen!2srs`}
+                />
+              )}
+            </div>
+          </div>
+        )
+      }
     </div>
   </div>
 

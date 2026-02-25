@@ -513,15 +513,14 @@ export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     description: Schema.Attribute.Blocks;
     email: Schema.Attribute.Email;
+    googleMapsLink: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    latitude: Schema.Attribute.Decimal;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::location.location'
     > &
       Schema.Attribute.Private;
-    longitude: Schema.Attribute.Decimal;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     openingHours: Schema.Attribute.JSON;
     order: Schema.Attribute.Integer & Schema.Attribute.Required;
@@ -589,6 +588,7 @@ export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
+    googleMapsApiKey: Schema.Attribute.String;
     hero: Schema.Attribute.JSON;
     heroImage: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
