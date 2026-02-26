@@ -1,91 +1,12 @@
 ---
-import { getPath } from '../../../utils/navigation';
-import Layout from '../../../layouts/Layout.astro';
-import Footer from '../../../components/Footer.astro';
-import { getLocationBySlug, getStrapiImageUrl, blocksToText } from '../../../utils/strapi';
-import { Image } from 'astro:assets';
+import LocationPage from '../../../components/LocationPage.astro';
+import { getLocationBySlug } from '../../../utils/strapi';
 
-const baseUrl = import.meta.env.BASE_URL;
 const location = await getLocationBySlug('ugrinovacka');
 
 if (!location) {
   return Astro.redirect('/404');
 }
-
-const imageUrl = getStrapiImageUrl(location.image);
-const descriptionText = blocksToText(location.description);
 ---
 
-<Layout title={`${location.name} - Prvi Balkan`} description={`Lokacija ${location.name} - Prvi Balkan`}>
-  
-  <div class="pt-32 pb-16">
-    <div class="max-w-4xl mx-auto px-4">
-      <h1 class="text-4xl font-bold text-primary mb-8">Lokacija {location.name}</h1>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div>
-          <h2 class="text-2xl font-bold text-primary mb-6">Informacije</h2>
-          <div class="space-y-4">
-            {location.address && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Adresa</h3>
-                <p class="text-gray-600">{location.address}</p>
-              </div>
-            )}
-            {location.phone && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Telefon</h3>
-                <p class="text-gray-600"><a href={`tel:${location.phone}`} class="hover:text-accent">{location.phone}</a></p>
-              </div>
-            )}
-            {location.email && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Email</h3>
-                <p class="text-gray-600"><a href={`mailto:${location.email}`} class="hover:text-accent">{location.email}</a></p>
-              </div>
-            )}
-            {location.openingHours && (
-              <div>
-                <h3 class="font-bold text-primary mb-2">Radno vreme</h3>
-                <ul class="text-gray-600 space-y-1">
-                  {Object.entries(location.openingHours).map(([day, hours]) => (
-                    <li>{day}: {hours}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <div class="mt-8">
-            <a href={getPath('/kontakt', baseUrl)} class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
-              Zakaži pregled
-            </a>
-          </div>
-        </div>
-
-        <div>
-          {imageUrl && (
-            <div class="rounded-lg overflow-hidden">
-              <Image 
-                src={imageUrl} 
-                alt={`Lokacija ${location.name}`}
-                width={800}
-                height={500}
-                class="w-full h-auto"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {descriptionText && (
-        <div class="mt-12">
-          <h2 class="text-2xl font-bold text-primary mb-6">O Ovoj Lokaciji</h2>
-          <p class="text-gray-700">{descriptionText}</p>
-        </div>
-      )}
-    </div>
-  </div>
-
-  <Footer />
-</Layout>
+<LocationPage location={location} />
