@@ -2,9 +2,14 @@
 import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
 import { getPath } from '../utils/navigation';
-import { getStrapiImageUrl } from '../utils/strapi';
+import { getStrapiImageUrl, getSettings } from '../utils/strapi';
 import type { StrapiMedia } from '../types/strapi';
 const baseUrl = import.meta.env.BASE_URL;
+
+const settings = await getSettings();
+const calculatorEmail =
+  settings?.emailForCalculatorRequest || settings?.email || '';
+const strapiUrl = import.meta.env.STRAPI_URL || 'http://localhost:1337';
 
 const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
 
@@ -93,12 +98,13 @@ const shouldHaveDarkBg = !isHomePage;
           ))
         }
 
-        <a
-          href={getPath('/kontakt', baseUrl)}
-          class="ml-4 bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 group"
+        <button
+          type="button"
+          id="open-calculator-btn"
+          class="ml-4 bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 group cursor-pointer"
         >
-          Kontaktiraj nas
-        </a>
+          Kalkulator registracije
+        </button>
       </div>
 
       <div class="md:hidden">
@@ -129,16 +135,320 @@ const shouldHaveDarkBg = !isHomePage;
           </a>
         ))
       }
-      <a
-        href={getPath('/kontakt', baseUrl)}
-        class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300"
+      <button
+        type="button"
+        id="open-calculator-btn-mobile"
+        class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300 w-full cursor-pointer"
       >
-        Kontaktiraj nas
-      </a>
+        Kalkulator registracije
+      </button>
     </div>
   </div>
 </header>
 
 <script>
   import '../scripts/header';
+</script>
+
+<!-- Registration Calculator Modal -->
+<div
+  id="calculator-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center"
+>
+  <!-- Backdrop -->
+  <div
+    id="calculator-backdrop"
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+  >
+  </div>
+
+  <!-- Modal content -->
+  <div
+    class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0"
+    id="calculator-modal-content"
+    data-calculator-email={calculatorEmail}
+    data-strapi-url={strapiUrl}
+  >
+    <!-- Header -->
+    <div
+      class="flex items-center justify-between px-6 py-4 border-b border-gray-200"
+    >
+      <h2 class="text-xl font-bold text-primary">Kalkulator registracije</h2>
+      <button
+        type="button"
+        id="close-calculator-btn"
+        class="text-gray-400 hover:text-gray-600 transition p-1 cursor-pointer"
+        aria-label="Zatvori"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form id="calculator-form" class="px-6 py-5 space-y-5 max-w-md mx-auto">
+      <!-- Godište -->
+      <div>
+        <label
+          for="calc-year"
+          class="block text-sm font-semibold text-gray-700 mb-1">Godište</label
+        >
+        <select
+          id="calc-year"
+          name="year"
+          required
+          class="w-full border border-gray-300 rounded-lg px-4 pr-10 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:1.25rem]"
+        >
+          <option value="" disabled selected>Izaberi godište</option>
+        </select>
+      </div>
+
+      <!-- Zapremina ccm -->
+      <div>
+        <label
+          for="calc-ccm"
+          class="block text-sm font-semibold text-gray-700 mb-1"
+          >Zapremina (ccm)</label
+        >
+        <input
+          type="number"
+          id="calc-ccm"
+          name="ccm"
+          required
+          min="0"
+          placeholder="npr. 1598"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition"
+        />
+      </div>
+
+      <!-- Snaga kW -->
+      <div>
+        <label
+          for="calc-kw"
+          class="block text-sm font-semibold text-gray-700 mb-1"
+          >Snaga (kW)</label
+        >
+        <input
+          type="number"
+          id="calc-kw"
+          name="kw"
+          required
+          min="0"
+          placeholder="npr. 81"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition"
+        />
+      </div>
+
+      <!-- Izaberi opštinu -->
+      <div>
+        <label
+          for="calc-municipality"
+          class="block text-sm font-semibold text-gray-700 mb-1"
+          >Izaberi opštinu</label
+        >
+        <select
+          id="calc-municipality"
+          name="municipality"
+          required
+          class="w-full border border-gray-300 rounded-lg px-4 pr-10 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:1.25rem]"
+        >
+          <option value="" disabled selected>Izaberi opštinu</option>
+          <option value="Barajevo">Barajevo</option>
+          <option value="Voždovac">Voždovac</option>
+          <option value="Vračar">Vračar</option>
+          <option value="Grocka">Grocka</option>
+          <option value="Zvezdara">Zvezdara</option>
+          <option value="Zemun">Zemun</option>
+          <option value="Lazarevac">Lazarevac</option>
+          <option value="Mladenovac">Mladenovac</option>
+          <option value="Novi Beograd">Novi Beograd</option>
+          <option value="Obrenovac">Obrenovac</option>
+          <option value="Palilula">Palilula</option>
+          <option value="Rakovica">Rakovica</option>
+          <option value="Savski venac">Savski venac</option>
+          <option value="Sopot">Sopot</option>
+          <option value="Stari grad">Stari grad</option>
+          <option value="Surčin">Surčin</option>
+          <option value="Čukarica">Čukarica</option>
+        </select>
+      </div>
+
+      <!-- Kontakt telefon -->
+      <div>
+        <label
+          for="calc-phone"
+          class="block text-sm font-semibold text-gray-700 mb-1"
+          >Unesi kontakt telefon</label
+        >
+        <input
+          type="tel"
+          id="calc-phone"
+          name="phone"
+          required
+          placeholder="npr. 0611234567"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition"
+        />
+      </div>
+
+      <!-- Email (opciono) -->
+      <div>
+        <label
+          for="calc-email"
+          class="block text-sm font-semibold text-gray-700 mb-1"
+          >Unesi email
+          <span class="text-gray-400 font-normal">(opciono)</span></label
+        >
+        <input
+          type="email"
+          id="calc-email"
+          name="email"
+          placeholder="npr. ime@primer.rs"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition"
+        />
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="w-full bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white font-bold py-3 rounded-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-lg cursor-pointer"
+      >
+        Pošalji zahtev
+      </button>
+    </form>
+
+    <!-- Success message (hidden by default) -->
+    <div id="calculator-success" class="hidden px-6 py-10 text-center">
+      <div class="text-green-500 mb-4">
+        <svg
+          class="w-16 h-16 mx-auto"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <p class="text-gray-700 text-lg font-medium">
+        Uskoro ćemo vas kontaktirati sa detaljnom kalkulacijom i opcijama za
+        plaćanje.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initCalculatorModal() {
+    const modal = document.getElementById('calculator-modal');
+    const backdrop = document.getElementById('calculator-backdrop');
+    const content = document.getElementById('calculator-modal-content');
+    const form = document.getElementById(
+      'calculator-form',
+    ) as HTMLFormElement | null;
+    const success = document.getElementById('calculator-success');
+    const openBtn = document.getElementById('open-calculator-btn');
+    const openBtnMobile = document.getElementById('open-calculator-btn-mobile');
+    const closeBtn = document.getElementById('close-calculator-btn');
+    const yearSelect = document.getElementById(
+      'calc-year',
+    ) as HTMLSelectElement | null;
+
+    if (!modal || !content || !form || !success) return;
+
+    // Populate year dropdown (current year down to 1990)
+    if (yearSelect) {
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear; y >= 1950; y--) {
+        const opt = document.createElement('option');
+        opt.value = String(y);
+        opt.textContent = String(y);
+        yearSelect.appendChild(opt);
+      }
+    }
+
+    function openModal() {
+      modal!.classList.remove('hidden');
+      modal!.classList.add('flex');
+      // Trigger animation
+      requestAnimationFrame(() => {
+        content!.classList.remove('scale-95', 'opacity-0');
+        content!.classList.add('scale-100', 'opacity-100');
+      });
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      content!.classList.remove('scale-100', 'opacity-100');
+      content!.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal!.classList.add('hidden');
+        modal!.classList.remove('flex');
+        // Reset form & show form / hide success
+        form!.reset();
+        form!.classList.remove('hidden');
+        success!.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
+    openBtn?.addEventListener('click', openModal);
+    openBtnMobile?.addEventListener('click', openModal);
+    closeBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // Form submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const toEmail = content.dataset.calculatorEmail || '';
+      const strapiUrl = content.dataset.strapiUrl || '';
+      const formData = new FormData(form);
+      const data = {
+        year: formData.get('year'),
+        ccm: formData.get('ccm'),
+        kw: formData.get('kw'),
+        municipality: formData.get('municipality'),
+        phone: formData.get('phone'),
+        email: formData.get('email') || 'nije unet',
+        toEmail,
+      };
+
+      try {
+        await fetch(`${strapiUrl}/api/calculator-requests`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data }),
+        });
+      } catch (err) {
+        console.error('Failed to send calculator request:', err);
+      }
+
+      form.classList.add('hidden');
+      success.classList.remove('hidden');
+    });
+  }
+
+  // Run on initial load and on Astro client-side navigation
+  initCalculatorModal();
+  document.addEventListener('astro:after-swap', initCalculatorModal);
 </script>

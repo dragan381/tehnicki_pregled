@@ -469,6 +469,41 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCalculatorRequestCalculatorRequest
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'calculator_requests';
+  info: {
+    displayName: 'Calculator Request';
+    pluralName: 'calculator-requests';
+    singularName: 'calculator-request';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    ccm: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.String;
+    kw: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::calculator-request.calculator-request'
+    > &
+      Schema.Attribute.Private;
+    municipality: Schema.Attribute.String & Schema.Attribute.Required;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    toEmail: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   collectionName: 'faqs';
   info: {
@@ -588,6 +623,8 @@ export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
+    emailForCalculatorRequest: Schema.Attribute.Email &
+      Schema.Attribute.Required;
     googleMapsApiKey: Schema.Attribute.String;
     hero: Schema.Attribute.JSON;
     heroImage: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
@@ -1160,6 +1197,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::blog-post.blog-post': ApiBlogPostBlogPost;
+      'api::calculator-request.calculator-request': ApiCalculatorRequestCalculatorRequest;
       'api::faq.faq': ApiFaqFaq;
       'api::location.location': ApiLocationLocation;
       'api::service.service': ApiServiceService;

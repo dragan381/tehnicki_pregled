@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "calculator_requests",
+  "info": {
+    "singularName": "calculator-request",
+    "pluralName": "calculator-requests",
+    "displayName": "Calculator Request"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "year": {
+      "type": "string",
+      "required": true
+    },
+    "ccm": {
+      "type": "string",
+      "required": true
+    },
+    "kw": {
+      "type": "string",
+      "required": true
+    },
+    "municipality": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "string"
+    },
+    "toEmail": {
+      "type": "string"
+    }
+  }
+}

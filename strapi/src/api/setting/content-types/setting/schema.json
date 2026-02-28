@@ -70,6 +70,10 @@
     },
     "googleMapsApiKey": {
       "type": "string"
+    },
+    "emailForCalculatorRequest": {
+      "type": "email",
+      "required": true
     }
   }
 }

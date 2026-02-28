@@ -195,6 +195,7 @@ export interface Settings {
   logo?: StrapiMedia;
   socialLinks?: SocialLinks;
   googleMapsApiKey?: string;
+  emailForCalculatorRequest?: string;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
