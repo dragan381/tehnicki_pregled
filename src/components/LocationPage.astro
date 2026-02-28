@@ -173,5 +173,45 @@ const googleMapsLink = location.googleMapsLink || '';
     </div>
   </div>
 
+  <!-- Schema.org Structured Data for this location (dynamic from Strapi) -->
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(
+      {
+        '@context': 'https://schema.org',
+        '@type': 'AutoRepair',
+        name: `Prvi Balkan - ${location.name}`,
+        description:
+          descriptionText ||
+          `Tehnički pregled vozila - lokacija ${location.name}`,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: location.address,
+          addressCountry: 'RS',
+        },
+        telephone: location.phone,
+        email: location.email,
+        ...(location.openingHours && {
+          openingHoursSpecification: Object.entries(location.openingHours).map(
+            ([day, hours]) => ({
+              '@type': 'OpeningHoursSpecification',
+              dayOfWeek: day,
+              opens: typeof hours === 'string' ? hours.split('-')[0] : '',
+              closes: typeof hours === 'string' ? hours.split('-')[1] : '',
+            }),
+          ),
+        }),
+        ...(imageUrl && { image: imageUrl }),
+        ...(location.googleMapsLink && { hasMap: location.googleMapsLink }),
+        parentOrganization: {
+          '@type': 'Organization',
+          name: 'Prvi Balkan - Tehnički Pregled',
+        },
+      },
+      null,
+      2,
+    )}
+  />
+
   <Footer />
 </Layout>
