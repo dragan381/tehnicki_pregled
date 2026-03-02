@@ -570,6 +570,35 @@ export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiMunicipalityMunicipality
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'municipalities';
+  info: {
+    displayName: 'Municipality';
+    pluralName: 'municipalities';
+    singularName: 'municipality';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::municipality.municipality'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiServiceService extends Struct.CollectionTypeSchema {
   collectionName: 'services';
   info: {
@@ -1200,6 +1229,7 @@ declare module '@strapi/strapi' {
       'api::calculator-request.calculator-request': ApiCalculatorRequestCalculatorRequest;
       'api::faq.faq': ApiFaqFaq;
       'api::location.location': ApiLocationLocation;
+      'api::municipality.municipality': ApiMunicipalityMunicipality;
       'api::service.service': ApiServiceService;
       'api::setting.setting': ApiSettingSetting;
       'api::testimonial.testimonial': ApiTestimonialTestimonial;

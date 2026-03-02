@@ -2,11 +2,16 @@
 import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
 import { getPath } from '../utils/navigation';
-import { getStrapiImageUrl, getSettings } from '../utils/strapi';
+import {
+  getStrapiImageUrl,
+  getSettings,
+  getMunicipalities,
+} from '../utils/strapi';
 import type { StrapiMedia } from '../types/strapi';
 const baseUrl = import.meta.env.BASE_URL;
 
 const settings = await getSettings();
+const municipalities = await getMunicipalities();
 const calculatorEmail =
   settings?.emailForCalculatorRequest || settings?.email || '';
 const strapiUrl = import.meta.env.STRAPI_URL || 'http://localhost:1337';
@@ -168,6 +173,7 @@ const shouldHaveDarkBg = !isHomePage;
     id="calculator-modal-content"
     data-calculator-email={calculatorEmail}
     data-strapi-url={strapiUrl}
+    data-municipalities={JSON.stringify(municipalities.map((m) => m.name))}
   >
     <!-- Header -->
     <div
@@ -263,23 +269,6 @@ const shouldHaveDarkBg = !isHomePage;
           class="w-full border border-gray-300 rounded-lg px-4 pr-10 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:1.25rem]"
         >
           <option value="" disabled selected>Izaberi opštinu</option>
-          <option value="Barajevo">Barajevo</option>
-          <option value="Voždovac">Voždovac</option>
-          <option value="Vračar">Vračar</option>
-          <option value="Grocka">Grocka</option>
-          <option value="Zvezdara">Zvezdara</option>
-          <option value="Zemun">Zemun</option>
-          <option value="Lazarevac">Lazarevac</option>
-          <option value="Mladenovac">Mladenovac</option>
-          <option value="Novi Beograd">Novi Beograd</option>
-          <option value="Obrenovac">Obrenovac</option>
-          <option value="Palilula">Palilula</option>
-          <option value="Rakovica">Rakovica</option>
-          <option value="Savski venac">Savski venac</option>
-          <option value="Sopot">Sopot</option>
-          <option value="Stari grad">Stari grad</option>
-          <option value="Surčin">Surčin</option>
-          <option value="Čukarica">Čukarica</option>
         </select>
       </div>
 
@@ -346,109 +335,13 @@ const shouldHaveDarkBg = !isHomePage;
         Uskoro ćemo vas kontaktirati sa detaljnom kalkulacijom i opcijama za
         plaćanje.
       </p>
+      <p
+        id="calculator-email-warning"
+        class="hidden mt-3 text-amber-600 text-sm"
+      >
+        Napomena: Email obaveštenje nije uspešno poslato. Vaš zahtev je sačuvan
+        i bićete kontaktirani telefonom.
+      </p>
     </div>
   </div>
 </div>
-
-<script>
-  function initCalculatorModal() {
-    const modal = document.getElementById('calculator-modal');
-    const backdrop = document.getElementById('calculator-backdrop');
-    const content = document.getElementById('calculator-modal-content');
-    const form = document.getElementById(
-      'calculator-form',
-    ) as HTMLFormElement | null;
-    const success = document.getElementById('calculator-success');
-    const openBtn = document.getElementById('open-calculator-btn');
-    const openBtnMobile = document.getElementById('open-calculator-btn-mobile');
-    const closeBtn = document.getElementById('close-calculator-btn');
-    const yearSelect = document.getElementById(
-      'calc-year',
-    ) as HTMLSelectElement | null;
-
-    if (!modal || !content || !form || !success) return;
-
-    // Populate year dropdown (current year down to 1990)
-    if (yearSelect) {
-      const currentYear = new Date().getFullYear();
-      for (let y = currentYear; y >= 1950; y--) {
-        const opt = document.createElement('option');
-        opt.value = String(y);
-        opt.textContent = String(y);
-        yearSelect.appendChild(opt);
-      }
-    }
-
-    function openModal() {
-      modal!.classList.remove('hidden');
-      modal!.classList.add('flex');
-      // Trigger animation
-      requestAnimationFrame(() => {
-        content!.classList.remove('scale-95', 'opacity-0');
-        content!.classList.add('scale-100', 'opacity-100');
-      });
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      content!.classList.remove('scale-100', 'opacity-100');
-      content!.classList.add('scale-95', 'opacity-0');
-      setTimeout(() => {
-        modal!.classList.add('hidden');
-        modal!.classList.remove('flex');
-        // Reset form & show form / hide success
-        form!.reset();
-        form!.classList.remove('hidden');
-        success!.classList.add('hidden');
-        document.body.style.overflow = '';
-      }, 300);
-    }
-
-    openBtn?.addEventListener('click', openModal);
-    openBtnMobile?.addEventListener('click', openModal);
-    closeBtn?.addEventListener('click', closeModal);
-    backdrop?.addEventListener('click', closeModal);
-
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-        closeModal();
-      }
-    });
-
-    // Form submit
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const toEmail = content.dataset.calculatorEmail || '';
-      const strapiUrl = content.dataset.strapiUrl || '';
-      const formData = new FormData(form);
-      const data = {
-        year: formData.get('year'),
-        ccm: formData.get('ccm'),
-        kw: formData.get('kw'),
-        municipality: formData.get('municipality'),
-        phone: formData.get('phone'),
-        email: formData.get('email') || 'nije unet',
-        toEmail,
-      };
-
-      try {
-        await fetch(`${strapiUrl}/api/calculator-requests`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data }),
-        });
-      } catch (err) {
-        console.error('Failed to send calculator request:', err);
-      }
-
-      form.classList.add('hidden');
-      success.classList.remove('hidden');
-    });
-  }
-
-  // Run on initial load and on Astro client-side navigation
-  initCalculatorModal();
-  document.addEventListener('astro:after-swap', initCalculatorModal);
-</script>

@@ -12,6 +12,7 @@ export default factories.createCoreController(
       const response = await super.create(ctx);
 
       // Try to send email notification
+      let emailSent = false;
       try {
         const { toEmail, year, ccm, kw, municipality, phone, email } =
           ctx.request.body?.data || {};
@@ -33,12 +34,21 @@ export default factories.createCoreController(
               </table>
             `,
           });
+          emailSent = true;
         }
       } catch (err) {
         strapi.log.error('Failed to send calculator email:', err);
+        emailSent = false;
       }
 
-      return response;
+      // Attach email status to the response meta
+      return {
+        ...response,
+        meta: {
+          ...response.meta,
+          emailSent,
+        },
+      };
     },
   }),
 );
