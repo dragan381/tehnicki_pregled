@@ -13,6 +13,9 @@ export function initCalculatorModal() {
   const success = document.getElementById('calculator-success');
   const openBtn = document.getElementById('open-calculator-btn');
   const openBtnMobile = document.getElementById('open-calculator-btn-mobile');
+  const openBtnMobileHeader = document.getElementById(
+    'open-calculator-btn-mobile-header',
+  );
   const closeBtn = document.getElementById('close-calculator-btn');
   const yearSelect = document.getElementById(
     'calc-year',
@@ -81,6 +84,7 @@ export function initCalculatorModal() {
 
   openBtn?.addEventListener('click', openModal);
   openBtnMobile?.addEventListener('click', openModal);
+  openBtnMobileHeader?.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
   backdrop?.addEventListener('click', closeModal);
 

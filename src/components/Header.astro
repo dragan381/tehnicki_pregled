@@ -89,6 +89,17 @@ const shouldHaveDarkBg = !isHomePage;
         </a>
       </div>
 
+      {/* Mobile calculator button - between logo and hamburger */}
+      <div class="md:hidden flex-1 flex justify-end mr-3">
+        <button
+          type="button"
+          id="open-calculator-btn-mobile-header"
+          class="bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white px-3 py-1.5 rounded-lg font-semibold text-xs transition duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer"
+        >
+          Kalkulator
+        </button>
+      </div>
+
       <div class="hidden md:flex space-x-1">
         {
           links.map((link) => (
@@ -143,7 +154,7 @@ const shouldHaveDarkBg = !isHomePage;
       <button
         type="button"
         id="open-calculator-btn-mobile"
-        class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300 w-full cursor-pointer"
+        class="mobile-menu-link flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-orange-500 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-500 transition duration-300 w-full cursor-pointer hidden"
       >
         Kalkulator registracije
       </button>
