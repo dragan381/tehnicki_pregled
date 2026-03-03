@@ -89,7 +89,7 @@ const hasLocations = orderedLocations.length > 0;
               />
             </div>
             <!-- Text content: shown second on mobile (order-2), first on tablet/desktop (md:order-1) -->
-            <div class="order-2 md:order-1 relative z-10">
+            <div class="order-2 md:order-1 relative z-10 flex flex-col items-center md:items-start">
               <HeroSlideText
                 order={location.order ?? index + 1}
                 name={location.name}

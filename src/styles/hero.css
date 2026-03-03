@@ -41,7 +41,7 @@
 /* ===== Mobile slides container: relative height auto ===== */
 .hero-slides-container {
   position: relative;
-  min-height: 320px;
+  min-height: 380px;
 }
 
 @media (min-width: 768px) {
