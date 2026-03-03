@@ -50,7 +50,7 @@
       "type": "json"
     },
     "googleMapsLink": {
-      "type": "string"
+      "type": "text"
     }
   }
 }
