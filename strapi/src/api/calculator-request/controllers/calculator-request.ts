@@ -19,12 +19,21 @@ export default factories.createCoreController(
 
         // Log email provider info for debugging
         const emailPlugin = strapi.plugins['email'];
+        const emailConfig = strapi.config.get('plugin::email') as any;
         strapi.log.info(`Email plugin loaded: ${!!emailPlugin}`);
         strapi.log.info(
-          `Email provider: ${strapi.config.get('plugin::email.config.provider', 'not set')}`,
+          `Email config: ${JSON.stringify(emailConfig?.config?.provider || emailConfig?.provider || 'not found')}`,
         );
-        strapi.log.info(`SMTP_HOST env: ${!!process.env.SMTP_HOST}`);
-        strapi.log.info(`SMTP_USERNAME env: ${!!process.env.SMTP_USERNAME}`);
+        strapi.log.info(`SMTP_HOST: ${process.env.SMTP_HOST || 'not set'}`);
+        strapi.log.info(`SMTP_PORT: ${process.env.SMTP_PORT || 'not set'}`);
+        strapi.log.info(`SMTP_SECURE: ${process.env.SMTP_SECURE || 'not set'}`);
+        strapi.log.info(
+          `SMTP_USERNAME: ${process.env.SMTP_USERNAME ? 'set' : 'not set'}`,
+        );
+        strapi.log.info(
+          `SMTP_PASSWORD: ${process.env.SMTP_PASSWORD ? 'set' : 'not set'}`,
+        );
+        strapi.log.info(`Sending to: ${toEmail}`);
 
         if (toEmail) {
           await strapi.plugins['email']?.services.email.send({
