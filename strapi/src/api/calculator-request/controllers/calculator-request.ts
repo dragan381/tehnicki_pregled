@@ -17,6 +17,15 @@ export default factories.createCoreController(
         const { toEmail, year, ccm, kw, municipality, phone, email } =
           ctx.request.body?.data || {};
 
+        // Log email provider info for debugging
+        const emailPlugin = strapi.plugins['email'];
+        strapi.log.info(`Email plugin loaded: ${!!emailPlugin}`);
+        strapi.log.info(
+          `Email provider: ${strapi.config.get('plugin::email.config.provider', 'not set')}`,
+        );
+        strapi.log.info(`SMTP_HOST env: ${!!process.env.SMTP_HOST}`);
+        strapi.log.info(`SMTP_USERNAME env: ${!!process.env.SMTP_USERNAME}`);
+
         if (toEmail) {
           await strapi.plugins['email']?.services.email.send({
             to: toEmail,
