@@ -11,7 +11,7 @@ export default ({ env }) => ({
           pass: env('SMTP_PASSWORD'),
         },
         tls: {
-          rejectUnauthorized: false,
+          rejectUnauthorized: true,
         },
       },
       settings: {
