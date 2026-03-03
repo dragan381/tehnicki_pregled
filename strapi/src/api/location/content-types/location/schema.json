@@ -48,9 +48,6 @@
     },
     "openingHours": {
       "type": "json"
-    },
-    "googleMapsLink": {
-      "type": "text"
     }
   }
 }
