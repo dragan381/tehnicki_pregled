@@ -5,6 +5,7 @@ import { getServices, blocksToText } from '../utils/strapi';
 
 const baseUrl = import.meta.env.BASE_URL;
 const services = await getServices();
+const showCarousel = services.length > 3;
 
 // Icon color classes based on index
 const iconClasses = [
@@ -16,28 +17,62 @@ const iconClasses = [
 ---
 
 <section class="py-16 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-card-carousel={showCarousel ? 'services' : undefined}>
     <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-primary">Naše Usluge</h2>
     <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Pružamo kompletan spektar usluga tehničkog pregleda vozila sa visoko osposobljenim tehničarima i modernom opremom.</p>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      {services.slice(0, 4).map((service, index) => {
-        const iconClass = iconClasses[index % iconClasses.length];
-        return (
-          <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group" style={`animation-delay: ${index * 0.1}s`}>
-            <div class={`inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br ${iconClass.bg} mb-4 group-hover:bg-gradient-to-tr group-hover:${iconClass.shadow} transition duration-300`}>
-              <Icon name={service.icon || 'miscellaneous_services'} class={`${iconClass.text} group-hover:animate-iconFloat`} size="xl" />
+    {showCarousel ? (
+      <div class="relative">
+        <!-- Arrows -->
+        <button type="button" data-carousel-prev class="hidden md:inline-flex absolute -left-4 lg:-left-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg items-center justify-center text-primary hover:bg-gray-50 transition cursor-pointer">
+          <Icon name="chevron_right" class="rotate-180" />
+        </button>
+        <button type="button" data-carousel-next class="hidden md:inline-flex absolute -right-4 lg:-right-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg items-center justify-center text-primary hover:bg-gray-50 transition cursor-pointer">
+          <Icon name="chevron_right" />
+        </button>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-carousel-track>
+          {services.map((service, index) => {
+            const iconClass = iconClasses[index % iconClasses.length];
+            return (
+              <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 group" data-carousel-card>
+                <div class={`inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br ${iconClass.bg} mb-4 group-hover:bg-gradient-to-tr transition duration-300`}>
+                  <Icon name={service.icon || 'miscellaneous_services'} class={`${iconClass.text}`} size="xl" />
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-primary">{service.title}</h3>
+                <p class="text-gray-600 mb-4">{blocksToText(service.description).substring(0, 100)}...</p>
+                <a href={getPath('/usluge', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
+                  Saznaj više
+                  <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
+                </a>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- Dots -->
+        <div class="flex items-center justify-center gap-2 mt-8" data-carousel-dots></div>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.map((service, index) => {
+          const iconClass = iconClasses[index % iconClasses.length];
+          return (
+            <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition duration-300 animate-slideUp group" style={`animation-delay: ${index * 0.1}s`}>
+              <div class={`inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-br ${iconClass.bg} mb-4 group-hover:bg-gradient-to-tr transition duration-300`}>
+                <Icon name={service.icon || 'miscellaneous_services'} class={`${iconClass.text}`} size="xl" />
+              </div>
+              <h3 class="text-xl font-bold mb-2 text-primary">{service.title}</h3>
+              <p class="text-gray-600 mb-4">{blocksToText(service.description).substring(0, 100)}...</p>
+              <a href={getPath('/usluge', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
+                Saznaj više
+                <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
+              </a>
             </div>
-            <h3 class="text-xl font-bold mb-2 text-primary">{service.title}</h3>
-            <p class="text-gray-600 mb-4">{blocksToText(service.description).substring(0, 100)}...</p>
-            <a href={getPath('/usluge', baseUrl)} class="inline-flex items-center text-accent hover:text-orange-600 transition group">
-              Saznaj više
-              <Icon name="arrow_forward" size="sm" class="ml-2 group-hover:translate-x-1 transition" />
-            </a>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    )}
 
     <div class="text-center mt-12">
       <a href={getPath('/usluge', baseUrl)} class="inline-block bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105">
@@ -49,3 +84,8 @@ const iconClasses = [
     </div>
   </div>
 </section>
+
+<script>
+  import { initCardCarousel } from '../scripts/cardCarousel';
+  initCardCarousel('[data-card-carousel="services"]');
+</script>

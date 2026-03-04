@@ -5,11 +5,11 @@
 /* Use Inter font for all text with system font fallbacks */
 body {
   font-family:
-    "Inter",
+    'Inter',
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
+    'Segoe UI',
     sans-serif;
   @apply font-sans;
 }
@@ -21,4 +21,23 @@ h4,
 h5,
 h6 {
   @apply font-bold;
+}
+
+/* Card carousel dots */
+.carousel-dot {
+  width: 28px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.4);
+  transition:
+    background 200ms ease,
+    width 200ms ease;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.carousel-dot.is-active {
+  width: 42px;
+  background: #f97316;
 }
