@@ -55,6 +55,8 @@ export function initCalculatorModal() {
     }
   }
 
+  let isSending = false;
+
   function openModal() {
     modal!.classList.remove('hidden');
     modal!.classList.add('flex');
@@ -67,6 +69,7 @@ export function initCalculatorModal() {
   }
 
   function closeModal() {
+    if (isSending) return; // Block closing while sending
     content!.classList.remove('scale-100', 'opacity-100');
     content!.classList.add('scale-95', 'opacity-0');
     setTimeout(() => {
@@ -98,6 +101,12 @@ export function initCalculatorModal() {
   // Form submit
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const loadingOverlay = document.getElementById('calculator-loading');
+
+    // Show loading overlay, block interactions
+    isSending = true;
+    if (loadingOverlay) loadingOverlay.classList.remove('hidden');
 
     const toEmail = content.dataset.calculatorEmail || '';
     const strapiUrl = content.dataset.strapiUrl || '';
@@ -134,6 +143,10 @@ export function initCalculatorModal() {
       console.error('Failed to send calculator request:', err);
       emailFailed = true;
     }
+
+    // Hide loading overlay
+    isSending = false;
+    if (loadingOverlay) loadingOverlay.classList.add('hidden');
 
     form.classList.add('hidden');
     success.classList.remove('hidden');

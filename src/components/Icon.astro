@@ -20,7 +20,9 @@ const sizeClasses = {
 };
 
 // Size prop is optional - if not provided, rely on className for sizing
-const sizeClass = size ? sizeClasses[size] : '';
+// Skip default sizeClass if className already contains width/height classes
+const hasCustomSize = /\bw-|\bh-/.test(className);
+const sizeClass = !hasCustomSize && size ? sizeClasses[size] : '';
 
 const icons: Record<string, string> = {
   menu: '<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>',
