@@ -62,6 +62,11 @@ if (baseUrl && baseUrl !== '/' && currentPath.startsWith(baseUrl)) {
   </body>
 </html>
 
+<script>
+  import { injectSpeedInsights } from '@vercel/speed-insights';
+  injectSpeedInsights();
+</script>
+
 <style is:global>
   html {
     scroll-behavior: smooth;

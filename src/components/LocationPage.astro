@@ -17,9 +17,26 @@ const settings = await getSettings();
 
 const imageUrl = getStrapiImageUrl(location.image);
 const descriptionText = blocksToText(location.description);
-const googleMapsApiKey = settings?.googleMapsApiKey || '';
-const googleMapsLink = location.googleMapsLink || '';
-console.log('Google Maps Link:', googleMapsLink);
+
+// Google Maps: API key from env var, with Strapi fallback
+// IMPORTANT: Restrict this key in Google Cloud Console → API restrictions → Maps Embed API only
+// and HTTP referrer restrictions → your Vercel domain (e.g. *.vercel.app/*, yourdomain.rs/*)
+const googleMapsApiKey = import.meta.env.GOOGLE_MAPS_API_KEY || settings?.googleMapsApiKey || '';
+const rawMapsLink = location.googleMapsLink || '';
+
+// Ensure the embed URL uses the API key from environment
+const googleMapsLink = (() => {
+  if (!rawMapsLink) return '';
+  try {
+    const url = new URL(rawMapsLink);
+    if (googleMapsApiKey && !url.searchParams.has('key')) {
+      url.searchParams.set('key', googleMapsApiKey);
+    }
+    return url.toString();
+  } catch {
+    return rawMapsLink;
+  }
+})();
 ---
 
 <Layout

@@ -1,17 +1,21 @@
 // @ts-check
-import { defineConfig } from "astro/config";
-import tailwind from "@astrojs/tailwind";
+import { defineConfig } from 'astro/config';
+import tailwind from '@astrojs/tailwind';
+import vercel from '@astrojs/vercel';
+
+const isVercel = !!process.env.VERCEL;
 
 // https://astro.build/config
-// In GitHub Actions: site and base are set via environment
-// In local development: site is used as-is, base defaults to "/"
 export default defineConfig({
   integrations: [tailwind()],
-  site: "https://dragan381.github.io",
-  base: process.env.GITHUB_ACTIONS ? "/tehnicki_pregled" : "/",
-  trailingSlash: "ignore",
-  output: "static",
+  site: isVercel
+    ? process.env.SITE_URL || 'https://tehnicki-pregled.vercel.app'
+    : 'https://dragan381.github.io',
+  base: process.env.GITHUB_ACTIONS ? '/tehnicki_pregled' : '/',
+  trailingSlash: 'ignore',
+  output: 'static',
+  ...(isVercel && { adapter: vercel() }),
   image: {
-    remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
+    remotePatterns: [{ protocol: 'http' }, { protocol: 'https' }],
   },
 });
