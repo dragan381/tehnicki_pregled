@@ -9,7 +9,6 @@ import type {
   Testimonial,
   FAQ,
   BlogPost,
-  Municipality,
   Settings,
   StrapiResponse,
   StrapiSingleResponse,
@@ -207,10 +206,6 @@ export async function getBlogPostBySlug(
     filters: { slug: { $eq: slug } },
   });
   return posts[0] || null;
-}
-
-export async function getMunicipalities(): Promise<Municipality[]> {
-  return fetchFromStrapi('municipalities', { sort: 'name:asc' });
 }
 
 export async function getSettings(): Promise<Settings | null> {

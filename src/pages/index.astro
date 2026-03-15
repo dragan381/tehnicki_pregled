@@ -35,10 +35,9 @@ const heroBackgroundImage = settings?.hero?.image
   : 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=600&fit=crop';
 const showSpecialOfferSection = settings?.showSpecialOfferSection ?? false;
 const showLocationSection = settings?.showLocationSection ?? false;
-const logo = settings?.logo;
 ---
 
-<Layout {title} {description} {logo}>
+<Layout {title} {description}>
   <SEO />
   <Hero
     title={heroTitle}
@@ -65,7 +64,7 @@ const logo = settings?.logo;
 
   <section class="py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold text-center mb-8">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-primary">
         Zašto Izabrati Prvi Balkan?
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -76,7 +75,7 @@ const logo = settings?.logo;
               class="text-primary w-24 h-24 md:w-28 md:h-28"
             />
           </div>
-          <h3 class="text-xl font-semibold mb-2">Brz Servis</h3>
+          <h3 class="text-xl font-bold mb-2 text-primary">Brz Servis</h3>
           <p class="text-gray-600">
             Završavamo pregled u svega 30-60 minuta. Nema čekanja bez
             zakazivanja.
@@ -89,7 +88,7 @@ const logo = settings?.logo;
               class="text-primary w-24 h-24 md:w-28 md:h-28"
             />
           </div>
-          <h3 class="text-xl font-semibold mb-2">Pouzdanost</h3>
+          <h3 class="text-xl font-bold mb-2 text-primary">Pouzdanost</h3>
           <p class="text-gray-600">
             Certifikovani tehničari sa godinama iskustva. Sve prema zvaničnim
             standardima.
@@ -102,7 +101,7 @@ const logo = settings?.logo;
               class="text-primary w-24 h-24 md:w-28 md:h-28"
             />
           </div>
-          <h3 class="text-xl font-semibold mb-2">Najbolje Cene</h3>
+          <h3 class="text-xl font-bold mb-2 text-primary">Najbolje Cene</h3>
           <p class="text-gray-600">
             Konkurentne cene bez skrivenih troškova. Transparentan cenovnik.
           </p>
@@ -118,7 +117,7 @@ const logo = settings?.logo;
 
   <section class="py-16 bg-primary text-white">
     <div class="max-w-4xl mx-auto text-center px-4">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
         Spreman za Tehnički Pregled?
       </h2>
       <p class="text-lg mb-8 text-blue-100">

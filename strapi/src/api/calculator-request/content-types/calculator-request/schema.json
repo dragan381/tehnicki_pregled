@@ -23,7 +23,7 @@
       "type": "string",
       "required": true
     },
-    "municipality": {
+    "location": {
       "type": "string",
       "required": true
     },

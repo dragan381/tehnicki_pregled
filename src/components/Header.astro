@@ -2,19 +2,16 @@
 import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
 import { getPath } from '../utils/navigation';
-import {
-  getStrapiImageUrl,
-  getSettings,
-  getMunicipalities,
-} from '../utils/strapi';
+import { getStrapiImageUrl, getSettings, getLocations } from '../utils/strapi';
 import type { StrapiMedia } from '../types/strapi';
 const baseUrl = import.meta.env.BASE_URL;
 
-const settings = await getSettings();
-const municipalities = await getMunicipalities();
-const calculatorEmail =
-  settings?.emailForCalculatorRequest || settings?.email || '';
 const strapiUrl = import.meta.env.STRAPI_URL || 'http://localhost:1337';
+const locations = await getLocations();
+const locationOptions = locations.map((l) => ({
+  label: `${l.name} - ${l.address}`,
+  email: l.email,
+}));
 
 const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
 
@@ -182,9 +179,8 @@ const shouldHaveDarkBg = !isHomePage;
   <div
     class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0"
     id="calculator-modal-content"
-    data-calculator-email={calculatorEmail}
     data-strapi-url={strapiUrl}
-    data-municipalities={JSON.stringify(municipalities.map((m) => m.name))}
+    data-locations={JSON.stringify(locationOptions)}
   >
     <!-- Header -->
     <div
@@ -266,20 +262,20 @@ const shouldHaveDarkBg = !isHomePage;
         />
       </div>
 
-      <!-- Izaberi opštinu -->
+      <!-- Izaberi lokaciju -->
       <div>
         <label
-          for="calc-municipality"
+          for="calc-location"
           class="block text-sm font-semibold text-gray-700 mb-1"
-          >Izaberi opštinu</label
+          >Izaberi lokaciju</label
         >
         <select
-          id="calc-municipality"
-          name="municipality"
+          id="calc-location"
+          name="location"
           required
           class="w-full border border-gray-300 rounded-lg px-4 pr-10 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:1.25rem]"
         >
-          <option value="" disabled selected>Izaberi opštinu</option>
+          <option value="" disabled selected>Izaberi lokaciju</option>
         </select>
       </div>
 

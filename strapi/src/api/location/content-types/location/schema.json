@@ -27,7 +27,8 @@
       "type": "string"
     },
     "email": {
-      "type": "email"
+      "type": "email",
+      "required": true
     },
     "order": {
       "type": "integer",

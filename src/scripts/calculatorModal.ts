@@ -34,24 +34,27 @@ export function initCalculatorModal() {
     }
   }
 
-  // Populate municipality dropdown from Strapi data
-  const municipalitySelect = document.getElementById(
-    'calc-municipality',
+  // Populate location dropdown from Strapi data
+  const locationSelect = document.getElementById(
+    'calc-location',
   ) as HTMLSelectElement | null;
 
-  if (municipalitySelect && municipalitySelect.options.length <= 1) {
+  let locationEmailMap: Record<string, string> = {};
+
+  if (locationSelect && locationSelect.options.length <= 1) {
     try {
-      const municipalities: string[] = JSON.parse(
-        content.dataset.municipalities || '[]',
+      const locations: { label: string; email: string }[] = JSON.parse(
+        content.dataset.locations || '[]',
       );
-      for (const name of municipalities) {
+      for (const loc of locations) {
         const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        municipalitySelect.appendChild(opt);
+        opt.value = loc.label;
+        opt.textContent = loc.label;
+        locationSelect.appendChild(opt);
+        locationEmailMap[loc.label] = loc.email;
       }
     } catch (err) {
-      console.error('Failed to parse municipalities data:', err);
+      console.error('Failed to parse locations data:', err);
     }
   }
 
@@ -108,14 +111,15 @@ export function initCalculatorModal() {
     isSending = true;
     if (loadingOverlay) loadingOverlay.classList.remove('hidden');
 
-    const toEmail = content.dataset.calculatorEmail || '';
     const strapiUrl = content.dataset.strapiUrl || '';
     const formData = new FormData(form);
+    const selectedLocation = (formData.get('location') as string) || '';
+    const toEmail = locationEmailMap[selectedLocation] || '';
     const data = {
       year: formData.get('year'),
       ccm: formData.get('ccm'),
       kw: formData.get('kw'),
-      municipality: formData.get('municipality'),
+      location: selectedLocation,
       phone: formData.get('phone'),
       email: formData.get('email') || 'nije unet',
       toEmail,

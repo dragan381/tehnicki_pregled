@@ -130,17 +130,6 @@ export interface FAQ {
   publishedAt?: string;
 }
 
-// ===== Municipality Type =====
-
-export interface Municipality {
-  id: number;
-  documentId: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt?: string;
-}
-
 // ===== Blog Post Type =====
 
 export interface BlogPost {
@@ -207,7 +196,6 @@ export interface Settings {
   logo?: StrapiMedia;
   socialLinks?: SocialLinks;
   googleMapsApiKey?: string;
-  emailForCalculatorRequest?: string;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;

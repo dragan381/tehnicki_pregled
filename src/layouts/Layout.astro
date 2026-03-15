@@ -2,19 +2,20 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import type { StrapiMedia } from '../types/strapi';
+import { getSettings } from '../utils/strapi';
 
 interface Props {
   title?: string;
   description?: string;
-  logo?: StrapiMedia;
 }
 
 const {
   title = 'Prvi Balkan - Tehnički Pregled Vozila',
   description = 'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu.',
-  logo,
 } = Astro.props;
+
+const settings = await getSettings();
+const logo = settings?.logo;
 
 // Get current URL path for breadcrumbs
 let currentPath = new URL(Astro.request.url).pathname;
