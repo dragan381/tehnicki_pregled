@@ -1,0 +1,507 @@
+---
+import { getPath } from '../../utils/navigation';
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import Footer from '../../components/Footer.astro';
+import { getLocations, getServices, getServiceBySlug, blocksToText, getStrapiImageUrl } from '../../utils/strapi';
+
+const baseUrl = import.meta.env.BASE_URL;
+const locations = await getLocations();
+const services = await getServices();
+
+// Try to get the specific "tehnicki-pregled" service from Strapi
+const currentService = await getServiceBySlug('tehnicki-pregled');
+const serviceTitle = currentService?.title || 'Tehnički Pregled';
+const serviceDescription = currentService ? blocksToText(currentService.description) : '';
+const serviceFeatures = currentService?.features?.features || [];
+const servicePrice = currentService?.price;
+
+const siteUrl = 'https://prvibalkan.rs';
+const pageUrl = `${siteUrl}/tehnicki-pregled-beograd`;
+---
+
+<Layout
+  title="Tehnički Pregled Vozila Beograd - Prvi Balkan | 3 Lokacije"
+  description="Tehnički pregled vozila u Beogradu na 3 lokacije - Zemun, Voždovac, Ugrinovačka. Brza usluga, povoljne cene, sertifikovani stručnjaci. Zakažite termin danas!"
+>
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 bg-gradient-to-b from-blue-50 to-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-12 animate-fadeIn">
+        <h1 class="text-4xl md:text-5xl font-bold text-primary mb-4">
+          Tehnički Pregled Vozila u Beogradu
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-6 animate-slideUp" style="animation-delay: 0.1s">
+          Obavite tehnički pregled vozila brzo i povoljno na jednoj od naše <strong>3 lokacije u Beogradu</strong>.
+          Sertifikovani stručnjaci, moderna oprema, bez dugih čekanja.
+        </p>
+        <div class="flex justify-center gap-4 flex-wrap animate-slideUp" style="animation-delay: 0.2s">
+          <div class="flex items-center gap-2 text-gray-700">
+            <Icon name="check_circle" class="text-accent" size="sm" />
+            <span>Bez zakazivanja</span>
+          </div>
+          <div class="flex items-center gap-2 text-gray-700">
+            <Icon name="schedule" class="text-accent" size="sm" />
+            <span>Gotovo za 30 minuta</span>
+          </div>
+          <div class="flex items-center gap-2 text-gray-700">
+            <Icon name="verified_user" class="text-accent" size="sm" />
+            <span>Ovlašćena stanica</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="flex justify-center gap-4 flex-wrap animate-slideUp" style="animation-delay: 0.3s">
+        <a href="#lokacije" class="inline-block bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105">
+          Pronađi najbližu lokaciju
+        </a>
+        <a href={getPath('/kontakt', baseUrl)} class="inline-block border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-8 rounded-lg transition">
+          Zakaži termin
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- What is Tehnicki Pregled Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-primary mb-6 animate-fadeIn">
+        Šta je tehnički pregled vozila?
+      </h2>
+      <div class="prose prose-lg text-gray-700 animate-slideUp" style="animation-delay: 0.1s">
+        <p>
+          Tehnički pregled je zakonski obavezan postupak provere ispravnosti vozila koji se mora obaviti jednom godišnje
+          za registrovana vozila. Pregled obuhvata proveru <strong>kočionog sistema</strong>, <strong>svetlosne signalizacije</strong>,
+          <strong>upravljačkog mehanizma</strong>, <strong>sistema za oslanjanje</strong>, <strong>izduvnog sistema</strong> i
+          <strong>opšte bezbednosti vozila</strong>.
+        </p>
+        {serviceDescription && (
+          <p>{serviceDescription}</p>
+        )}
+        <p>
+          U centru <strong>Prvi Balkan</strong> tehnički pregled se obavlja brzo i efikasno, najčešće za manje od 30 minuta.
+          Naši tehničari su sertifikovani i koriste najsavremeniju dijagnostičku opremu.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What You Need Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-primary mb-12 animate-fadeIn">
+        Šta vam je potrebno za tehnički pregled?
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 animate-slideUp">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4">
+            <Icon name="description" class="text-primary" />
+          </div>
+          <h3 class="text-lg font-bold text-primary mb-2">Saobraćajna dozvola</h3>
+          <p class="text-gray-600 text-sm">Originalna saobraćajna dozvola ili potvrda o registraciji vozila.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 animate-slideUp" style="animation-delay: 0.1s">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
+            <Icon name="verified_user" class="text-accent" />
+          </div>
+          <h3 class="text-lg font-bold text-primary mb-2">Lična karta</h3>
+          <p class="text-gray-600 text-sm">Važeći identifikacioni dokument vlasnika ili korisnika vozila.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 animate-slideUp" style="animation-delay: 0.2s">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
+            <Icon name="directions_car" class="text-green-600" />
+          </div>
+          <h3 class="text-lg font-bold text-primary mb-2">Vozilo</h3>
+          <p class="text-gray-600 text-sm">Vozilo mora biti čisto i u voznom stanju za obavljanje pregleda.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 animate-slideUp" style="animation-delay: 0.3s">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 mb-4">
+            <Icon name="attach_money" class="text-purple-600" />
+          </div>
+          <h3 class="text-lg font-bold text-primary mb-2">Uplata takse</h3>
+          <p class="text-gray-600 text-sm">Potvrda o uplati republičke administrativne takse (može se platiti na licu mesta).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Features -->
+  {serviceFeatures.length > 0 && (
+    <section class="py-16 bg-white">
+      <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-primary mb-8 animate-fadeIn">
+          Šta obuhvata tehnički pregled?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {serviceFeatures.map((feature: string, index: number) => (
+            <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg animate-slideUp" style={`animation-delay: ${index * 0.05}s`}>
+              <Icon name="check_circle" class="text-accent flex-shrink-0" />
+              <span class="text-gray-700 font-medium">{feature}</span>
+            </div>
+          ))}
+        </div>
+        {servicePrice && (
+          <div class="mt-8 text-center">
+            <p class="text-2xl font-bold text-primary">
+              Cena: <span class="text-accent">{servicePrice} RSD</span>
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- Locations Section -->
+  <section id="lokacije" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-primary mb-4 animate-fadeIn">
+        Gde možete obaviti tehnički pregled u Beogradu?
+      </h2>
+      <p class="text-center text-gray-600 mb-12 animate-slideUp" style="animation-delay: 0.1s">
+        Izaberite lokaciju koja vam je najbliža — sve su opremljene istom modernom opremom.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {locations.map((location, index) => (
+          <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden animate-slideUp" style={`animation-delay: ${index * 0.1}s`}>
+            <!-- Location header -->
+            <div class="bg-primary text-white p-6">
+              <h3 class="text-xl font-bold mb-1">{location.name}</h3>
+              <p class="text-blue-200 text-sm flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+                {location.address}
+              </p>
+            </div>
+
+            <!-- Location details -->
+            <div class="p-6 space-y-4">
+              {location.phone && (
+                <div class="flex items-center gap-3">
+                  <Icon name="phone" class="text-accent flex-shrink-0" size="sm" />
+                  <a href={`tel:${location.phone.replace(/[\s\-\(\)]/g, '')}`} class="text-gray-700 hover:text-accent transition">
+                    {location.phone}
+                  </a>
+                </div>
+              )}
+              {location.email && (
+                <div class="flex items-center gap-3">
+                  <Icon name="mail" class="text-accent flex-shrink-0" size="sm" />
+                  <a href={`mailto:${location.email}`} class="text-gray-700 hover:text-accent transition text-sm">
+                    {location.email}
+                  </a>
+                </div>
+              )}
+              {location.openingHours && (
+                <div class="border-t pt-4 mt-4">
+                  <p class="text-sm font-semibold text-gray-500 mb-2 flex items-center gap-1">
+                    <Icon name="schedule" class="text-accent" size="sm" />
+                    Radno vreme
+                  </p>
+                  <ul class="space-y-1 text-sm">
+                    {Object.entries(location.openingHours).map(([day, hours]) => (
+                      <li class="flex justify-between">
+                        <span class="text-gray-600">{day}</span>
+                        <span class="font-mono text-gray-700">{hours}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <a
+                href={getPath(`/lokacije/${location.slug}`, baseUrl)}
+                class="block text-center bg-accent hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition mt-4"
+              >
+                Detaljnije o lokaciji →
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Steps -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-primary mb-12 animate-fadeIn">
+        Kako izgleda tehnički pregled?
+      </h2>
+      <div class="space-y-8">
+        <div class="flex gap-6 animate-slideUp">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">1</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">Dolazak na stanicu</h3>
+            <p class="text-gray-600">Dođite na jednu od naših 3 lokacije u Beogradu sa potrebnim dokumentima. Nije potrebno zakazivanje — primamo stranke po redosledu dolaska.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 animate-slideUp" style="animation-delay: 0.1s">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">2</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">Prijem vozila</h3>
+            <p class="text-gray-600">Predajete dokumenta na šalteru, vozilo se uvodi u halu za pregled. Naš tim proverava identifikacione podatke vozila.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 animate-slideUp" style="animation-delay: 0.2s">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">3</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">Tehnički pregled</h3>
+            <p class="text-gray-600">Stručni tehničari proveravaju kočnice, svetla, upravljač, oslanjanje, izduvni sistem i opštu bezbednost vozila na savremenoj opremi.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-6 animate-slideUp" style="animation-delay: 0.3s">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center font-bold text-lg">4</div>
+          <div>
+            <h3 class="text-xl font-bold text-primary mb-2">Izdavanje potvrde</h3>
+            <p class="text-gray-600">Ukoliko vozilo prođe pregled, dobijate potvrdu o tehničkoj ispravnosti. Sa njom možete nastaviti proces registracije vozila.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-primary mb-12 animate-fadeIn">
+        Česta pitanja o tehničkom pregledu
+      </h2>
+      <div class="space-y-4">
+        <details class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 group cursor-pointer" open>
+          <summary class="flex items-center justify-between font-bold text-primary">
+            <span class="flex items-center gap-3">
+              <Icon name="help" size="lg" />
+              Koliko traje tehnički pregled?
+            </span>
+            <Icon name="expand_more" class="transition duration-300 group-open:rotate-180" />
+          </summary>
+          <p class="text-gray-600 mt-4 ml-10">Tehnički pregled u proseku traje 20-30 minuta. Vreme zavisi od tipa vozila i gužve na stanici. U našim centrima radimo efikasno da skratimo čekanje na minimum.</p>
+        </details>
+
+        <details class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between font-bold text-primary">
+            <span class="flex items-center gap-3">
+              <Icon name="help" size="lg" />
+              Šta ako vozilo ne prođe tehnički pregled?
+            </span>
+            <Icon name="expand_more" class="transition duration-300 group-open:rotate-180" />
+          </summary>
+          <p class="text-gray-600 mt-4 ml-10">Ukoliko vozilo ne prođe pregled, dobićete detaljan izveštaj o neispravnostima koje je potrebno otkloniti. Nakon popravke, možete ponovo doći na kontrolni pregled u roku od 15 dana bez dodatne naplate pregleda.</p>
+        </details>
+
+        <details class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between font-bold text-primary">
+            <span class="flex items-center gap-3">
+              <Icon name="help" size="lg" />
+              Da li je potrebno zakazivanje?
+            </span>
+            <Icon name="expand_more" class="transition duration-300 group-open:rotate-180" />
+          </summary>
+          <p class="text-gray-600 mt-4 ml-10">Nije obavezno — primamo stranke po redosledu dolaska. Ipak, ukoliko želite da izbegnete čekanje, možete nas kontaktirati telefonom i zakazati termin koji vam odgovara.</p>
+        </details>
+
+        <details class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between font-bold text-primary">
+            <span class="flex items-center gap-3">
+              <Icon name="help" size="lg" />
+              Koliko važi tehnički pregled?
+            </span>
+            <Icon name="expand_more" class="transition duration-300 group-open:rotate-180" />
+          </summary>
+          <p class="text-gray-600 mt-4 ml-10">Tehnički pregled važi godinu dana od datuma izdavanja potvrde. Za nova vozila, prvi pregled se obavlja nakon 3 godine od prve registracije.</p>
+        </details>
+
+        <details class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between font-bold text-primary">
+            <span class="flex items-center gap-3">
+              <Icon name="help" size="lg" />
+              Koje tipove vozila pregledamo?
+            </span>
+            <Icon name="expand_more" class="transition duration-300 group-open:rotate-180" />
+          </summary>
+          <p class="text-gray-600 mt-4 ml-10">Vršimo tehnički pregled svih kategorija putničkih vozila, lakih teretnih vozila, motocikala i prikolica. Za specijalna i teška teretna vozila, kontaktirajte nas za više informacija.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Other Services -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-primary mb-8 animate-fadeIn">
+        Ostale usluge
+      </h2>
+      <p class="text-center text-gray-600 mb-12">
+        Pored tehničkog pregleda, nudimo i kompletnu uslugu registracije vozila na istoj lokaciji.
+      </p>
+      <div class="flex justify-center gap-6 flex-wrap">
+        <a href={getPath('/registracija-vozila-beograd', baseUrl)} class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-6 transition group max-w-sm">
+          <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-accent transition">Registracija vozila →</h3>
+          <p class="text-gray-600 text-sm">Kompletna usluga registracije vozila na sve tri lokacije u Beogradu.</p>
+        </a>
+        <a href={getPath('/usluge', baseUrl)} class="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-6 transition group max-w-sm">
+          <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-accent transition">Sve usluge →</h3>
+          <p class="text-gray-600 text-sm">Pregledajte kompletnu listu naših usluga i cene.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-gradient-to-r from-primary to-secondary text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center animate-slideUp">
+      <h2 class="text-3xl font-bold mb-4">
+        Zakažite tehnički pregled danas
+      </h2>
+      <p class="text-lg mb-8 text-blue-100">
+        Pozovite nas ili dođite na jednu od naših lokacija — bez čekanja, bez komplikacija.
+      </p>
+      <div class="flex justify-center gap-4 flex-wrap">
+        <a
+          href="tel:+381112101111"
+          class="inline-flex items-center gap-2 bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105"
+        >
+          <Icon name="phone" />
+          Pozovite nas
+        </a>
+        <a
+          href={getPath('/kontakt', baseUrl)}
+          class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold py-3 px-8 rounded-lg transition"
+        >
+          <Icon name="mail" />
+          Kontakt forma
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schema.org Structured Data -->
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: 'Tehnički pregled vozila Beograd',
+        description: 'Tehnički pregled vozila u Beogradu na 3 lokacije - brza usluga, povoljne cene, sertifikovani stručnjaci.',
+        serviceType: 'Tehnički pregled vozila',
+        url: pageUrl,
+        areaServed: {
+          '@type': 'City',
+          name: 'Beograd',
+          '@id': 'https://www.wikidata.org/wiki/Q3711',
+        },
+        provider: {
+          '@type': 'AutoRepair',
+          name: 'Prvi Balkan - Tehnički Pregled',
+          url: siteUrl,
+          telephone: '+381112101111',
+          priceRange: '$$',
+          address: locations.map((loc) => ({
+            '@type': 'PostalAddress',
+            streetAddress: loc.address,
+            addressLocality: 'Beograd',
+            addressCountry: 'RS',
+          })),
+          department: locations.map((loc) => ({
+            '@type': 'AutoRepair',
+            name: `Prvi Balkan - ${loc.name}`,
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: loc.address,
+              addressLocality: 'Beograd',
+              addressCountry: 'RS',
+            },
+            telephone: loc.phone,
+            email: loc.email,
+            ...(loc.openingHours && {
+              openingHoursSpecification: Object.entries(loc.openingHours).map(
+                ([day, hours]) => ({
+                  '@type': 'OpeningHoursSpecification',
+                  dayOfWeek: day,
+                  opens: typeof hours === 'string' ? hours.split('-')[0] : '',
+                  closes: typeof hours === 'string' ? hours.split('-')[1] : '',
+                }),
+              ),
+            }),
+          })),
+        },
+        ...(servicePrice && {
+          offers: {
+            '@type': 'Offer',
+            price: servicePrice,
+            priceCurrency: 'RSD',
+          },
+        }),
+      },
+      null,
+      2,
+    )}
+  />
+
+  <!-- FAQPage Schema -->
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'Koliko traje tehnički pregled?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Tehnički pregled u proseku traje 20-30 minuta. Vreme zavisi od tipa vozila i gužve na stanici.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Šta ako vozilo ne prođe tehnički pregled?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Ukoliko vozilo ne prođe pregled, dobićete detaljan izveštaj o neispravnostima. Nakon popravke, možete ponovo doći na kontrolni pregled u roku od 15 dana bez dodatne naplate.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Da li je potrebno zakazivanje?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Nije obavezno — primamo stranke po redosledu dolaska. Možete nas kontaktirati telefonom za zakazivanje termina.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Koliko važi tehnički pregled?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Tehnički pregled važi godinu dana od datuma izdavanja potvrde. Za nova vozila, prvi pregled se obavlja nakon 3 godine od prve registracije.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Koje tipove vozila pregledamo?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Vršimo tehnički pregled svih kategorija putničkih vozila, lakih teretnih vozila, motocikala i prikolica.',
+            },
+          },
+        ],
+      },
+      null,
+      2,
+    )}
+  />
+
+  <Footer />
+</Layout>
