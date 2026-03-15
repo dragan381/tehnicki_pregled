@@ -8,9 +8,9 @@ const baseUrl = import.meta.env.BASE_URL;
 const locations = await getLocations();
 ---
 
-<section class="py-16">
+<section class="pb-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2
+    <!-- <h2
       class="text-3xl md:text-4xl font-bold text-center mb-4 text-primary animate-fadeIn"
     >
       Naše Lokacije
@@ -20,7 +20,7 @@ const locations = await getLocations();
       style="animation-delay: 0.1s"
     >
       3 lokacije u Beogradu za vašu pogodnost. Odaberite koja je najbliža vama.
-    </p>
+    </p> -->
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {
@@ -31,9 +31,9 @@ const locations = await getLocations();
             style={`animation-delay: ${0.2 + index * 0.1}s`}
           >
             <div class="relative overflow-hidden">
-              {location.image?.url ? (
+              {location.coverImage?.url ? (
                 <Image
-                  src={getStrapiImageUrl(location.image)}
+                  src={getStrapiImageUrl(location.coverImage)}
                   alt={location.name}
                   width={400}
                   height={192}

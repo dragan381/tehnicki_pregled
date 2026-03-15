@@ -36,14 +36,11 @@
     "description": {
       "type": "blocks"
     },
-    "image": {
+    "gallery": {
       "type": "media",
-      "multiple": false,
+      "multiple": true,
       "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
+        "images"
       ]
     },
     "openingHours": {
@@ -51,6 +48,14 @@
     },
     "googleMapsLink": {
       "type": "text"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     }
   }
 }

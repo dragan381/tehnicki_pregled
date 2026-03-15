@@ -74,7 +74,8 @@ export interface Location {
   googleMapsLink?: string;
   description?: StrapiBlock[];
   openingHours?: Record<string, any>;
-  image?: StrapiMedia;
+  coverImage?: StrapiMedia;
+  gallery?: StrapiMedia[];
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
