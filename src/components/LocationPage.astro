@@ -1,5 +1,5 @@
 ---
-import { getPath } from '../utils/navigation';
+import { getPath, formatPhoneHref } from '../utils/navigation';
 import Layout from '../layouts/Layout.astro';
 import Footer from './Footer.astro';
 import LocationGallery from './LocationGallery.astro';
@@ -82,7 +82,7 @@ const googleMapsLink = (() => {
               location.phone && (
                 <div class="flex items-start gap-3">
                   <span class="text-sm font-semibold text-gray-400 uppercase tracking-wide w-20 flex-shrink-0 pt-0.5">Telefon</span>
-                  <a href={`tel:${location.phone.replace(/[\s\-\(\)]/g, '')}`} class="text-gray-700 hover:text-accent transition font-medium">
+                  <a href={`tel:${formatPhoneHref(location.phone)}`} class="text-gray-700 hover:text-accent transition font-medium">
                     {location.phone}
                   </a>
                 </div>

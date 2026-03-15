@@ -4,12 +4,18 @@
  * @param baseUrl - The base URL from import.meta.env.BASE_URL
  * @returns The full path with base URL prepended
  */
+/**
+ * Format a phone number string into a tel: href value by stripping spaces, dashes, and parentheses
+ */
+export const formatPhoneHref = (phone: string): string =>
+  phone.replace(/[\s\-\(\)]/g, '');
+
 export const getPath = (path: string, baseUrl: string): string => {
-  if (path === "/") return baseUrl || "/";
-  const cleanBase = baseUrl.endsWith("/")
+  if (path === '/') return baseUrl || '/';
+  const cleanBase = baseUrl.endsWith('/')
     ? baseUrl
     : baseUrl
-      ? baseUrl + "/"
-      : "";
-  return cleanBase + path.replace(/^\//, "");
+      ? baseUrl + '/'
+      : '';
+  return cleanBase + path.replace(/^\//, '');
 };

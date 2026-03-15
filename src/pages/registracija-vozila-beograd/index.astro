@@ -1,5 +1,5 @@
 ---
-import { getPath } from '../../utils/navigation';
+import { getPath, formatPhoneHref } from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Footer from '../../components/Footer.astro';
@@ -221,7 +221,7 @@ const pageUrl = `${siteUrl}/registracija-vozila-beograd`;
               {location.phone && (
                 <div class="flex items-center gap-3">
                   <Icon name="phone" class="text-accent flex-shrink-0" size="sm" />
-                  <a href={`tel:${location.phone.replace(/[\s\-\(\)]/g, '')}`} class="text-gray-700 hover:text-accent transition">
+                  <a href={`tel:${formatPhoneHref(location.phone)}`} class="text-gray-700 hover:text-accent transition">
                     {location.phone}
                   </a>
                 </div>

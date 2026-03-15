@@ -1,68 +1,180 @@
 ---
 import Icon from './Icon.astro';
-import { getPath } from '../utils/navigation';
+import { getPath, formatPhoneHref } from '../utils/navigation';
+import { getSettings, getStrapiImageUrl } from '../utils/strapi';
+
 const baseUrl = import.meta.env.BASE_URL;
+const settings = await getSettings();
+
+const phone = settings?.phone || '+381 11 2101 111';
+const email = settings?.email || 'info@prvi-balkan.rs';
+const siteName = settings?.siteName || 'Prvi Balkan';
+const logoUrl = settings?.logo ? getStrapiImageUrl(settings.logo) : '';
+const socialLinks = settings?.socialLinks;
+
+const socialItems = [
+  { name: 'facebook', url: socialLinks?.facebook, label: 'Facebook' },
+  { name: 'instagram', url: socialLinks?.instagram, label: 'Instagram' },
+  { name: 'twitter', url: socialLinks?.twitter, label: 'Twitter' },
+].filter((item) => item.url);
 ---
 
 <footer class="bg-primary text-white py-12 mt-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 animate-slideUp">
-      <div class="group hover:translate-y-1 transition duration-300">
+      <div>
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-          <Icon name="directions_car" class="text-accent group-hover:rotate-12 transition duration-300" />
-          <span><span class="text-accent">Prvi</span> Balkan</span>
+          {
+            logoUrl ? (
+              <a
+                href={getPath('/', baseUrl)}
+                class="inline-block hover:opacity-80 transition duration-300"
+              >
+                <img
+                  src={logoUrl}
+                  alt={siteName}
+                  class="h-12 w-auto brightness-0 invert"
+                />
+              </a>
+            ) : (
+              <a
+                href={getPath('/', baseUrl)}
+                class="inline-flex items-center gap-2 hover:opacity-80 transition duration-300"
+              >
+                <Icon name="directions_car" class="text-accent" />
+                <span>
+                  <span class="text-accent">Prvi</span> Balkan
+                </span>
+              </a>
+            )
+          }
         </h3>
-        <p class="text-blue-100">Tehnički pregled vozila sa 10+ godina iskustva i 3 lokacije u Beogradu.</p>
+        <p class="text-blue-100">
+          Tehnički pregled vozila sa 10+ godina iskustva i 3 lokacije u
+          Beogradu.
+        </p>
       </div>
-      <div class="group hover:translate-y-1 transition duration-300">
+      <div>
         <h4 class="font-bold mb-4 flex items-center gap-2">
           <Icon name="link" class="text-accent" size="sm" />
           Brzine Veze
         </h4>
         <ul class="space-y-2 text-blue-100">
-          <li><a href={getPath('/', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            Početna
-          </a></li>
-          <li><a href={getPath('/usluge', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            Usluge
-          </a></li>
-          <li><a href={getPath('/lokacije', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            Lokacije
-          </a></li>
-          <li><a href={getPath('/blog', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            Blog
-          </a></li>
+          <li>
+            <a
+              href={getPath('/', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              Početna
+            </a>
+          </li>
+          <li>
+            <a
+              href={getPath('/usluge', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              Usluge
+            </a>
+          </li>
+          <li>
+            <a
+              href={getPath('/lokacije', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              Lokacije
+            </a>
+          </li>
+          <li>
+            <a
+              href={getPath('/blog', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              Blog
+            </a>
+          </li>
         </ul>
       </div>
-      <div class="group hover:translate-y-1 transition duration-300">
+      <div>
         <h4 class="font-bold mb-4 flex items-center gap-2">
           <Icon name="info" class="text-accent" size="sm" />
           Informacije
         </h4>
         <ul class="space-y-2 text-blue-100">
-          <li><a href={getPath('/cesto-pitana-pitanja', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            FAQ
-          </a></li>
-          <li><a href={getPath('/o-nama', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            O Nama
-          </a></li>
-          <li><a href={getPath('/privatnost', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            Privatnost
-          </a></li>
-          <li><a href={getPath('/uslovi', baseUrl)} class="hover:text-white transition inline-flex items-center gap-2 group">
-            <Icon name="arrow_forward" size="sm" class="opacity-0 group-hover:opacity-100 transition" />
-            Uslovi
-          </a></li>
+          <li>
+            <a
+              href={getPath('/cesto-pitana-pitanja', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              FAQ
+            </a>
+          </li>
+          <li>
+            <a
+              href={getPath('/o-nama', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              O Nama
+            </a>
+          </li>
+          <li>
+            <a
+              href={getPath('/privatnost', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              Privatnost
+            </a>
+          </li>
+          <li>
+            <a
+              href={getPath('/uslovi', baseUrl)}
+              class="hover:text-white hover:translate-x-1 transition inline-flex items-center gap-2 group"
+            >
+              <Icon
+                name="arrow_forward"
+                size="sm"
+                class="opacity-0 group-hover:opacity-100 transition"
+              />
+              Uslovi
+            </a>
+          </li>
         </ul>
       </div>
-      <div class="group hover:translate-y-1 transition duration-300">
+      <div>
         <h4 class="font-bold mb-4 flex items-center gap-2">
           <Icon name="phone" class="text-accent" size="sm" />
           Kontakt
@@ -70,25 +182,61 @@ const baseUrl = import.meta.env.BASE_URL;
         <ul class="space-y-2 text-blue-100">
           <li class="flex items-center gap-2">
             <Icon name="phone" size="sm" class="text-accent" />
-            Tel: +381 11 2101 111
+            <a
+              href={`tel:${formatPhoneHref(phone)}`}
+              class="hover:text-white hover:translate-x-1 transition inline-block"
+            >
+              Tel: {phone}
+            </a>
           </li>
           <li class="flex items-center gap-2">
             <Icon name="mail" size="sm" class="text-accent" />
-            Email: info@prvi-balkan.rs
+            <a
+              href={`mailto:${email}`}
+              class="hover:text-white hover:translate-x-1 transition inline-block"
+            >
+              Email: {email}
+            </a>
           </li>
-          <li class="flex items-center gap-2">
-            <Icon name="schedule" size="sm" class="text-accent" />
-            Radno vreme: 08:00-18:00 (ponedjeljak-petak)
-          </li>
-          <li class="flex items-center gap-2">
-            <Icon name="schedule" size="sm" class="text-accent" />
-            09:00-15:00 (subota)
+          <li class="flex items-start gap-2">
+            <Icon name="schedule" size="sm" class="text-accent mt-1" />
+            <div>
+              <span class="block">Radno vreme:</span>
+              <span class="block">08:00-18:00 (ponedjeljak-petak)</span>
+              <span class="block">09:00-15:00 (subota)</span>
+            </div>
           </li>
         </ul>
       </div>
     </div>
-    <div class="border-t border-blue-400 pt-8 animate-slideUp" style="animation-delay: 0.2s">
-      <p class="text-center text-blue-100">&copy; 2025 Prvi Balkan. Sva prava zadržana.</p>
+    {
+      socialItems.length > 0 && (
+        <div
+          class="flex justify-center gap-6 mb-8 animate-slideUp"
+          style="animation-delay: 0.1s"
+        >
+          {socialItems.map((item) => (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
+              class="text-blue-200 hover:text-white transition duration-300 hover:scale-110 transform"
+            >
+              <Icon name={item.name} size="lg" />
+            </a>
+          ))}
+        </div>
+      )
+    }
+    <div
+      class="border-t border-blue-400 pt-8 animate-slideUp"
+      style="animation-delay: 0.2s"
+    >
+      <p class="text-center text-blue-100">
+        &copy; {new Date().getFullYear()}
+        {siteName}. Sva prava zadržana.
+      </p>
     </div>
   </div>
 </footer>

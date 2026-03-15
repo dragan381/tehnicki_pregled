@@ -10,6 +10,7 @@ import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
 import Icon from '../components/Icon.astro';
 import { getSettings, getStrapiImageUrl } from '../utils/strapi';
+import { formatPhoneHref } from '../utils/navigation';
 
 // Fetch settings from Strapi
 const settings = await getSettings();
@@ -22,7 +23,7 @@ const description =
 
 // Extract hero settings with fallbacks
 const phoneNumber = settings?.phone || '+381 11 2101 111';
-const phoneNumberHref = phoneNumber.replace(/[\s\-\(\)]/g, '');
+const phoneNumberHref = formatPhoneHref(phoneNumber);
 const heroTitle =
   settings?.hero?.title || 'Prvi Balkan - Tehnički Pregled Vozila';
 const heroDescription =

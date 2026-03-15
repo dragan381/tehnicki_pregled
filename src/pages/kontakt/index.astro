@@ -1,5 +1,5 @@
 ---
-import { getPath } from '../../utils/navigation';
+import { getPath, formatPhoneHref } from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Footer from '../../components/Footer.astro';
@@ -10,7 +10,7 @@ const settings = await getSettings();
 
 // Use settings with fallbacks
 const phone = settings?.contact?.phone || '+381 11 2101 111';
-const phoneHref = phone.replace(/[\s\-\(\)]/g, '');
+const phoneHref = formatPhoneHref(phone);
 const email = settings?.contact?.email || 'info@prvi-balkan.rs';
 const whatsapp = settings?.contact?.whatsapp || '+381112101111';
 ---
@@ -33,7 +33,8 @@ const whatsapp = settings?.contact?.whatsapp || '+381112101111';
                 <h3 class="font-bold text-primary">Telefon</h3>
                 <p class="text-gray-600">
                   <a href={`tel:${phoneHref}`} class="hover:text-accent"
-                    >{phone}</a>
+                    >{phone}</a
+                  >
                 </p>
               </div>
             </div>
@@ -43,7 +44,8 @@ const whatsapp = settings?.contact?.whatsapp || '+381112101111';
                 <h3 class="font-bold text-primary">Email</h3>
                 <p class="text-gray-600">
                   <a href={`mailto:${email}`} class="hover:text-accent"
-                    >{email}</a>
+                    >{email}</a
+                  >
                 </p>
               </div>
             </div>
