@@ -68,7 +68,7 @@ const googleMapsLink = (() => {
                 <div>
                   <h3 class="font-bold text-primary mb-2">Telefon</h3>
                   <p class="text-gray-600">
-                    <a href={`tel:${location.phone}`} class="hover:text-accent">
+                    <a href={`tel:${location.phone.replace(/[\s\-\(\)]/g, '')}`} class="hover:text-accent">
                       {location.phone}
                     </a>
                   </p>

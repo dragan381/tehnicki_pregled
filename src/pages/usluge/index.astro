@@ -7,45 +7,68 @@ import { getServices, blocksToText } from '../../utils/strapi';
 const services = await getServices();
 
 // Border colors for different services
-const borderColors = ['border-primary', 'border-accent', 'border-green-600', 'border-purple-600'];
-const textColors = ['text-primary', 'text-accent', 'text-green-600', 'text-purple-600'];
+const borderColors = [
+  'border-primary',
+  'border-accent',
+  'border-green-600',
+  'border-purple-600',
+];
+const textColors = [
+  'text-primary',
+  'text-accent',
+  'text-green-600',
+  'text-purple-600',
+];
 ---
 
-<Layout title="Usluge - Prvi Balkan" description="Sve usluge - Prvi Balkan - Tehnički pregled vozila">
-  
+<Layout
+  title="Usluge - Prvi Balkan"
+  description="Sve usluge - Prvi Balkan - Tehnički pregled vozila"
+>
   <div class="pt-32 pb-16">
     <div class="max-w-4xl mx-auto px-4">
       <h1 class="text-4xl font-bold text-primary mb-8">Naše Usluge</h1>
-      <p class="text-lg text-gray-600 mb-12">Pružamo kompletan spektar usluga tehničkog pregleda vozila sa visoko osposobljenim tehničarima i modernom opremom.</p>
+      <p class="text-lg text-gray-600 mb-12">
+        Pružamo kompletan spektar usluga tehničkog pregleda vozila sa visoko
+        osposobljenim tehničarima i modernom opremom.
+      </p>
 
       <div class="space-y-12">
-        {services.map((service, index) => {
-          const borderColor = borderColors[index % borderColors.length];
-          const textColor = textColors[index % textColors.length];
-          const features = service.features?.features || [];
-          
-          return (
-            <div class={`bg-white rounded-lg shadow-lg p-8 border-l-4 ${borderColor}`}>
-              <h2 class={`text-2xl font-bold ${textColor} mb-4 flex items-center gap-3`}>
-                <Icon name={service.icon || 'miscellaneous_services'} />
-                {service.title}
-              </h2>
-              <p class="text-gray-700 mb-4">{service.description}</p>
-              {features.length > 0 && (
-                <ul class="list-disc list-inside text-gray-600 space-y-2">
-                  {features.map((feature: string) => (
-                    <li>{feature}</li>
-                  ))}
-                </ul>
-              )}
-              {service.price && (
-                <p class="mt-4 text-lg font-bold text-accent">
-                  Cena: {service.price} RSD
+        {
+          services.map((service, index) => {
+            const borderColor = borderColors[index % borderColors.length];
+            const textColor = textColors[index % textColors.length];
+            const features = service.features?.features || [];
+
+            return (
+              <div
+                class={`bg-white rounded-lg shadow-lg p-8 border-l-4 ${borderColor}`}
+              >
+                <h2
+                  class={`text-2xl font-bold ${textColor} mb-4 flex items-center gap-3`}
+                >
+                  <Icon name={service.icon || 'miscellaneous_services'} />
+                  {service.title}
+                </h2>
+                <p class="text-gray-700 mb-4">
+                  {blocksToText(service.description)}
                 </p>
-              )}
-            </div>
-          );
-        })}
+                {features.length > 0 && (
+                  <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    {features.map((feature: string) => (
+                      <li>{feature}</li>
+                    ))}
+                  </ul>
+                )}
+                {service.price && (
+                  <p class="mt-4 text-lg font-bold text-accent">
+                    Cena: {service.price} RSD
+                  </p>
+                )}
+              </div>
+            );
+          })
+        }
       </div>
     </div>
   </div>

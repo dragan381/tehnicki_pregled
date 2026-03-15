@@ -22,6 +22,7 @@ const description =
 
 // Extract hero settings with fallbacks
 const phoneNumber = settings?.phone || '+381 11 2101 111';
+const phoneNumberHref = phoneNumber.replace(/[\s\-\(\)]/g, '');
 const heroTitle =
   settings?.hero?.title || 'Prvi Balkan - Tehnički Pregled Vozila';
 const heroDescription =
@@ -132,7 +133,7 @@ const logo = settings?.logo;
           Zakaži
         </a>
         <a
-          href={`tel:${phoneNumber}`}
+          href={`tel:${phoneNumberHref}`}
           class="border-2 border-white hover:bg-white hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition"
         >
           Pozovi nas: {phoneNumber}
