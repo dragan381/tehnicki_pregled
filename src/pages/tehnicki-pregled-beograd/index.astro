@@ -1,5 +1,5 @@
 ---
-import { getPath, formatPhoneHref } from '../../utils/navigation';
+import { getPath, formatPhoneHref, formatWorkingHours, formatOpeningHoursJsonLd } from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Footer from '../../components/Footer.astro';
@@ -204,10 +204,10 @@ const pageUrl = `${siteUrl}/tehnicki-pregled-beograd`;
                     Radno vreme
                   </p>
                   <ul class="space-y-1 text-sm">
-                    {Object.entries(location.openingHours).map(([day, hours]) => (
+                    {formatWorkingHours(location.openingHours).map(({ title, hours }) => (
                       <li class="flex justify-between">
-                        <span class="text-gray-600">{day}</span>
-                        <span class="font-mono text-gray-700">{hours}</span>
+                        <span class="text-gray-600">{title}</span>
+                        <span class="text-gray-700">{hours}</span>
                       </li>
                     ))}
                   </ul>
@@ -424,14 +424,7 @@ const pageUrl = `${siteUrl}/tehnicki-pregled-beograd`;
             telephone: loc.phone,
             email: loc.email,
             ...(loc.openingHours && {
-              openingHoursSpecification: Object.entries(loc.openingHours).map(
-                ([day, hours]) => ({
-                  '@type': 'OpeningHoursSpecification',
-                  dayOfWeek: day,
-                  opens: typeof hours === 'string' ? hours.split('-')[0] : '',
-                  closes: typeof hours === 'string' ? hours.split('-')[1] : '',
-                }),
-              ),
+              openingHoursSpecification: formatOpeningHoursJsonLd(loc.openingHours),
             }),
           })),
         },

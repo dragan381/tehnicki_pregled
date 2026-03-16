@@ -1,5 +1,5 @@
 ---
-import { getPath, formatPhoneHref } from '../utils/navigation';
+import { getPath, formatPhoneHref, formatWorkingHours, formatOpeningHoursJsonLd } from '../utils/navigation';
 import Layout from '../layouts/Layout.astro';
 import Footer from './Footer.astro';
 import LocationGallery from './LocationGallery.astro';
@@ -131,10 +131,10 @@ const googleMapsLink = (() => {
                 Radno vreme
               </h2>
               <ul class="space-y-3">
-                {Object.entries(location.openingHours).map(([day, hours]) => (
+                {formatWorkingHours(location.openingHours).map(({ title, hours }) => (
                   <li class="flex justify-between items-center py-1 border-b border-gray-50 last:border-0">
-                    <span class="font-medium text-gray-700">{day}</span>
-                    <span class="text-gray-600 font-mono text-sm bg-gray-50 px-3 py-1 rounded-lg">{hours}</span>
+                    <span class="font-medium text-gray-700">{title}</span>
+                    <span class="text-gray-600 text-sm bg-gray-50 px-3 py-1 rounded-lg">{hours}</span>
                   </li>
                 ))}
               </ul>
@@ -214,14 +214,7 @@ const googleMapsLink = (() => {
         telephone: location.phone,
         email: location.email,
         ...(location.openingHours && {
-          openingHoursSpecification: Object.entries(location.openingHours).map(
-            ([day, hours]) => ({
-              '@type': 'OpeningHoursSpecification',
-              dayOfWeek: day,
-              opens: typeof hours === 'string' ? hours.split('-')[0] : '',
-              closes: typeof hours === 'string' ? hours.split('-')[1] : '',
-            }),
-          ),
+          openingHoursSpecification: formatOpeningHoursJsonLd(location.openingHours),
         }),
         ...(imageUrl && { image: imageUrl }),
         ...(location.googleMapsLink && { hasMap: location.googleMapsLink }),

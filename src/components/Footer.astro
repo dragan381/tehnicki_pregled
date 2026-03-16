@@ -198,37 +198,26 @@ const socialItems = [
               Email: {email}
             </a>
           </li>
-          <li class="flex items-start gap-2">
-            <Icon name="schedule" size="sm" class="text-accent mt-1" />
-            <div>
-              <span class="block">Radno vreme:</span>
-              <span class="block">08:00-18:00 (ponedjeljak-petak)</span>
-              <span class="block">09:00-15:00 (subota)</span>
-            </div>
-          </li>
         </ul>
+        {
+          socialItems.length > 0 && (
+            <div class="flex gap-3 mt-4">
+              {socialItems.map((item) => (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.label}
+                  class="text-blue-200 hover:text-white transition duration-300 hover:scale-110 transform"
+                >
+                  <Icon name={item.name} size="md" />
+                </a>
+              ))}
+            </div>
+          )
+        }
       </div>
     </div>
-    {
-      socialItems.length > 0 && (
-        <div
-          class="flex justify-center gap-6 mb-8 animate-slideUp"
-          style="animation-delay: 0.1s"
-        >
-          {socialItems.map((item) => (
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={item.label}
-              class="text-blue-200 hover:text-white transition duration-300 hover:scale-110 transform"
-            >
-              <Icon name={item.name} size="lg" />
-            </a>
-          ))}
-        </div>
-      )
-    }
     <div
       class="border-t border-blue-400 pt-8 animate-slideUp"
       style="animation-delay: 0.2s"

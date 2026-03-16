@@ -60,6 +60,21 @@ export interface StrapiBlock {
   [key: string]: any;
 }
 
+// ===== Working Hours Type =====
+
+export interface WorkingHoursEntry {
+  order: number;
+  title: string;
+  type: 'open' | 'closed';
+  from?: number;
+  to?: number;
+  closedTitle?: string;
+}
+
+export interface OpeningHours {
+  workingHours: WorkingHoursEntry[];
+}
+
 // ===== Location Type =====
 
 export interface Location {
@@ -73,7 +88,7 @@ export interface Location {
   order?: number;
   googleMapsLink?: string;
   description?: StrapiBlock[];
-  openingHours?: Record<string, any>;
+  openingHours?: OpeningHours;
   coverImage?: StrapiMedia;
   gallery?: StrapiMedia[];
   createdAt: string;
