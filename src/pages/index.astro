@@ -7,7 +7,6 @@ import Locations from '../components/Locations.astro';
 import Testimonials from '../components/Testimonials.astro';
 import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
-import SEO from '../components/SEO.astro';
 import Icon from '../components/Icon.astro';
 import { getSettings, getStrapiImageUrl } from '../utils/strapi';
 import { formatPhoneHref } from '../utils/navigation';
@@ -39,7 +38,6 @@ const showLocationSection = settings?.showLocationSection ?? false;
 ---
 
 <Layout {title} {description}>
-  <SEO />
   <Hero
     title={heroTitle}
     description={heroDescription}
