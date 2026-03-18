@@ -1,0 +1,31 @@
+# Replace cms.yourdomain.com with your actual Strapi domain
+cms.yourdomain.com {
+	# Reverse proxy to Strapi
+	reverse_proxy localhost:1337
+
+	# Security headers
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		X-XSS-Protection "1; mode=block"
+		Referrer-Policy strict-origin-when-cross-origin
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		-Server
+	}
+
+	# Upload size limit (Strapi media uploads)
+	request_body {
+		max_size 50MB
+	}
+
+	# Gzip compression
+	encode gzip
+
+	# Logging
+	log {
+		output file /var/log/caddy/strapi-access.log {
+			roll_size 10MB
+			roll_keep 5
+		}
+	}
+}
