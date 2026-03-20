@@ -18,6 +18,12 @@ import type {
 const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
 const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN || '';
 
+// Diagnostic logging for Strapi connection
+console.log(`[Strapi] URL: ${STRAPI_URL}`);
+console.log(
+  `[Strapi] API Token set: ${STRAPI_API_TOKEN ? 'yes (' + STRAPI_API_TOKEN.length + ' chars)' : 'NO - MISSING'}`,
+);
+
 /**
  * Helper function to build Strapi query string from nested objects
  */
@@ -68,6 +74,9 @@ async function fetchFromStrapi<T>(
   const queryString = buildQueryString(queryParams);
   const url = `${STRAPI_URL}/api/${endpoint}?${queryString}`;
 
+  console.log(`[Strapi] Fetching: ${url}`);
+  const startTime = Date.now();
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -76,14 +85,31 @@ async function fetchFromStrapi<T>(
       },
     });
 
+    const elapsed = Date.now() - startTime;
+    console.log(
+      `[Strapi] ${endpoint} responded: ${response.status} ${response.statusText} (${elapsed}ms)`,
+    );
+
     if (!response.ok) {
+      const body = await response.text();
+      console.error(
+        `[Strapi] Error response body for ${endpoint}:`,
+        body.slice(0, 500),
+      );
       throw new Error(`Strapi API error: ${response.statusText}`);
     }
 
     const json: StrapiResponse<T> = await response.json();
+    console.log(
+      `[Strapi] ${endpoint} returned ${json.data?.length ?? 0} items`,
+    );
     return json.data;
   } catch (error) {
-    console.error(`Failed to fetch from ${endpoint}:`, error);
+    const elapsed = Date.now() - startTime;
+    console.error(
+      `[Strapi] Failed to fetch ${endpoint} after ${elapsed}ms:`,
+      error instanceof Error ? error.message : error,
+    );
     return [];
   }
 }
@@ -95,6 +121,9 @@ async function fetchSingleFromStrapi<T>(endpoint: string): Promise<T | null> {
   const queryString = buildQueryString({ populate: '*' });
   const url = `${STRAPI_URL}/api/${endpoint}?${queryString}`;
 
+  console.log(`[Strapi] Fetching single: ${url}`);
+  const startTime = Date.now();
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -103,14 +132,28 @@ async function fetchSingleFromStrapi<T>(endpoint: string): Promise<T | null> {
       },
     });
 
+    const elapsed = Date.now() - startTime;
+    console.log(
+      `[Strapi] ${endpoint} responded: ${response.status} ${response.statusText} (${elapsed}ms)`,
+    );
+
     if (!response.ok) {
+      const body = await response.text();
+      console.error(
+        `[Strapi] Error response body for ${endpoint}:`,
+        body.slice(0, 500),
+      );
       throw new Error(`Strapi API error: ${response.statusText}`);
     }
 
     const json: StrapiSingleResponse<T> = await response.json();
     return json.data;
   } catch (error) {
-    console.error(`Failed to fetch from ${endpoint}:`, error);
+    const elapsed = Date.now() - startTime;
+    console.error(
+      `[Strapi] Failed to fetch ${endpoint} after ${elapsed}ms:`,
+      error instanceof Error ? error.message : error,
+    );
     return null;
   }
 }
