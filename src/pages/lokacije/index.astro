@@ -1,5 +1,9 @@
 ---
-import { getPath } from '../../utils/navigation';
+import {
+  getPath,
+  formatWorkingHours,
+  formatOpeningHoursJsonLd,
+} from '../../utils/navigation';
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Locations from '../../components/Locations.astro';
@@ -155,7 +159,11 @@ const locations = await getLocations();
           <tbody>
             {
               locations.map((location) => {
-                const hours = location.openingHours?.weekdays || '08:00-18:00';
+                const hours = location.openingHours
+                  ? formatWorkingHours(location.openingHours)
+                      .map((h) => `${h.title}: ${h.hours}`)
+                      .join(', ')
+                  : '08:00-18:00';
                 return (
                   <tr class="border-b hover:bg-blue-50 transition">
                     <td class="px-6 py-4 font-bold text-primary">
@@ -216,7 +224,7 @@ const locations = await getLocations();
         '@type': 'AutoRepair',
         name: 'Prvi Balkan - Tehnički Pregled',
         description: 'Tehnički pregled vozila sa 3 lokacije u Beogradu',
-        url: 'https://dragan381.github.io/tehnicki_pregled',
+        url: new URL(baseUrl, Astro.site).href,
         areaServed: 'Beograd',
         department: locations.map((loc) => ({
           '@type': 'AutoRepair',
@@ -228,8 +236,10 @@ const locations = await getLocations();
           },
           telephone: loc.phone,
           email: loc.email,
-          ...(loc.openingHours?.weekdays && {
-            openingHours: loc.openingHours.weekdays,
+          ...(loc.openingHours && {
+            openingHoursSpecification: formatOpeningHoursJsonLd(
+              loc.openingHours,
+            ),
           }),
         })),
       },
