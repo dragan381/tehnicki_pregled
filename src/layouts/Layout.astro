@@ -74,7 +74,9 @@ if (baseUrl && baseUrl !== '/' && currentPath.startsWith(baseUrl)) {
 
 <script>
   import { injectSpeedInsights } from '@vercel/speed-insights';
+  import { inject } from '@vercel/analytics';
   injectSpeedInsights();
+  inject();
 </script>
 
 <style is:global>

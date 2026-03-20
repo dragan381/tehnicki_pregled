@@ -16,6 +16,7 @@
     "@astrojs/sitemap": "^3.7.1",
     "@astrojs/vercel": "^9.0.5",
     "@material-tailwind/react": "^2.1.10",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^5.17.1"
   },
