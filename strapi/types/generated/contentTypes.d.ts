@@ -624,7 +624,6 @@ export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
-    googleMapsApiKey: Schema.Attribute.String;
     hero: Schema.Attribute.JSON;
     heroImage: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
