@@ -20,7 +20,12 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "phone": {
       "type": "string"
@@ -43,7 +48,12 @@
     "heroImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "specialOffer": {
       "type": "json"
@@ -54,6 +64,11 @@
       "default": false
     },
     "showLocationSection": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "showSocialLinks": {
       "type": "boolean",
       "required": true,
       "default": false

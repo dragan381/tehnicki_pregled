@@ -216,6 +216,7 @@ export interface Settings {
   specialOffer?: SpecialOfferSettings;
   showSpecialOfferSection?: boolean;
   showLocationSection?: boolean;
+  showSocialLinks: boolean;
 }
 
 // ===== API Response Types =====

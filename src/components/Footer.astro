@@ -11,6 +11,7 @@ const email = settings?.email || 'info@prvi-balkan.rs';
 const siteName = settings?.siteName || 'Prvi Balkan';
 const logoUrl = settings?.logo ? getStrapiImageUrl(settings.logo) : '';
 const socialLinks = settings?.socialLinks;
+const showSocialLinks = settings?.showSocialLinks;
 
 const socialItems = [
   { name: 'facebook', url: socialLinks?.facebook, label: 'Facebook' },
@@ -200,7 +201,7 @@ const socialItems = [
           </li>
         </ul>
         {
-          socialItems.length > 0 && (
+          showSocialLinks && socialItems.length > 0 && (
             <div class="flex gap-3 mt-4">
               {socialItems.map((item) => (
                 <a
