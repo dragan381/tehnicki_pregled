@@ -3,6 +3,16 @@ cms.yourdomain.com {
 	# Reverse proxy to Strapi
 	reverse_proxy localhost:1337
 
+	# Rate limiting for API endpoints (requires caddy-ratelimit plugin)
+	# Uncomment after installing: xcaddy build --with github.com/mholt/caddy-ratelimit
+	# rate_limit {
+	#   zone api_zone {
+	#     key {remote_host}
+	#     events 30
+	#     window 1m
+	#   }
+	# }
+
 	# Security headers
 	header {
 		X-Content-Type-Options nosniff
@@ -10,6 +20,7 @@ cms.yourdomain.com {
 		X-XSS-Protection "1; mode=block"
 		Referrer-Policy strict-origin-when-cross-origin
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
 		-Server
 	}
 

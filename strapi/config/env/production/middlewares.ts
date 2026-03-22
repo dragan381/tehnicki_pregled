@@ -2,7 +2,6 @@ export default ({ env }) => {
   const corsOrigins = (env('CORS_ORIGINS') || 'http://localhost:4321')
     .split(',')
     .map((s: string) => s.trim());
-  console.log('[Strapi] CORS origins:', corsOrigins);
 
   return [
     'strapi::logger',

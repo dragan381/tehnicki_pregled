@@ -18,12 +18,6 @@ import type {
 const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
 const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN || '';
 
-// Diagnostic logging for Strapi connection
-console.log(`[Strapi] URL: ${STRAPI_URL}`);
-console.log(
-  `[Strapi] API Token set: ${STRAPI_API_TOKEN ? 'yes (' + STRAPI_API_TOKEN.length + ' chars)' : 'NO - MISSING'}`,
-);
-
 /**
  * Helper function to build Strapi query string from nested objects
  */
