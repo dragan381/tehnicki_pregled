@@ -110,6 +110,8 @@ export function initCalculatorModal() {
     // Show loading overlay, block interactions
     isSending = true;
     if (loadingOverlay) loadingOverlay.classList.remove('hidden');
+    content.scrollTop = 0;
+    content.style.overflow = 'hidden';
 
     const strapiUrl = content.dataset.strapiUrl || '';
     const formData = new FormData(form);
@@ -151,6 +153,7 @@ export function initCalculatorModal() {
     // Hide loading overlay
     isSending = false;
     if (loadingOverlay) loadingOverlay.classList.add('hidden');
+    content.style.overflow = '';
 
     form.classList.add('hidden');
     success.classList.remove('hidden');
