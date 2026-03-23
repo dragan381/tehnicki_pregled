@@ -85,6 +85,18 @@ if (baseUrl && baseUrl !== '/' && currentPath.startsWith(baseUrl)) {
   import { inject } from '@vercel/analytics';
   injectSpeedInsights();
   inject();
+
+  // Samsung Internet (and some other mobile browsers) don't always trigger
+  // the phone dialer from <a href="tel:...">. This click handler forces
+  // window.location.href which reliably opens the dialer on all browsers.
+  document
+    .querySelectorAll<HTMLAnchorElement>('a[href^="tel:"]')
+    .forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = link.href;
+      });
+    });
 </script>
 
 <style is:global>
