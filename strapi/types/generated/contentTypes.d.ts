@@ -504,7 +504,7 @@ export interface ApiCalculatorRequestCalculatorRequest
     location: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 50;
+        maxLength: 200;
       }>;
     phone: Schema.Attribute.String &
       Schema.Attribute.Required &

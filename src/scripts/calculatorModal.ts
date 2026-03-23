@@ -60,6 +60,98 @@ export function initCalculatorModal() {
 
   let isSending = false;
 
+  // --- Validation ---
+  const submitBtn = document.getElementById(
+    'calculator-submit-btn',
+  ) as HTMLButtonElement | null;
+  const ccmInput = document.getElementById(
+    'calc-ccm',
+  ) as HTMLInputElement | null;
+  const kwInput = document.getElementById('calc-kw') as HTMLInputElement | null;
+  const phoneInput = document.getElementById(
+    'calc-phone',
+  ) as HTMLInputElement | null;
+  const emailInput = document.getElementById(
+    'calc-email',
+  ) as HTMLInputElement | null;
+  const phoneError = document.getElementById('calc-phone-error');
+  const emailError = document.getElementById('calc-email-error');
+
+  const PHONE_REGEX = /^[+]?[0-9\s\-()]{6,30}$/;
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validateForm() {
+    const yearVal = yearSelect?.value || '';
+    const ccmVal = ccmInput?.value || '';
+    const kwVal = kwInput?.value || '';
+    const locationVal = locationSelect?.value || '';
+    const phoneVal = phoneInput?.value.trim() || '';
+    const emailVal = emailInput?.value.trim() || '';
+
+    // Required fields filled
+    const requiredFilled =
+      yearVal !== '' &&
+      ccmVal !== '' &&
+      kwVal !== '' &&
+      locationVal !== '' &&
+      phoneVal !== '';
+
+    // Phone format
+    const phoneValid = PHONE_REGEX.test(phoneVal);
+    const phoneTouched = phoneVal.length > 0;
+    if (phoneError) {
+      phoneError.classList.toggle('invisible', !phoneTouched || phoneValid);
+      phoneError.classList.toggle('visible', phoneTouched && !phoneValid);
+    }
+    if (phoneInput) {
+      phoneInput.classList.toggle(
+        'border-red-500',
+        phoneTouched && !phoneValid,
+      );
+      phoneInput.classList.toggle(
+        'border-gray-300',
+        !phoneTouched || phoneValid,
+      );
+    }
+
+    // Email format (optional — only validate if filled)
+    const emailValid = emailVal === '' || EMAIL_REGEX.test(emailVal);
+    const emailTouched = emailVal.length > 0;
+    if (emailError) {
+      emailError.classList.toggle('invisible', !emailTouched || emailValid);
+      emailError.classList.toggle('visible', emailTouched && !emailValid);
+    }
+    if (emailInput) {
+      emailInput.classList.toggle(
+        'border-red-500',
+        emailTouched && !emailValid,
+      );
+      emailInput.classList.toggle(
+        'border-gray-300',
+        !emailTouched || emailValid,
+      );
+    }
+
+    const isValid = requiredFilled && phoneValid && emailValid;
+    if (submitBtn) {
+      submitBtn.disabled = !isValid;
+    }
+    return isValid;
+  }
+
+  // Listen for input changes on all form fields
+  [
+    yearSelect,
+    ccmInput,
+    kwInput,
+    locationSelect,
+    phoneInput,
+    emailInput,
+  ].forEach((el) => {
+    el?.addEventListener('input', validateForm);
+    el?.addEventListener('change', validateForm);
+  });
+
   function openModal() {
     modal!.classList.remove('hidden');
     modal!.classList.add('flex');
@@ -84,6 +176,16 @@ export function initCalculatorModal() {
       success!.classList.add('hidden');
       const emailWarning = document.getElementById('calculator-email-warning');
       if (emailWarning) emailWarning.classList.add('hidden');
+      // Reset validation state
+      if (phoneError) phoneError.classList.add('invisible');
+      if (phoneError) phoneError.classList.remove('visible');
+      if (emailError) emailError.classList.add('invisible');
+      if (emailError) emailError.classList.remove('visible');
+      phoneInput?.classList.remove('border-red-500');
+      phoneInput?.classList.add('border-gray-300');
+      emailInput?.classList.remove('border-red-500');
+      emailInput?.classList.add('border-gray-300');
+      if (submitBtn) submitBtn.disabled = true;
       document.body.style.overflow = '';
     }, 300);
   }
@@ -123,8 +225,8 @@ export function initCalculatorModal() {
       kw: formData.get('kw'),
       location: selectedLocation,
       phone: formData.get('phone'),
-      email: formData.get('email') || 'nije unet',
-      toEmail,
+      email: formData.get('email') || null,
+      toEmail: toEmail || null,
     };
 
     const emailWarning = document.getElementById('calculator-email-warning');

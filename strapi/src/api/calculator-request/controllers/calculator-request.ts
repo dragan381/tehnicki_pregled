@@ -15,9 +15,6 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#39;');
 }
 
-/** Allowed location values — reject anything not in this list */
-const ALLOWED_LOCATIONS = ['Ugrinovačka', 'Voždovac', 'Zemun'];
-
 export default factories.createCoreController(
   'api::calculator-request.calculator-request',
   ({ strapi }) => ({
@@ -46,7 +43,7 @@ export default factories.createCoreController(
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) {
         return ctx.badRequest('Invalid email format');
       }
-      if (!location || !ALLOWED_LOCATIONS.includes(String(location))) {
+      if (!location || typeof location !== 'string' || location.length > 200) {
         return ctx.badRequest('Invalid location');
       }
       if (toEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(toEmail))) {

@@ -296,6 +296,9 @@ const shouldHaveDarkBg = !isHomePage;
           placeholder="npr. 0611234567"
           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition"
         />
+        <p id="calc-phone-error" class="invisible text-red-500 text-xs mt-1">
+          Unesite ispravan broj telefona (samo cifre, min 6)
+        </p>
       </div>
 
       <!-- Email (opciono) -->
@@ -313,13 +316,17 @@ const shouldHaveDarkBg = !isHomePage;
           placeholder="npr. ime@primer.rs"
           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-700 focus:ring-2 focus:ring-accent focus:border-accent transition"
         />
+        <p id="calc-email-error" class="invisible text-red-500 text-xs mt-1">
+          Unesite ispravnu email adresu
+        </p>
       </div>
 
       <!-- Submit -->
       <button
         type="submit"
         id="calculator-submit-btn"
-        class="w-full bg-gradient-to-r from-accent to-orange-500 hover:from-orange-600 hover:to-red-500 text-white font-bold py-3 rounded-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-lg cursor-pointer"
+        disabled
+        class="w-full bg-gradient-to-r from-accent to-orange-500 text-white font-bold py-3 rounded-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none cursor-pointer"
       >
         Pošalji zahtev
       </button>
