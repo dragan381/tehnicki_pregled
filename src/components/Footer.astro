@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import PaymentOptions from './PaymentOptions.astro';
 import { getPath, formatPhoneHref } from '../utils/navigation';
 import { getSettings, getStrapiImageUrl } from '../utils/strapi';
 
@@ -218,6 +219,12 @@ const socialItems = [
           )
         }
       </div>
+    </div>
+    <div
+      class="border-t border-blue-400 pt-6 pb-4 animate-slideUp"
+      style="animation-delay: 0.1s"
+    >
+      <PaymentOptions variant="compact" />
     </div>
     <div
       class="border-t border-blue-400 pt-8 animate-slideUp"

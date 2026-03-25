@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Footer from '../../components/Footer.astro';
+import PaymentOptions from '../../components/PaymentOptions.astro';
 import { getPath } from '../../utils/navigation';
 import { getServices, blocksToText } from '../../utils/strapi';
 
@@ -93,6 +94,8 @@ const textColors = [
       </div>
     </div>
   </div>
+
+  <PaymentOptions />
 
   <Footer />
 </Layout>

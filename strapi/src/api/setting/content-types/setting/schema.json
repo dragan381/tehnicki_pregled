@@ -68,10 +68,15 @@
       "required": true,
       "default": false
     },
-    "showSocialLinks": {
-      "type": "boolean",
-      "required": true,
-      "default": false
+    "paymentOption": {
+      "type": "json"
+    },
+    "insuranceCoverImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

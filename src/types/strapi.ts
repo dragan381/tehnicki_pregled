@@ -189,6 +189,11 @@ export interface SpecialOfferSettings {
   showButton?: boolean;
 }
 
+export interface PaymentOption {
+  title: string;
+  icon: string;
+}
+
 export interface Settings {
   id: number;
   documentId: string;
@@ -217,6 +222,7 @@ export interface Settings {
   showSpecialOfferSection?: boolean;
   showLocationSection?: boolean;
   showSocialLinks: boolean;
+  paymentOptions?: PaymentOption[];
 }
 
 // ===== API Response Types =====
