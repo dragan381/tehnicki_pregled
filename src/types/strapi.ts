@@ -223,6 +223,7 @@ export interface Settings {
   showLocationSection?: boolean;
   showSocialLinks: boolean;
   paymentOptions?: PaymentOption[];
+  insuranceCoverImage?: StrapiMedia;
 }
 
 // ===== API Response Types =====
