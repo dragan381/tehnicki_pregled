@@ -145,6 +145,20 @@ export interface FAQ {
   publishedAt?: string;
 }
 
+// ===== Price Type =====
+
+export interface Price {
+  id: number;
+  documentId: string;
+  title: string;
+  amount: number;
+  currency?: string;
+  order?: number;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+}
+
 // ===== Blog Post Type =====
 
 export interface BlogPost {
@@ -208,11 +222,7 @@ export interface Settings {
     title?: string;
     description?: StrapiBlock[];
   };
-  contact?: {
-    phone?: string;
-    email?: string;
-    whatsapp?: string;
-  };
+  whatsappPhone?: string;
   logo?: StrapiMedia;
   socialLinks?: SocialLinks;
   createdAt: string;
@@ -222,7 +232,7 @@ export interface Settings {
   showSpecialOfferSection?: boolean;
   showLocationSection?: boolean;
   showSocialLinks: boolean;
-  paymentOptions?: PaymentOption[];
+  paymentOption?: PaymentOption[] | { paymentOption: PaymentOption[] };
   insuranceCoverImage?: StrapiMedia;
 }
 

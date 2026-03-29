@@ -9,6 +9,7 @@ import type {
   Testimonial,
   FAQ,
   BlogPost,
+  Price,
   Settings,
   StrapiResponse,
   StrapiSingleResponse,
@@ -243,6 +244,10 @@ export async function getBlogPostBySlug(
     filters: { slug: { $eq: slug } },
   });
   return posts[0] || null;
+}
+
+export async function getPrices(): Promise<Price[]> {
+  return fetchFromStrapi('prices', { sort: 'order:asc' });
 }
 
 export async function getSettings(): Promise<Settings | null> {

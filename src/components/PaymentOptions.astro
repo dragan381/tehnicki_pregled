@@ -10,8 +10,12 @@ const { variant = 'full' } = Astro.props;
 
 const settings = await getSettings();
 
-const paymentOptions = settings?.paymentOptions?.length
-  ? settings.paymentOptions
+const rawPayment = settings?.paymentOption;
+const paymentOptionsArray = Array.isArray(rawPayment)
+  ? rawPayment
+  : rawPayment?.paymentOption;
+const paymentOptions = paymentOptionsArray?.length
+  ? paymentOptionsArray
   : [
       { title: 'Gotovina', icon: 'payment_cash' },
       { title: 'Kartica', icon: 'payment_card' },
@@ -47,14 +51,18 @@ const paymentOptions = settings?.paymentOptions?.length
       </div>
     </section>
   ) : (
-    <div class="flex flex-wrap items-center justify-center gap-4 text-blue-200 text-sm">
-      <span class="font-medium text-white">Načini plaćanja:</span>
-      {paymentOptions.map((option) => (
-        <span class="inline-flex items-center gap-1">
-          <Icon name={option.icon} class="w-4 h-4" />
-          {option.title}
-        </span>
-      ))}
+    <div class="text-blue-200 text-sm">
+      <span class="block font-medium text-white text-center mb-3">
+        Načini plaćanja:
+      </span>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap md:justify-center gap-x-6 gap-y-2">
+        {paymentOptions.map((option) => (
+          <span class="inline-flex items-center gap-1.5">
+            <Icon name={option.icon} class="w-4 h-4 shrink-0" />
+            {option.title}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,0 +1,181 @@
+---
+import Icon from './Icon.astro';
+import { getSettings, getPrices } from '../utils/strapi';
+
+const settings = await getSettings();
+const pricesData = await getPrices();
+
+const rawPayment = settings?.paymentOption;
+const paymentOptionsArray = Array.isArray(rawPayment)
+  ? rawPayment
+  : rawPayment?.paymentOption;
+const paymentOptions = paymentOptionsArray?.length
+  ? paymentOptionsArray
+  : [
+      { title: 'Gotovina', icon: 'payment_cash' },
+      { title: 'Kartica', icon: 'payment_card' },
+      { title: 'A. zabrana', icon: 'payment_ban' },
+      { title: 'Čekovi', icon: 'payment_check' },
+      { title: 'Na rate', icon: 'payment_installments' },
+    ];
+
+const prices = pricesData.length
+  ? pricesData
+  : [
+      { title: 'Putničko vozilo', amount: 6000, currency: 'RSD' },
+      { title: 'Teretno vozilo do 3.5t', amount: 6000, currency: 'RSD' },
+    ];
+---
+
+<section class="py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-primary">
+      Zašto Izabrati Prvi Balkan?
+    </h2>
+    <p class="text-gray-500 text-center mb-12 text-sm md:text-base">
+      Profesionalna usluga, transparentne cene, više načina plaćanja
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-center">
+      <!-- Left card: Brz Servis -->
+      <div
+        class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center hover:shadow-lg transition h-full flex flex-col"
+      >
+        <div class="flex justify-center mb-4">
+          <Icon name="stopwatch" class="text-accent w-16 h-16" />
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-primary">Brz Servis</h3>
+        <ul class="text-gray-600 text-sm space-y-3 text-left mt-4 flex-1">
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            Pregled obavljamo u propisanom roku od 35 min
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            Zakažite termin da ne biste čekali
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            3 lokacije u Beogradu
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            Radno vreme prilagođeno vama
+          </li>
+        </ul>
+        <a
+          href="/kontakt"
+          class="mt-6 block w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition text-center"
+        >
+          Zakaži pregled
+        </a>
+      </div>
+
+      <!-- Center card: Način plaćanja (highlighted) -->
+      <div
+        class="bg-primary rounded-2xl shadow-xl p-8 text-center text-white relative md:-my-4 md:py-10 flex flex-col"
+      >
+        <div class="flex justify-center mb-4">
+          <Icon name="wallet" class="text-white w-16 h-16" />
+        </div>
+        <h3 class="text-xl font-bold mb-4">Način plaćanja</h3>
+
+        <!-- Payment options - vertical list with small icons -->
+        <div class="space-y-2 mb-6">
+          {
+            paymentOptions.map((option) => (
+              <div class="flex items-start gap-2 text-blue-100">
+                <Icon
+                  name={option.icon}
+                  class="w-4 h-4 text-white shrink-0 mt-0.5"
+                />
+                <span class="text-sm text-left">{option.title}</span>
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- Prices -->
+        <div class="space-y-3 mt-auto">
+          {
+            prices.map((price) => (
+              <div class="flex justify-between items-center bg-white/10 rounded-lg px-4 py-2">
+                <span class="text-sm text-blue-100">{price.title}</span>
+                <span class="font-bold text-lg">
+                  {price.amount.toLocaleString('sr-RS')}{' '}
+                  <span class="text-sm font-normal">
+                    {price.currency || 'RSD'}
+                  </span>
+                </span>
+              </div>
+            ))
+          }
+        </div>
+
+        <a
+          href="/usluge"
+          class="mt-6 block w-full bg-white hover:bg-gray-100 text-primary font-bold py-3 px-6 rounded-lg transition text-center"
+        >
+          Saznaj više
+        </a>
+      </div>
+
+      <!-- Right card: Pouzdanost -->
+      <div
+        class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center hover:shadow-lg transition h-full flex flex-col"
+      >
+        <div class="flex justify-center mb-4">
+          <Icon name="verified" class="text-primary w-16 h-16" />
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-primary">Pouzdanost</h3>
+        <ul class="text-gray-600 text-sm space-y-3 text-left mt-4 flex-1">
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            Sertifikovani tehničari
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            Zvanični standardi
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            10+ godina iskustva
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon
+              name="check_circle"
+              class="text-green-500 w-5 h-5 mt-0.5 shrink-0"
+            />
+            Transparentan cenovnik
+          </li>
+        </ul>
+        <a
+          href="/o-nama"
+          class="mt-6 block w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition text-center"
+        >
+          O nama
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
