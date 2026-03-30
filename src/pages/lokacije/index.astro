@@ -8,10 +8,11 @@ import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Locations from '../../components/Locations.astro';
 import Footer from '../../components/Footer.astro';
-import { getLocations } from '../../utils/strapi';
+import { getLocations, getServices } from '../../utils/strapi';
 
 const baseUrl = import.meta.env.BASE_URL;
 const locations = await getLocations();
+const services = await getServices();
 ---
 
 <Layout
@@ -159,19 +160,37 @@ const locations = await getLocations();
           <tbody>
             {
               locations.map((location) => {
-                const hours = location.openingHours
-                  ? formatWorkingHours(location.openingHours)
-                      .map((h) => `${h.title}: ${h.hours}`)
-                      .join(', ')
-                  : '08:00-18:00';
                 return (
                   <tr class="border-b hover:bg-blue-50 transition">
                     <td class="px-6 py-4 font-bold text-primary">
                       {location.name}
                     </td>
-                    <td class="px-6 py-4 text-center">{hours}</td>
-                    <td class="px-6 py-4 text-center">
-                      <Icon name="check_circle" class="text-accent" size="sm" />
+                    <td class="px-6 py-4 text-left">
+                      <ul class="text-sm space-y-1">
+                        {location.openingHours ? (
+                          formatWorkingHours(location.openingHours).map((h) => (
+                            <li>
+                              <strong>{h.title}:</strong> {h.hours}
+                            </li>
+                          ))
+                        ) : (
+                          <li>08:00-18:00</li>
+                        )}
+                      </ul>
+                    </td>
+                    <td class="px-6 py-4 text-left">
+                      <ul class="text-sm space-y-1">
+                        {services.map((service) => (
+                          <li class="flex items-center gap-1">
+                            <Icon
+                              name={service.icon || 'check_circle'}
+                              class="text-accent"
+                              size="sm"
+                            />
+                            <span>{service.title}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </td>
                     <td class="px-6 py-4 text-center">
                       <Icon name="check_circle" class="text-accent" size="sm" />
@@ -195,7 +214,7 @@ const locations = await getLocations();
   </section>
 
   <!-- CTA Section -->
-  <section class="py-16 bg-gradient-to-r from-primary to-secondary text-white">
+  <section class="py-16 bg-primary text-white">
     <div
       class="max-w-4xl mx-auto px-4 text-center animate-slideUp"
       style="animation-delay: 0.1s"
