@@ -21,6 +21,20 @@ export const formatPhoneHref = (phone: string): string => {
   return cleaned;
 };
 
+/**
+ * Format a phone number for WhatsApp wa.me links.
+ * Strips all non-digit characters (including +) to produce digits-only format.
+ * Converts local Serbian numbers (starting with 0) to international (381...).
+ */
+export const formatWhatsAppNumber = (phone: string): string => {
+  const digitsOnly = phone.replace(/\D/g, '');
+  // If starts with 0 (local Serbian format), convert to international
+  if (digitsOnly.startsWith('0')) {
+    return '381' + digitsOnly.slice(1);
+  }
+  return digitsOnly;
+};
+
 import type { OpeningHours } from '../types/strapi';
 
 const padHour = (h: number): string => String(h).padStart(2, '0');

@@ -9,7 +9,7 @@ import FAQ from '../components/FAQ.astro';
 import Footer from '../components/Footer.astro';
 import WhyChooseUs from '../components/WhyChooseUs.astro';
 import { getSettings, getStrapiImageUrl } from '../utils/strapi';
-import { formatPhoneHref } from '../utils/navigation';
+import Icon from '../components/Icon.astro';
 
 // Fetch settings from Strapi
 const settings = await getSettings();
@@ -21,8 +21,6 @@ const description =
   'Profesionalni tehnički pregled vozila sa 3 lokacije u Beogradu. Brz i pouzdan servis, registracija vozila i pomoć kod osiguranja.';
 
 // Extract hero settings with fallbacks
-const phoneNumber = settings?.phone || '+381 11 2101 111';
-const phoneNumberHref = formatPhoneHref(phoneNumber);
 const heroTitle =
   settings?.hero?.title || 'Prvi Balkan - Tehnički Pregled Vozila';
 const heroDescription =
@@ -66,7 +64,7 @@ const showLocationSection = settings?.showLocationSection ?? false;
   <Services />
   {showLocationSection && <Locations />}
   <Testimonials />
-  <FAQ />
+  <FAQ limit={4} />
 
   <section class="py-16 bg-primary text-white">
     <div class="max-w-4xl mx-auto text-center px-4">
@@ -77,18 +75,13 @@ const showLocationSection = settings?.showLocationSection ?? false;
         Zakaži danas i prođi tehnički sa sigurnošću. Slobodno nas kontaktiraj na
         bilo kojoj lokaciji.
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <div class="flex justify-center">
         <a
           href="/kontakt"
-          class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition"
+          class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition inline-flex items-center gap-2"
         >
-          Zakaži
-        </a>
-        <a
-          href={`tel:${phoneNumberHref}`}
-          class="border-2 border-white hover:bg-white hover:text-primary text-white font-bold py-3 px-8 rounded-lg transition"
-        >
-          Pozovi nas: {phoneNumber}
+          <Icon name="phone" size="sm" />
+          Pozovi nas i zakaži
         </a>
       </div>
     </div>
