@@ -36,7 +36,10 @@ const whatsapp = formatWhatsAppNumber(
             {
               locations.map((loc) => (
                 <div class="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                  <h3 class="font-bold text-primary mb-2">{loc.name}</h3>
+                  <h3 class="font-bold text-primary mb-2">
+                    {loc.name}
+                    {loc.address ? `, ${loc.address}` : ''}
+                  </h3>
                   <div class="space-y-1.5">
                     {loc.phone && (
                       <p class="text-gray-600 text-sm flex items-center gap-2">

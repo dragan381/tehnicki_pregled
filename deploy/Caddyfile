@@ -1,5 +1,5 @@
-# Replace cms.yourdomain.com with your actual Strapi domain
-cms.yourdomain.com {
+# Strapi CMS reverse proxy for cms.prvibalkan.rs
+cms.prvibalkan.rs {
 	# Reverse proxy to Strapi
 	reverse_proxy localhost:1337
 

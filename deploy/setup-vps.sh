@@ -1,7 +1,8 @@
 #!/bin/bash
 # =============================================
-# Hetzner VPS Setup Script for Strapi + PostgreSQL
+# Contabo VPS Setup Script for Strapi + PostgreSQL
 # Run as root on a fresh Ubuntu 24.04 LTS server
+# Tested on: Contabo VPS S SSD (4 vCPU, 8GB RAM)
 # =============================================
 
 set -euo pipefail
@@ -12,7 +13,7 @@ echo "============================================"
 
 # --- Variables (customize these) ---
 STRAPI_USER="strapi"
-STRAPI_DOMAIN="cms.yourdomain.com"  # Change this!
+STRAPI_DOMAIN="cms.prvibalkan.rs"
 NODE_VERSION="20"
 REPO_URL="https://github.com/dragan381/tehnicki_pregled.git"
 
@@ -121,7 +122,7 @@ DATABASE_PASSWORD=$DB_PASSWORD
 DATABASE_SSL=false
 
 # CORS
-CORS_ORIGINS=https://tehnicki-pregled.vercel.app,https://yourdomain.com
+CORS_ORIGINS=https://prvibalkan.rs,https://www.prvibalkan.rs,https://tehnicki-pregled.vercel.app
 
 # Email (configure these manually)
 # SMTP_HOST=smtp.gmail.com
@@ -137,7 +138,7 @@ chown -R $STRAPI_USER:$STRAPI_USER /home/$STRAPI_USER/
 
 # --- Configure Caddy ---
 cp /home/$STRAPI_USER/tehnicki_pregled/deploy/Caddyfile /etc/caddy/Caddyfile
-sed -i "s/cms.yourdomain.com/$STRAPI_DOMAIN/g" /etc/caddy/Caddyfile
+sed -i "s/cms.prvibalkan.rs/$STRAPI_DOMAIN/g" /etc/caddy/Caddyfile
 systemctl restart caddy
 
 # --- Setup backup cron ---
@@ -172,6 +173,6 @@ echo "  1. Point DNS A record for $STRAPI_DOMAIN to this server's IP"
 echo "  2. Edit CORS_ORIGINS in /home/$STRAPI_USER/tehnicki_pregled/strapi/.env"
 echo "  3. Configure SMTP settings in .env for email"
 echo "  4. Create first admin user at https://$STRAPI_DOMAIN/admin"
-echo "  5. Set STRAPI_API_URL and STRAPI_API_TOKEN in Vercel env vars"
-echo "  6. Enable Hetzner automated snapshots in the cloud console"
+echo "  5. Set STRAPI_URL and STRAPI_API_TOKEN in Vercel env vars"
+echo "  6. Enable Contabo automatic snapshots in the Customer Control Panel"
 echo ""

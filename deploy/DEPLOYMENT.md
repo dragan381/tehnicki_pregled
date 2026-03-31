@@ -3,7 +3,7 @@
 ## Architecture
 
 ```
-[Vercel - Free]              [Hetzner VPS CX22 - ~€5.40/mo]
+[Vercel - Free]              [Contabo VPS S - ~€8.45/mo]
 ┌──────────────┐             ┌─────────────────────────┐
 │  Astro SSG   │◄── build ──►│  Strapi 5 (PM2)         │
 │  (static)    │   webhook   │  PostgreSQL 16           │
@@ -13,42 +13,80 @@
                              └─────────────────────────┘
 ```
 
-**Estimated cost: ~€5.40/month** (Hetzner CX22 + automated snapshots)
+**Estimated cost: ~€8.45/month** (Contabo VPS S €6.99 + snapshot add-on €1.46)
 
 ---
 
-## Step 1: Hetzner VPS Setup
+## Step 1: Contabo VPS Setup
 
 ### 1.1 Create Server
 
-1. Go to [Hetzner Cloud Console](https://console.hetzner.cloud)
-2. Create new project → Add Server
-3. **Location**: Falkenstein (EU, closest to Serbia)
-4. **Image**: Ubuntu 24.04
-5. **Type**: CX22 (2 vCPU, 4GB RAM, 40GB disk) — €4.51/mo
-6. **SSH Key**: Add your public SSH key
-7. **Backups**: Enable (€0.90/mo — automated weekly snapshots)
-8. **Name**: `strapi-prod`
+1. Go to [Contabo](https://contabo.com/en/vps/) → VPS S SSD
+2. **Region**: European Union (Germany) — closest to Serbia (~25ms latency)
+3. **Image**: Ubuntu 24.04
+4. **Type**: VPS S SSD (4 vCPU, 8GB RAM, 200GB SSD) — €6.99/mo
+5. **Password**: Set a strong root password (you'll switch to SSH key later)
+6. **Add-ons**: Enable Automatic Snapshots (€1.46/mo)
+7. **Name**: `strapi-prod`
+8. After provisioning, you'll receive the server IP and credentials via email
+
+> **Tip**: Once logged in, add your SSH public key to `/root/.ssh/authorized_keys` and disable password auth for better security.
 
 ### 1.2 DNS Setup
 
-Point your Strapi subdomain to the server IP:
+> **Your setup**: Domain `prvibalkan.rs` registered at AdriaHost.rs, currently pointing to old hosting at `81.171.10.91`. You want to stop paying for AdriaHost hosting but keep the domain registered there.
+
+Transfer nameservers to Vercel — Vercel becomes your DNS manager, you control all records from the Vercel dashboard. AdriaHost only handles domain registration (no hosting needed).
+
+**Step 1**: Contact AdriaHost support and ask them to change the nameservers for `prvibalkan.rs` to:
 
 ```
-A  cms.yourdomain.com  →  YOUR_SERVER_IP
+ns1.vercel-dns.com
+ns2.vercel-dns.com
 ```
+
+> AdriaHost currently uses `ns759.adriahost.com` and `ns760.adriahost.com`. You need AdriaHost to change these at the registrar level. This is a standard request — tell them: _"Molim vas da promenite nameservere za domen prvibalkan.rs na ns1.vercel-dns.com i ns2.vercel-dns.com"_
+
+**Step 2**: After nameservers propagate (up to 24-48h), manage ALL DNS records in **Vercel → Project → Settings → Domains → prvibalkan.rs → DNS Records**:
+
+| Type    | Name  | Value                                                                  | Purpose                            |
+| ------- | ----- | ---------------------------------------------------------------------- | ---------------------------------- |
+| `A`     | `@`   | (auto-managed by Vercel)                                               | prvibalkan.rs → Vercel             |
+| `CNAME` | `www` | (auto-managed by Vercel)                                               | www.prvibalkan.rs → Vercel         |
+| `A`     | `cms` | `YOUR_CONTABO_IP`                                                      | cms.prvibalkan.rs → Strapi/Contabo |
+| `TXT`   | `@`   | `v=spf1 a mx ip4:YOUR_CONTABO_IP ~all`                                 | SPF for email (update IP)          |
+| `TXT`   | `@`   | `google-site-verification=uzf2ILrgzovnuE_g2PQ-TRW3TSSDbdgHeviC4zLMxSA` | Keep Google verification           |
+| `MX`    | `@`   | (see note below)                                                       | Email routing                      |
+
+> **About email**: Your current DNS has MX pointing to `prvibalkan.rs` and SPF for `81.171.10.91` (AdriaHost mail). If you use AdriaHost email (`@prvibalkan.rs`), you'll need to either keep AdriaHost email hosting or migrate email to Gmail/another provider. If you don't use email on this domain, you can skip MX/SPF records.
+
+**Step 3**: Cancel AdriaHost hosting plan (keep only domain registration).
+
+---
+
+#### DNS Records Summary (Final State)
+
+After setup, your DNS should look like this:
+
+```
+prvibalkan.rs        A      →  Vercel (76.76.21.21 or auto)
+www.prvibalkan.rs    CNAME  →  Vercel (cname.vercel-dns.com or auto)
+cms.prvibalkan.rs    A      →  Contabo VPS IP (your Strapi server)
+```
+
+DNS propagation takes **5 minutes to 48 hours**. Use [dnschecker.org](https://dnschecker.org) to verify.
 
 ### 1.3 Run Setup Script
 
 ```bash
-ssh root@YOUR_SERVER_IP
+ssh root@YOUR_CONTABO_IP
 
 # Upload and run the setup script
 curl -sL https://raw.githubusercontent.com/dragan381/tehnicki_pregled/main/deploy/setup-vps.sh -o setup-vps.sh
 
 # Edit the variables at the top of the script:
 nano setup-vps.sh
-# Change STRAPI_DOMAIN="cms.yourdomain.com" to your actual domain
+# Change STRAPI_DOMAIN="cms.yourdomain.com" to "cms.prvibalkan.rs"
 
 chmod +x setup-vps.sh
 ./setup-vps.sh
@@ -58,7 +96,7 @@ chmod +x setup-vps.sh
 
 ### 1.4 Create First Admin User
 
-Visit `https://cms.yourdomain.com/admin` and create your admin account.
+Visit `https://cms.prvibalkan.rs/admin` and create your admin account.
 
 ---
 
@@ -71,19 +109,22 @@ Visit `https://cms.yourdomain.com/admin` and create your admin account.
 3. **Framework**: Astro (auto-detected)
 4. **Root Directory**: `.` (root, not strapi/)
 
-### 2.2 Environment Variables
+### 2.2 Add Custom Domain
+
+1. Vercel → Project → Settings → Domains
+2. Add `prvibalkan.rs`
+3. Also add `www.prvibalkan.rs` (Vercel will auto-redirect)
+4. Vercel will show "Invalid Configuration" until DNS propagates — this is normal
+
+### 2.3 Environment Variables
 
 Add these in Vercel → Settings → Environment Variables:
 
 | Variable           | Value                                            |
 | ------------------ | ------------------------------------------------ |
-| `STRAPI_URL`       | `https://cms.yourdomain.com`                     |
+| `STRAPI_URL`       | `https://cms.prvibalkan.rs`                      |
 | `STRAPI_API_TOKEN` | Generate in Strapi Admin → Settings → API Tokens |
-| `SITE_URL`         | `https://yourdomain.com` (or your Vercel URL)    |
-
-### 2.3 Custom Domain (Optional)
-
-In Vercel → Settings → Domains, add your custom domain.
+| `SITE_URL`         | `https://prvibalkan.rs`                          |
 
 ---
 
@@ -92,7 +133,7 @@ In Vercel → Settings → Domains, add your custom domain.
 ### 3.1 Create Deploy Hook
 
 1. Vercel → Project → Settings → Git → Deploy Hooks
-2. Name: `strapi-content-update`, Branch: `main`
+2. Name: `strapi-content-update`, Branch: `release` (matches your vercel.json deployment branch)
 3. Copy the webhook URL
 
 ### 3.2 Configure Strapi Webhook
@@ -146,12 +187,12 @@ pm2 restart strapi
 
 ## Backup Strategy
 
-| Layer           | Method            | Frequency     | Retention   |
-| --------------- | ----------------- | ------------- | ----------- |
-| **Database**    | `pg_dump` cron    | Daily 3 AM    | 14 days     |
-| **Uploads**     | tar.gz cron       | Daily 3 AM    | 14 days     |
-| **Full Server** | Hetzner snapshots | Weekly (auto) | 3 snapshots |
-| **Code**        | Git (GitHub)      | Every push    | Unlimited   |
+| Layer           | Method            | Frequency     | Retention       |
+| --------------- | ----------------- | ------------- | --------------- |
+| **Database**    | `pg_dump` cron    | Daily 3 AM    | 14 days         |
+| **Uploads**     | tar.gz cron       | Daily 3 AM    | 14 days         |
+| **Full Server** | Contabo snapshots | Weekly (auto) | Latest snapshot |
+| **Code**        | Git (GitHub)      | Every push    | Unlimited       |
 
 ---
 
@@ -164,5 +205,6 @@ pm2 restart strapi
 - [x] CORS restricted to frontend domain
 - [x] Strapi runs as non-root user
 - [x] Strong auto-generated secrets
-- [ ] Enable SSH key-only login (disable password auth)
-- [ ] Setup monitoring (UptimeRobot free tier)
+- [ ] Enable SSH key-only login (disable password auth in `/etc/ssh/sshd_config`)
+- [ ] Setup monitoring (UptimeRobot free tier — monitors https://cms.prvibalkan.rs)
+- [ ] Enable Contabo automatic snapshots in the Customer Control Panel
