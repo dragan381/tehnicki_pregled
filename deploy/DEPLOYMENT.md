@@ -47,18 +47,17 @@ ns2.vercel-dns.com
 
 > AdriaHost currently uses `ns759.adriahost.com` and `ns760.adriahost.com`. You need AdriaHost to change these at the registrar level. This is a standard request — tell them: _"Molim vas da promenite nameservere za domen prvibalkan.rs na ns1.vercel-dns.com i ns2.vercel-dns.com"_
 
-**Step 2**: After nameservers propagate (up to 24-48h), manage ALL DNS records in **Vercel → Project → Settings → Domains → prvibalkan.rs → DNS Records**:
+**Step 2**: After nameservers propagate (up to 24-48h), check DNS records in **Vercel Dashboard → [Domains](https://vercel.com/dashboard/domains) → prvibalkan.rs** (account-level, not project-level). Vercel auto-creates several records when you assign the domain to your project:
 
-| Type    | Name  | Value                                                                  | Purpose                            |
-| ------- | ----- | ---------------------------------------------------------------------- | ---------------------------------- |
-| `A`     | `@`   | (auto-managed by Vercel)                                               | prvibalkan.rs → Vercel             |
-| `CNAME` | `www` | (auto-managed by Vercel)                                               | www.prvibalkan.rs → Vercel         |
-| `A`     | `cms` | `YOUR_CONTABO_IP`                                                      | cms.prvibalkan.rs → Strapi/Contabo |
-| `TXT`   | `@`   | `v=spf1 a mx ip4:YOUR_CONTABO_IP ~all`                                 | SPF for email (update IP)          |
-| `TXT`   | `@`   | `google-site-verification=uzf2ILrgzovnuE_g2PQ-TRW3TSSDbdgHeviC4zLMxSA` | Keep Google verification           |
-| `MX`    | `@`   | (see note below)                                                       | Email routing                      |
+| Type    | Name  | Value                                                                  | Status                                                 |
+| ------- | ----- | ---------------------------------------------------------------------- | ------------------------------------------------------ |
+| `ALIAS` |       | `ef763939a...vercel-dns-017.com`                                       | Auto-created by Vercel — don't touch                   |
+| `ALIAS` | `*`   | `cname.vercel-dns-017.com`                                             | Auto-created by Vercel — don't touch                   |
+| `CAA`   |       | `pki.goog`, `sectigo.com`, `letsencrypt.org`                           | Auto-created by Vercel — don't touch                   |
+| `A`     | `cms` | `YOUR_CONTABO_IP`                                                      | **Add manually** after Contabo is ready                |
+| `TXT`   | `@`   | `google-site-verification=uzf2ILrgzovnuE_g2PQ-TRW3TSSDbdgHeviC4zLMxSA` | **Add manually** (optional, for Google Search Console) |
 
-> **About email**: Your current DNS has MX pointing to `prvibalkan.rs` and SPF for `81.171.10.91` (AdriaHost mail). If you use AdriaHost email (`@prvibalkan.rs`), you'll need to either keep AdriaHost email hosting or migrate email to Gmail/another provider. If you don't use email on this domain, you can skip MX/SPF records.
+> **How to add the `cms` record**: In Vercel Dashboard → Domains → prvibalkan.rs → DNS Records → click **Add Record** → Type: `A`, Name: `cms`, Value: your Contabo server IP address.
 
 **Step 3**: Cancel AdriaHost hosting plan (keep only domain registration).
 
@@ -69,8 +68,8 @@ ns2.vercel-dns.com
 After setup, your DNS should look like this:
 
 ```
-prvibalkan.rs        A      →  Vercel (76.76.21.21 or auto)
-www.prvibalkan.rs    CNAME  →  Vercel (cname.vercel-dns.com or auto)
+prvibalkan.rs        ALIAS  →  Vercel (auto-managed)
+www.prvibalkan.rs    ALIAS  →  Vercel (auto-managed via wildcard *)
 cms.prvibalkan.rs    A      →  Contabo VPS IP (your Strapi server)
 ```
 
