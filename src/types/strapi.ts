@@ -232,6 +232,7 @@ export interface Settings {
   showSpecialOfferSection?: boolean;
   showLocationSection?: boolean;
   showSocialLinks: boolean;
+  showPrices?: boolean;
   paymentOption?: PaymentOption[] | { paymentOption: PaymentOption[] };
   insuranceCoverImage?: StrapiMedia;
 }

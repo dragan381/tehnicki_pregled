@@ -20,12 +20,7 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "phone": {
       "type": "string"
@@ -48,12 +43,7 @@
     "heroImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "specialOffer": {
       "type": "json"
@@ -68,15 +58,18 @@
       "required": true,
       "default": false
     },
+    "showPrices": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
     "paymentOption": {
       "type": "json"
     },
     "insuranceCoverImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "whatsappPhone": {
       "type": "string"

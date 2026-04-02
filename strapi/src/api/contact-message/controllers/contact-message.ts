@@ -84,7 +84,7 @@ export default factories.createCoreController(
           const safeMessage = escapeHtml(message.trim());
 
           // Get notification email from settings
-          let toEmail = 'info@prvi-balkan.rs';
+          let toEmail = 'prvibalkan@gmail.com';
           try {
             const settingsList = await strapi.entityService.findMany(
               'api::setting.setting' as any,

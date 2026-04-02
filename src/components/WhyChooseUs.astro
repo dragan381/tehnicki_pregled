@@ -19,6 +19,8 @@ const paymentOptions = paymentOptionsArray?.length
       { title: 'Na rate', icon: 'payment_installments' },
     ];
 
+const showPrices = settings?.showPrices !== false;
+
 const prices = pricesData.length
   ? pricesData
   : [
@@ -110,14 +112,18 @@ const prices = pricesData.length
         <div class="space-y-3 mt-auto">
           {
             prices.map((price) => (
-              <div class="flex justify-between items-center bg-white/10 rounded-lg px-4 py-2">
+              <div
+                class={`flex items-center bg-white/10 rounded-lg px-4 py-2 ${showPrices ? 'justify-between' : 'justify-center'}`}
+              >
                 <span class="text-sm text-blue-100">{price.title}</span>
-                <span class="font-bold text-lg">
-                  {price.amount.toLocaleString('sr-RS')}{' '}
-                  <span class="text-sm font-normal">
-                    {price.currency || 'RSD'}
+                {showPrices && (
+                  <span class="font-bold text-lg">
+                    {price.amount.toLocaleString('sr-RS')}{' '}
+                    <span class="text-sm font-normal">
+                      {price.currency || 'RSD'}
+                    </span>
                   </span>
-                </span>
+                )}
               </div>
             ))
           }

@@ -731,6 +731,9 @@ export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
     showLocationSection: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
+    showPrices: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<true>;
     showSpecialOfferSection: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
