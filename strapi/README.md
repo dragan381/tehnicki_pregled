@@ -34,10 +34,28 @@ yarn build
 
 ## ⚙️ Deployment
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+This project is **self-hosted** on an Oracle Cloud Always Free VM (Ubuntu 24.04 ARM,
+Caddy + PM2 + PostgreSQL). It is no longer on Strapi Cloud.
 
-```
-yarn strapi deploy
+- First-time server setup: [`deploy/setup-vps.sh`](../deploy/setup-vps.sh)
+- Subsequent updates: [`deploy/deploy-strapi.sh`](../deploy/deploy-strapi.sh)
+- Full guide: [`deploy/DEPLOYMENT.md`](../deploy/DEPLOYMENT.md)
+
+## ⛔ `strapi transfer` erases the destination
+
+`strapi transfer` **wipes the destination database and uploads before copying**.
+It was a one-time operation used to migrate off Strapi Cloud.
+
+Do **not** run it against the production server again. That server now collects
+`contact-message` and `calculator-request` rows submitted through the website,
+and those exist nowhere else — a re-run destroys every enquiry received since
+the migration.
+
+If you ever genuinely need to re-import, take a backup first:
+
+```bash
+ssh strapi@<server>
+./backup.sh     # writes db_*.dump + uploads_*.tar.gz to ~/backups
 ```
 
 ## 📚 Learn more

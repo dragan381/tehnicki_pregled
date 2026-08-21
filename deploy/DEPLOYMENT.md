@@ -3,207 +3,330 @@
 ## Architecture
 
 ```
-[Vercel - Free]              [Contabo VPS S - ~€8.45/mo]
-┌──────────────┐             ┌─────────────────────────┐
-│  Astro SSG   │◄── build ──►│  Strapi 5 (PM2)         │
-│  (static)    │   webhook   │  PostgreSQL 16           │
-│  Global CDN  │             │  Caddy (reverse proxy)   │
-└──────────────┘             │  Media uploads (disk)    │
-                             │  Daily backups (cron)    │
-                             └─────────────────────────┘
+[Vercel — free]                      [Oracle Cloud Always Free — Frankfurt]
+┌──────────────┐                     ┌──────────────────────────────────┐
+│  Astro SSG   │◄── build fetch ────►│  Caddy (auto-HTTPS, :80/:443)    │
+│  (static)    │                     │    └─► Strapi 5 (PM2, :1337)     │
+│  Global CDN  │── form POSTs ──────►│  PostgreSQL 16 (localhost)       │
+└──────────────┘                     │  Media uploads → local disk      │
+       ▲                             │  Daily pg_dump + uploads backup  │
+       └──── deploy webhook ─────────┘
 ```
 
-**Estimated cost: ~€8.45/month** (Contabo VPS S €6.99 + snapshot add-on €1.46)
+**Cost: $0/month.** Oracle Cloud's Always Free tier is permanent, not a trial.
+
+The frontend talks to the CMS through exactly one variable — `STRAPI_URL`. Nothing
+in `src/` is aware of where Strapi is hosted.
 
 ---
 
-## Step 1: Contabo VPS Setup
+## Step 1: Oracle Cloud VM
 
-### 1.1 Create Server
+### 1.1 Create the account
 
-1. Go to [Contabo](https://contabo.com/en/vps/) → VPS S SSD
-2. **Region**: European Union (Germany) — closest to Serbia (~25ms latency)
-3. **Image**: Ubuntu 24.04
-4. **Type**: VPS S SSD (4 vCPU, 8GB RAM, 200GB SSD) — €6.99/mo
-5. **Password**: Set a strong root password (you'll switch to SSH key later)
-6. **Add-ons**: Enable Automatic Snapshots (€1.46/mo)
-7. **Name**: `strapi-prod`
-8. After provisioning, you'll receive the server IP and credentials via email
+Sign up at [cloud.oracle.com](https://cloud.oracle.com).
 
-> **Tip**: Once logged in, add your SSH public key to `/root/.ssh/authorized_keys` and disable password auth for better security.
+> **⚠️ Set the home region to `eu-frankfurt-1` (Germany — Central).**
+> This is **permanent**. Always Free resources only qualify in the tenancy's home
+> region, and the home region cannot be changed afterwards. Picking the wrong one
+> means starting over with a new account. Frankfurt is also the closest free
+> region to Serbia and has reliable ARM capacity.
 
-### 1.2 DNS Setup
+A payment card is required for identity verification. Always Free resources are
+not charged.
 
-> **Your setup**: Domain `prvibalkan.rs` registered at AdriaHost.rs, currently pointing to old hosting at `81.171.10.91`. You want to stop paying for AdriaHost hosting but keep the domain registered there.
+### 1.2 Create the instance
 
-Transfer nameservers to Vercel — Vercel becomes your DNS manager, you control all records from the Vercel dashboard. AdriaHost only handles domain registration (no hosting needed).
+Compute → Instances → Create instance:
 
-**Step 1**: Contact AdriaHost support and ask them to change the nameservers for `prvibalkan.rs` to:
+| Setting | Value |
+| --- | --- |
+| Image | **Ubuntu 24.04** (aarch64 / ARM) |
+| Shape | **VM.Standard.A1.Flex** |
+| OCPUs / Memory | **1 OCPU / 6 GB** |
+| Boot volume | 50 GB (default) |
+| SSH key | upload your public key |
 
-```
-ns1.vercel-dns.com
-ns2.vercel-dns.com
-```
+> If you see **"Out of host capacity"**, just retry — Frankfurt normally clears
+> within minutes. The Always Free allocation is 4 OCPU / 24 GB total, so 1/6 uses
+> a quarter of it and leaves room to grow.
 
-> AdriaHost currently uses `ns759.adriahost.com` and `ns760.adriahost.com`. You need AdriaHost to change these at the registrar level. This is a standard request — tell them: _"Molim vas da promenite nameservere za domen prvibalkan.rs na ns1.vercel-dns.com i ns2.vercel-dns.com"_
+### 1.3 Reserve a static public IP
 
-**Step 2**: After nameservers propagate (up to 24-48h), check DNS records in **Vercel Dashboard → [Domains](https://vercel.com/dashboard/domains) → prvibalkan.rs** (account-level, not project-level). Vercel auto-creates several records when you assign the domain to your project:
+Instance → Attached VNICs → the primary VNIC → IPv4 addresses → edit the public
+IP from **Ephemeral** to **Reserved**.
 
-| Type    | Name  | Value                                                                  | Status                                                 |
-| ------- | ----- | ---------------------------------------------------------------------- | ------------------------------------------------------ |
-| `ALIAS` |       | `ef763939a...vercel-dns-017.com`                                       | Auto-created by Vercel — don't touch                   |
-| `ALIAS` | `*`   | `cname.vercel-dns-017.com`                                             | Auto-created by Vercel — don't touch                   |
-| `CAA`   |       | `pki.goog`, `sectigo.com`, `letsencrypt.org`                           | Auto-created by Vercel — don't touch                   |
-| `A`     | `cms` | `YOUR_CONTABO_IP`                                                      | **Add manually** after Contabo is ready                |
-| `TXT`   | `@`   | `google-site-verification=uzf2ILrgzovnuE_g2PQ-TRW3TSSDbdgHeviC4zLMxSA` | **Add manually** (optional, for Google Search Console) |
+Free, and it stops the DNS record from going stale after a reboot.
 
-> **How to add the `cms` record**: In Vercel Dashboard → Domains → prvibalkan.rs → DNS Records → click **Add Record** → Type: `A`, Name: `cms`, Value: your Contabo server IP address.
+### 1.4 Open ports 80 and 443 — in **both** firewalls
 
-**Step 3**: Cancel AdriaHost hosting plan (keep only domain registration).
+This trips up almost everyone. Oracle filters traffic in two independent places
+and both must allow the port:
 
----
+**a) VCN Security List** (the cloud-side firewall)
 
-#### DNS Records Summary (Final State)
+Networking → Virtual Cloud Networks → your VCN → Security Lists → Default →
+Add Ingress Rules:
 
-After setup, your DNS should look like this:
+| Source CIDR | Protocol | Destination Port |
+| --- | --- | --- |
+| `0.0.0.0/0` | TCP | `80` |
+| `0.0.0.0/0` | TCP | `443` |
 
-```
-prvibalkan.rs        ALIAS  →  Vercel (auto-managed)
-www.prvibalkan.rs    ALIAS  →  Vercel (auto-managed via wildcard *)
-cms.prvibalkan.rs    A      →  Contabo VPS IP (your Strapi server)
-```
+**b) Instance `iptables`** (the OS-side firewall)
 
-DNS propagation takes **5 minutes to 48 hours**. Use [dnschecker.org](https://dnschecker.org) to verify.
+Oracle's Ubuntu images ship with restrictive `iptables` rules persisted by
+`netfilter-persistent`. `setup-vps.sh` handles this automatically in step `[2/9]`.
 
-### 1.3 Run Setup Script
+> **Symptom if you get this wrong:** the site simply hangs, and Caddy never
+> obtains a certificate because Let's Encrypt cannot reach port 80 for the
+> HTTP-01 challenge. If HTTPS never comes up, check both firewalls first.
+
+### 1.5 DNS
+
+Oracle does not give compute instances a hostname, only a bare IP — and HTTPS is
+mandatory here, because the site is served over HTTPS and browsers block form
+POSTs from an HTTPS page to an `http://` endpoint as mixed content.
+
+Register a free subdomain at [duckdns.org](https://www.duckdns.org) (sign in with
+GitHub/Google), e.g. `prvibalkan-cms`, and point it at the reserved IP.
+
+> **Why DuckDNS and not sslip.io/nip.io?** `duckdns.org` is on the Public Suffix
+> List, so each subdomain gets its own Let's Encrypt rate-limit budget.
+> `sslip.io` and `nip.io` are not, so every certificate issued for them worldwide
+> shares one budget and issuance fails unpredictably.
+
+**Upgrading to `cms.prvibalkan.rs` later** is three small edits — an `A` record at
+your DNS provider, the hostname in [`Caddyfile`](Caddyfile), and `STRAPI_URL` in
+Vercel. You are not locked in.
+
+### 1.6 Run the setup script
 
 ```bash
-ssh root@YOUR_CONTABO_IP
+ssh ubuntu@<RESERVED_IP>
 
-# Upload and run the setup script
 curl -sL https://raw.githubusercontent.com/dragan381/tehnicki_pregled/main/deploy/setup-vps.sh -o setup-vps.sh
-
-# Edit the variables at the top of the script:
-nano setup-vps.sh
-# Change STRAPI_DOMAIN="cms.yourdomain.com" to "cms.prvibalkan.rs"
-
 chmod +x setup-vps.sh
-./setup-vps.sh
+
+sudo STRAPI_DOMAIN='prvibalkan-cms.duckdns.org' \
+     SMTP_USERNAME='your_email@gmail.com' \
+     SMTP_PASSWORD='your_gmail_app_password' \
+     ./setup-vps.sh
 ```
 
-**IMPORTANT**: Save the database password shown at the end of the script!
+SMTP credentials are passed as environment variables rather than written into the
+repo. Without them Strapi installs fine, but the contact and calculator forms will
+not send email.
 
-### 1.4 Create First Admin User
+**Save the database password printed at the end.**
 
-Visit `https://cms.prvibalkan.rs/admin` and create your admin account.
+### 1.7 (Recommended) Avoid idle reclamation
 
----
+Oracle may **stop** an Always Free instance that has, over 7 consecutive days,
+CPU (95th percentile) < 20% **and** network < 20% **and** memory < 20%. All three
+must be true. The instance is stopped, not deleted — the boot volume and your data
+survive and it can be restarted — but the CMS is down until you notice, which
+also takes the website's forms down.
 
-## Step 2: Vercel Deployment (Astro Frontend)
+Two mitigations, use either or both:
 
-### 2.1 Connect Repository
-
-1. Go to [vercel.com](https://vercel.com) → New Project
-2. Import `dragan381/tehnicki_pregled` from GitHub
-3. **Framework**: Astro (auto-detected)
-4. **Root Directory**: `.` (root, not strapi/)
-
-### 2.2 Add Custom Domain
-
-1. Vercel → Project → Settings → Domains
-2. Add `prvibalkan.rs`
-3. Also add `www.prvibalkan.rs` (Vercel will auto-redirect)
-4. Vercel will show "Invalid Configuration" until DNS propagates — this is normal
-
-### 2.3 Environment Variables
-
-Add these in Vercel → Settings → Environment Variables:
-
-| Variable           | Value                                            |
-| ------------------ | ------------------------------------------------ |
-| `STRAPI_URL`       | `https://cms.prvibalkan.rs`                      |
-| `STRAPI_API_TOKEN` | Generate in Strapi Admin → Settings → API Tokens |
-| `SITE_URL`         | `https://prvibalkan.rs`                          |
+- **Convert the tenancy to Pay As You Go.** This exempts the instance entirely and
+  still costs $0 while you stay inside Always Free limits. Pair it with a **budget
+  alert at $1** (Billing → Budgets) so any accidental overage surfaces immediately.
+- **Monitor it.** Add a free [UptimeRobot](https://uptimerobot.com) check against
+  `https://<your-domain>/_health` every 5 minutes.
 
 ---
 
-## Step 3: Vercel Build Hook (Auto-rebuild on Content Change)
+## Step 2: Import content from the Phase 0 archive
 
-### 3.1 Create Deploy Hook
+One-time, during migration only.
 
-1. Vercel → Project → Settings → Git → Deploy Hooks
-2. Name: `strapi-content-update`, Branch: `release` (matches your vercel.json deployment branch)
-3. Copy the webhook URL
+Phase 0 already pulled everything off Cloud — see
+[`PHASE0-EXTRACTION.md`](PHASE0-EXTRACTION.md). Import from that archive rather
+than pulling from Cloud again:
 
-### 3.2 Configure Strapi Webhook
+```bash
+scp backups/cloud-full-2026-08-21.tar.gz strapi@<RESERVED_IP>:~/
 
-1. Strapi Admin → Settings → Webhooks → Add new webhook
-2. **Name**: `Vercel Rebuild`
-3. **URL**: Paste the Vercel deploy hook URL
-4. **Events**: Select all content-type events (entry.create, entry.update, entry.delete, entry.publish, entry.unpublish)
+ssh strapi@<RESERVED_IP>
+pm2 stop strapi          # import must run with the app not serving
 
-Now whenever you publish content in Strapi, Vercel will automatically rebuild the site.
+cd /home/strapi/tehnicki_pregled/strapi
+npx strapi import --file ~/cloud-full-2026-08-21.tar.gz
+
+pm2 start strapi
+```
+
+Why the archive and not a live pull:
+
+- **Cloud no longer has to be alive.** The migration is decoupled from the expiry
+  date entirely.
+- **Repeatable.** Wreck the VPS and re-import as many times as you like. A live
+  pull needs a fresh token each time and only works while Cloud runs.
+- **No version coupling.** A live `transfer` aborts if Cloud's Strapi version
+  differs from the VPS. The archive was written by 5.35.0 and imports into 5.35.0.
+- **SQLite → PostgreSQL is fine.** The archive was exported from a local SQLite
+  DB, but DTS works at the entity level, not the SQL level. The VPS's Postgres
+  is a valid destination.
+
+Notes:
+
+- Do **not** pass `--exclude files` — the media library is the point. Expect
+  **95 assets** and **250 entities** in the summary table.
+- **`strapi import` erases the destination first.** Safe on a fresh server,
+  destructive later. See the warning in [`strapi/README.md`](../strapi/README.md).
+- The archive is unencrypted, so no `--key` is needed. It contains customer
+  contact messages — delete it from the VPS home directory once the import
+  succeeds.
+
+<details>
+<summary>Fallback: pull live from Cloud instead</summary>
+
+Only if the archive is unusable and Cloud is still running. Requires a **Pull**
+transfer token from Cloud admin → Settings → Transfer Tokens, and Cloud's Strapi
+version must match the VPS's.
+
+```bash
+npx strapi transfer \
+  --from https://playful-frog-24c9517ccc.strapiapp.com/admin \
+  --from-token <PULL_TOKEN>
+```
+
+The `--from` URL **must** end in `/admin`.
+</details>
+
+### After the import
+
+Log in at `https://<your-domain>/admin` with your **Strapi Cloud credentials** —
+admin users transfer across, and bcrypt password hashes are independent of the
+server's secrets.
+
+- **Confirm counts in the Content Manager** — 3 locations, 1 settings entry, 2
+  prices, 4 services, 3 blog posts, 6 FAQs, 3 testimonials.
+
+  > Do **not** dedupe based on raw database row counts. Strapi 5 stores a draft
+  > row *and* a published row per document, so `SELECT COUNT(*) FROM locations`
+  > returns 6 for 3 locations. That is correct and expected. Verified 2026-08-21:
+  > every type has exactly 2 rows per document and there are no duplicates.
+  > `getSettings()` reads index `[0]`, so it matters that there is genuinely one
+  > settings *document* — there is.
+
+- Confirm the Media Library renders **29 files** (95 on disk, counting the
+  thumbnail/small/medium/large variants Strapi generates per image).
+- Settings → **API Tokens**: the transferred tokens are hashed against the old
+  server's `API_TOKEN_SALT` and no longer work. Delete them and create a fresh
+  **read-only** token.
+- Settings → Users & Permissions → **Public** role: confirm `create` is enabled on
+  `contact-message` and `calculator-request` (the website forms need it).
+
+---
+
+## Step 3: Vercel (Astro frontend)
+
+### 3.1 Environment variables
+
+Vercel → Project → Settings → Environment Variables:
+
+| Variable | Value |
+| --- | --- |
+| `STRAPI_URL` | `https://prvibalkan-cms.duckdns.org` |
+| `STRAPI_API_TOKEN` | the read-only token created above |
+| `SITE_URL` | `https://prvibalkan.rs` |
+
+Redeploy.
+
+> **Verify the rendered pages, not just the build status.** `src/utils/strapi.ts`
+> swallows fetch errors and returns `[]`, so a bad URL or dead token produces a
+> green build that ships an **empty site**.
+
+### 3.2 Auto-rebuild on content change
+
+1. Vercel → Settings → Git → **Deploy Hooks** → name `strapi-content-update`,
+   branch `release` (matching `vercel.json`). Copy the URL.
+2. Strapi admin → Settings → **Webhooks** → Add new webhook → paste the URL →
+   select all entry events (create, update, delete, publish, unpublish).
+
+---
+
+## Step 4: Decommission Strapi Cloud
+
+Only after everything above is verified:
+
+1. Delete the old Cloud → Vercel webhook.
+2. Revoke the Cloud transfer and API tokens.
+3. Delete the Strapi Cloud project.
+
+Keep an offline copy of the migrated data for at least a month.
 
 ---
 
 ## Maintenance
 
-### Deploy Strapi Updates
+### Deploy Strapi updates
 
 ```bash
-ssh strapi@YOUR_SERVER_IP
+ssh strapi@<RESERVED_IP>
 ./tehnicki_pregled/deploy/deploy-strapi.sh
 ```
 
-### Manual Backup
+### Manual backup
 
 ```bash
-ssh strapi@YOUR_SERVER_IP
+ssh strapi@<RESERVED_IP>
 ./backup.sh
 ```
 
-### Restore Database
+### Restore database
 
 ```bash
 pg_restore -U strapi -d strapi -c /home/strapi/backups/db_YYYY-MM-DD_HH-MM-SS.dump
 ```
 
-### View Strapi Logs
+### Logs and process control
 
 ```bash
-ssh strapi@YOUR_SERVER_IP
 pm2 logs strapi
-pm2 monit  # real-time monitoring
-```
-
-### Restart Strapi
-
-```bash
+pm2 monit
 pm2 restart strapi
 ```
+
+### Caddy / HTTPS
+
+```bash
+sudo systemctl status caddy
+sudo journalctl -u caddy -n 100     # certificate errors show up here
+```
+
+Certificates renew automatically; no cron needed.
 
 ---
 
 ## Backup Strategy
 
-| Layer           | Method            | Frequency     | Retention       |
-| --------------- | ----------------- | ------------- | --------------- |
-| **Database**    | `pg_dump` cron    | Daily 3 AM    | 14 days         |
-| **Uploads**     | tar.gz cron       | Daily 3 AM    | 14 days         |
-| **Full Server** | Contabo snapshots | Weekly (auto) | Latest snapshot |
-| **Code**        | Git (GitHub)      | Every push    | Unlimited       |
+| Layer | Method | Frequency | Retention |
+| --- | --- | --- | --- |
+| **Database** | `pg_dump` cron | Daily 3 AM | 14 days |
+| **Uploads** | tar.gz cron | Daily 3 AM | 14 days |
+| **Boot volume** | OCI volume backup | Manual/policy | 5 backups (free tier limit) |
+| **Code** | Git (GitHub) | Every push | Unlimited |
+
+> Backups live on the same disk as the data they protect. Periodically copy a
+> `db_*.dump` off the server — `scp strapi@<IP>:~/backups/db_*.dump .`
 
 ---
 
 ## Security Checklist
 
 - [x] UFW firewall (only SSH, HTTP, HTTPS)
+- [x] Oracle instance `iptables` rules for 80/443
 - [x] Fail2Ban for SSH brute-force protection
 - [x] Caddy auto-HTTPS (Let's Encrypt)
 - [x] Security headers (HSTS, X-Frame-Options, etc.)
-- [x] CORS restricted to frontend domain
-- [x] Strapi runs as non-root user
-- [x] Strong auto-generated secrets
-- [ ] Enable SSH key-only login (disable password auth in `/etc/ssh/sshd_config`)
-- [ ] Setup monitoring (UptimeRobot free tier — monitors https://cms.prvibalkan.rs)
-- [ ] Enable Contabo automatic snapshots in the Customer Control Panel
+- [x] CORS restricted to the frontend origins via `CORS_ORIGINS`
+- [x] Strapi runs as a non-root user
+- [x] Strong auto-generated secrets; `.env` is `chmod 600`
+- [x] SMTP credentials passed at runtime, never committed
+- [ ] Disable SSH password auth in `/etc/ssh/sshd_config` (Oracle images default to key-only, verify)
+- [ ] Set up UptimeRobot monitoring
+- [ ] Convert tenancy to Pay As You Go + $1 budget alert (idle-reclamation exemption)

@@ -1,0 +1,10 @@
+# Normalize line endings.
+# These files are authored on Windows but executed on the Ubuntu server.
+# CRLF endings make the kernel fail them with "bad interpreter: /bin/bash^M",
+# so force LF in the working tree regardless of core.autocrlf.
+*.sh            text eol=lf
+deploy/Caddyfile text eol=lf
+*.cjs           text eol=lf
+
+# Let Git decide for everything else.
+* text=auto

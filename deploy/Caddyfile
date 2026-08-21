@@ -1,5 +1,8 @@
-# Strapi CMS reverse proxy for cms.prvibalkan.rs
-cms.prvibalkan.rs {
+# Strapi CMS reverse proxy.
+# The hostname is rewritten by deploy/setup-vps.sh from $STRAPI_DOMAIN.
+# Caddy obtains and renews the Let's Encrypt certificate automatically, which
+# requires port 80 to be reachable from the internet (HTTP-01 challenge).
+prvibalkan-cms.duckdns.org {
 	# Reverse proxy to Strapi
 	reverse_proxy localhost:1337
 

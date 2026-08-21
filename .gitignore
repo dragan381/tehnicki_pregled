@@ -26,3 +26,7 @@ out/
 .npm/
 .eslintcache
 .vercel
+
+# Strapi data pulled off the Cloud instance — contains contact messages and
+# calculator requests (names, emails, phone numbers). Never commit it.
+backups/
