@@ -53,10 +53,33 @@ Compute → Instances → Create instance:
 
 ### 1.3 Reserve a static public IP
 
-Instance → Attached VNICs → the primary VNIC → IPv4 addresses → edit the public
-IP from **Ephemeral** to **Reserved**.
+First create the address: **Networking → IP management → Reserved public IPs →
+Reserve public IP address**. Name it `strapi-cms-ip`, source **Oracle**, and make
+sure it is in the **same region as the instance**. It should show as `Available`.
+
+Then attach it — and note this takes **two passes** through the same dialog,
+because a private IP can only hold one public IP, so the console will not offer
+"Reserved" while an ephemeral one is still attached:
+
+Instance → **Details** → **Attached VNICs** → the primary VNIC → **IP
+administration** → **Edit** on the primary private IP row (`10.0.0.x`), then:
+
+1. Select **No public IP** → **Update**. The ephemeral address is released
+   immediately and permanently — your SSH session will drop.
+2. Re-open the same **Edit** dialog. The **Reserved public IP** radio is now
+   present; pick `strapi-cms-ip` from the dropdown → **Update**.
+
+**The reserved IP for this deployment is `92.5.61.105`** — it is written into
+the `ssh`/`scp` commands throughout this doc.
 
 Free, and it stops the DNS record from going stale after a reboot.
+
+> The **IP lifetime** column on the IP administration table may still read
+> `Ephemeral` after the swap — that is a console display quirk. The `(Reserved)`
+> parenthetical next to the public IP is authoritative, as is the entry showing
+> `Assigned` under Networking → IP management → Reserved public IPs. To settle it
+> for certain: `oci network public-ip get --public-ip-address 92.5.61.105` should
+> report `"lifetime": "RESERVED"`.
 
 ### 1.4 Open ports 80 and 443 — in **both** firewalls
 
@@ -89,7 +112,7 @@ mandatory here, because the site is served over HTTPS and browsers block form
 POSTs from an HTTPS page to an `http://` endpoint as mixed content.
 
 Register a free subdomain at [duckdns.org](https://www.duckdns.org) (sign in with
-GitHub/Google), e.g. `prvibalkan-cms`, and point it at the reserved IP.
+GitHub/Google), e.g. `prvibalkan-cms`, and point it at `92.5.61.105`.
 
 > **Why DuckDNS and not sslip.io/nip.io?** `duckdns.org` is on the Public Suffix
 > List, so each subdomain gets its own Let's Encrypt rate-limit budget.
@@ -103,7 +126,7 @@ Vercel. You are not locked in.
 ### 1.6 Run the setup script
 
 ```bash
-ssh ubuntu@<RESERVED_IP>
+ssh ubuntu@92.5.61.105
 
 curl -sL https://raw.githubusercontent.com/dragan381/tehnicki_pregled/main/deploy/setup-vps.sh -o setup-vps.sh
 chmod +x setup-vps.sh
@@ -147,9 +170,9 @@ Phase 0 already pulled everything off Cloud — see
 than pulling from Cloud again:
 
 ```bash
-scp backups/cloud-full-2026-08-21.tar.gz strapi@<RESERVED_IP>:~/
+scp backups/cloud-full-2026-08-21.tar.gz strapi@92.5.61.105:~/
 
-ssh strapi@<RESERVED_IP>
+ssh strapi@92.5.61.105
 pm2 stop strapi          # import must run with the app not serving
 
 cd /home/strapi/tehnicki_pregled/strapi
@@ -266,14 +289,14 @@ Keep an offline copy of the migrated data for at least a month.
 ### Deploy Strapi updates
 
 ```bash
-ssh strapi@<RESERVED_IP>
+ssh strapi@92.5.61.105
 ./tehnicki_pregled/deploy/deploy-strapi.sh
 ```
 
 ### Manual backup
 
 ```bash
-ssh strapi@<RESERVED_IP>
+ssh strapi@92.5.61.105
 ./backup.sh
 ```
 
@@ -312,13 +335,13 @@ Certificates renew automatically; no cron needed.
 | **Code** | Git (GitHub) | Every push | Unlimited |
 
 > Backups live on the same disk as the data they protect. Periodically copy a
-> `db_*.dump` off the server — `scp strapi@<IP>:~/backups/db_*.dump .`
+> `db_*.dump` off the server — `scp strapi@92.5.61.105:~/backups/db_*.dump .`
 
 ---
 
 ## Security Checklist
 
-- [x] UFW firewall (only SSH, HTTP, HTTPS)
+- [x] Instance firewall via iptables/netfilter-persistent (only SSH, HTTP, HTTPS)
 - [x] Oracle instance `iptables` rules for 80/443
 - [x] Fail2Ban for SSH brute-force protection
 - [x] Caddy auto-HTTPS (Let's Encrypt)

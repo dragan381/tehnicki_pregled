@@ -74,11 +74,15 @@ fi
 # --- System Updates ---
 echo "[1/9] Updating system..."
 apt update && apt upgrade -y
-apt install -y curl git build-essential ufw fail2ban iptables-persistent unattended-upgrades
+# NOTE: do NOT add `ufw` here. On Ubuntu 24.04 the ufw and iptables-persistent
+# packages declare a mutual `Breaks:` and apt refuses to install both. Oracle's
+# image already persists its iptables ruleset via netfilter-persistent, so that
+# is the layer we manage below; ufw would be a redundant second one.
+apt install -y curl git build-essential fail2ban iptables-persistent unattended-upgrades
 
 # --- Oracle Cloud instance firewall ---
 # Oracle's Ubuntu images ship with restrictive iptables rules persisted by
-# netfilter-persistent. These sit BELOW ufw and silently drop 80/443 even when
+# netfilter-persistent. These silently drop 80/443 even when
 # the VCN Security List allows them. This is the #1 reason an OCI box looks dead.
 echo "[2/9] Opening ports 80/443 in the Oracle instance firewall..."
 # Insert at the top of INPUT rather than a fixed index: a fixed position fails
@@ -100,14 +104,24 @@ if [ "$IPTABLES_CHANGED" -eq 1 ]; then
 fi
 echo "      REMINDER: the VCN Security List must ALSO allow ingress on 80/443."
 
-# --- Firewall ---
-echo "[3/9] Configuring UFW..."
-ufw default deny incoming
-ufw default allow outgoing
-ufw allow ssh
-ufw allow http
-ufw allow https
-ufw --force enable
+# --- Firewall sanity check ---
+# There is no ufw here by design (see the apt note above). Verify the ruleset we
+# are relying on is actually default-deny, so a misconfigured image cannot leave
+# the box wide open silently.
+echo "[3/9] Verifying the instance firewall is default-deny..."
+if iptables -S INPUT | grep -qE '^-P INPUT (DROP|REJECT)|-A INPUT -j (DROP|REJECT)'; then
+  echo "      INPUT chain has a default-deny policy."
+else
+  echo "WARNING: the INPUT chain has no default-deny rule — every port is open at"
+  echo "         the instance level and only the VCN Security List is protecting"
+  echo "         this host. Review 'iptables -S INPUT' before going live." >&2
+fi
+if iptables -C INPUT -m state --state NEW -p tcp --dport 22 -j ACCEPT 2>/dev/null; then
+  echo "      port 22 (SSH) explicitly allowed."
+else
+  echo "NOTE: no explicit ACCEPT for port 22 found; SSH is presumably reaching you"
+  echo "      via another rule. Do not reboot until you have confirmed why."
+fi
 
 # --- Fail2Ban (SSH protection) ---
 systemctl enable fail2ban
@@ -228,8 +242,11 @@ cp /home/$STRAPI_USER/tehnicki_pregled/deploy/backup.sh /home/$STRAPI_USER/backu
 chmod +x /home/$STRAPI_USER/backup.sh
 chown $STRAPI_USER:$STRAPI_USER /home/$STRAPI_USER/backup.sh
 
-# Daily backup at 3 AM
-(crontab -u $STRAPI_USER -l 2>/dev/null; echo "0 3 * * * /home/$STRAPI_USER/backup.sh >> /home/$STRAPI_USER/logs/backup.log 2>&1") | crontab -u $STRAPI_USER -
+# Daily backup at 3 AM.
+# `crontab -l` exits 1 when the user has no crontab yet. `set -e` propagates into
+# subshells, so without the `|| true` the subshell aborts before the echo, the
+# pipeline fails under pipefail, and the whole script dies silently here.
+(crontab -u $STRAPI_USER -l 2>/dev/null || true; echo "0 3 * * * /home/$STRAPI_USER/backup.sh >> /home/$STRAPI_USER/logs/backup.log 2>&1") | crontab -u $STRAPI_USER -
 
 # --- Start Strapi with PM2 ---
 sudo -u "$STRAPI_USER" bash <<USEREOF
