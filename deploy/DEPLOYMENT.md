@@ -145,19 +145,94 @@ not send email.
 
 ### 1.7 (Recommended) Avoid idle reclamation
 
-Oracle may **stop** an Always Free instance that has, over 7 consecutive days,
-CPU (95th percentile) < 20% **and** network < 20% **and** memory < 20%. All three
-must be true. The instance is stopped, not deleted — the boot volume and your data
-survive and it can be restarted — but the CMS is down until you notice, which
-also takes the website's forms down.
+Oracle may reclaim an idle Always Free compute instance. Per the
+[Always Free Resources docs][afr], an instance is deemed idle when, over a
+**7-day period, all three** of these are true:
 
-Two mitigations, use either or both:
+| Metric | Idle threshold | Your 1 OCPU / 6 GB A1 |
+| --- | --- | --- |
+| CPU, 95th percentile | < 20% | ~0% at rest |
+| Network | < 20% | negligible |
+| Memory *(A1 shapes only)* | < 20% | < 20% at ~1.2 GB |
 
-- **Convert the tenancy to Pay As You Go.** This exempts the instance entirely and
-  still costs $0 while you stay inside Always Free limits. Pair it with a **budget
-  alert at $1** (Billing → Budgets) so any accidental overage surfaces immediately.
-- **Monitor it.** Add a free [UptimeRobot](https://uptimerobot.com) check against
-  `https://<your-domain>/_health` every 5 minutes.
+Because **all three** must hold, breaking **any one** takes you out of scope.
+
+> **What the docs do and do not say.** Oracle documents the criteria above but
+> does not define what "reclaimed" does (stop vs. terminate), and does **not**
+> state that upgrading to a paid account exempts Always Free instances. The
+> common claim that Pay As You Go stops reclamation is community lore, not
+> documented policy — so treat PAYG as likely-helpful, not as a guarantee, and
+> do not rely on it alone.
+
+Do all three of the following. They are not alternatives — the first two try to
+*prevent* reclamation, the third only *detects* it after the fact.
+
+#### a) Keep memory above 20% — the one documented, self-controlled lever
+
+20% of 6 GB is ~1.2 GB. Check where you actually sit:
+
+```bash
+free -m | awk '/^Mem:/ {printf "memory in use: %d MB of %d MB (%.1f%%)
+", $3, $2, $3/$2*100}'
+```
+
+Once real content is imported and the admin panel sees use, Strapi plus
+PostgreSQL will often sit above that on its own. If it does not, raise Node's
+heap in `ecosystem.config.cjs` so the process reserves more:
+
+```js
+node_args: '--max-old-space-size=2048',
+```
+
+Then `pm2 restart strapi --update-env`. This costs nothing — the RAM is already
+allocated to the instance and is otherwise idle.
+
+#### b) Upgrade the tenancy to Pay As You Go
+
+Still $0 while you stay inside Always Free limits; you are billed only for usage
+*above* those limits. Step by step:
+
+1. Sign in to the [OCI Console](https://cloud.oracle.com).
+2. Open the **navigation menu** (☰) → **Billing & Cost Management**.
+3. Under **Billing**, select **Upgrade and Manage Payment**.
+4. On the **Upgrade** page, check **Subscription Information** — **Plan Type**
+   should currently read `Free Tier`. Under **Account Details**, the card you
+   signed up with is already the default payment method. To use a different one,
+   click **Change Payment Method**.
+5. Click **Upgrade your account**, choose **Pay As You Go** (not Monthly Flex),
+   click **Next** through the tax fields, then confirm with **Upgrade account**.
+6. Confirm it worked: **Plan Type** changes from `Free Tier` to `Pay As You Go`,
+   and a confirmation email arrives.
+
+> **Expect a $100 hold.** Oracle authorizes USD 100 (or local equivalent) on the
+> card at upgrade. Oracle reverses it immediately, but your bank may take several
+> days to drop it. It is an authorization, not a charge.
+
+Then add a spend tripwire, so any accidental overage is loud rather than silent:
+
+7. **Billing & Cost Management** → **Budgets** → **Create Budget**.
+8. Target the root compartment, set the monthly amount to **$1**, and add an
+   alert rule at **100% of *actual* spend** with your email address.
+
+Anything beyond a rounding error breaches $1 and emails you the same day.
+
+#### c) Monitor it — detection, not prevention
+
+A 5-minute HTTP check is far too little traffic to move any of the three
+thresholds, so this does not prevent reclamation. It tells you within minutes
+when the CMS goes down for *any* reason, which also means the website's forms
+are down.
+
+Add a free [UptimeRobot](https://uptimerobot.com) HTTP(s) monitor:
+
+- **URL:** `https://prvibalkan-cms.duckdns.org/_health` (Strapi's built-in
+  endpoint — returns `204 No Content`)
+- **Interval:** 5 minutes
+- **Alert contact:** your email
+
+Do this after the content import, so you are not re-pointing it later.
+
+[afr]: https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm
 
 ---
 
