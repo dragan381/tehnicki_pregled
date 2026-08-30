@@ -296,9 +296,14 @@ The `--from` URL **must** end in `/admin`.
 
 ### After the import
 
-Log in at `https://<your-domain>/admin` with your **Strapi Cloud credentials** —
-admin users transfer across, and bcrypt password hashes are independent of the
-server's secrets.
+Log in at `https://prvibalkan-cms.duckdns.org/admin` with the **admin account you
+created when `setup-vps.sh` ran** — not your Strapi Cloud password.
+
+> **The archive carries no admin users.** Its entity manifest contains 117
+> `admin::session` rows but no `admin::user` and no `admin::role`, so Cloud's
+> logins do not come across, and the import leaves the locally created Super
+> Admin in place. Verified 2026-08-30 on this deployment: after the import
+> `admin_users` still held exactly the one account created during setup.
 
 - **Confirm counts in the Content Manager** — 3 locations, 1 settings entry, 2
   prices, 4 services, 3 blog posts, 6 FAQs, 3 testimonials.
@@ -315,8 +320,20 @@ server's secrets.
 - Settings → **API Tokens**: the transferred tokens are hashed against the old
   server's `API_TOKEN_SALT` and no longer work. Delete them and create a fresh
   **read-only** token.
-- Settings → Users & Permissions → **Public** role: confirm `create` is enabled on
-  `contact-message` and `calculator-request` (the website forms need it).
+- **Settings → Users & Permissions Plugin → Roles → Public**: confirm `create` is
+  enabled on `contact-message` and `calculator-request`. The website forms need
+  it — they POST unauthenticated from the browser, with no API token.
+
+  > Settings lists **two** screens named *Roles*. The one under **Administration
+  > panel** holds Super Admin / Editor / Author and is the wrong one. You want the
+  > one further down the sidebar under **Users & Permissions Plugin**, holding
+  > Public and Authenticated.
+  >
+  > Expand each of the two types and expect **a single `create` checkbox** — no
+  > `find`, `findOne`, `update`, or `delete`. Both routers declare
+  > `only: ['create']`, and the permission UI is built from registered routes, so
+  > the read actions do not exist to be listed. A lone checkbox where every other
+  > type shows five is easy to scroll past.
 
 ---
 
@@ -347,7 +364,39 @@ Redeploy.
 
 ---
 
-## Step 4: Decommission Strapi Cloud
+## Step 4: Reconcile submissions received during the cutover
+
+The site keeps posting to **Cloud** until the moment Vercel redeploys with the new
+`STRAPI_URL`. Anything submitted between the archive's export and that redeploy
+lives only on Cloud, and no import can close that window — so reconcile by hand,
+once, immediately after Step 3.
+
+The imported archive ends at:
+
+| Type | Newest imported entry |
+| --- | --- |
+| `calculator-request` | **2026-08-20** |
+| `contact-message` | **2026-06-17** |
+
+In **Cloud** admin → Content Manager, sort each of those two types by `createdAt`
+and re-enter anything newer into the new CMS by hand. At the observed rate — 15
+calculator requests and 4 contact messages between April and August 2026 — expect
+only a handful.
+
+> **REST will not help you here.** Both routers are `only: ['create']`, so
+> `GET /api/calculator-requests` returns 404 on Cloud for every token regardless
+> of permissions. The admin Content Manager is the only way to read them back.
+
+Cross-check against email. Both controllers send a notification on every
+submission — contact messages to the `settings.email` address, calculator
+requests to the per-location address from `locationEmailMap` in
+[`calculatorModal.ts`](../src/scripts/calculatorModal.ts). Your inbox is an
+independent record of every lead, so nothing is lost even if Cloud is already
+gone.
+
+---
+
+## Step 5: Decommission Strapi Cloud
 
 Only after everything above is verified:
 
